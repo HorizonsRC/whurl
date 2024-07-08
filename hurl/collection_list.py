@@ -3,11 +3,10 @@ from urllib.parse import urlencode
 
 def get_collection_list_url(
     base_url,
-    service="Hilltop",
 ):
     params = {
         "Request": "CollectionList",
-        "Service": service,
+        "Service": "Hilltop",
     }
 
     selected_params = {

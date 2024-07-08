@@ -1,20 +1,18 @@
 from urllib.parse import urlencode
 
-
-def get_measurement_list_url(
+def get_recent_data_table_url(
     base_url,
-    site=None,
     collection=None,
-    units=None,
-    target=None,
+    scoll=None,
+    mcoll=None,
+    
 ):
     params = {
-        "Request": "MeasurementList",
+        "Request": "RecentDataTable",
         "Service": "Hilltop",
-        "Site": site,
         "Collection": collection,
-        "Units": units,
-        "Target": target
+        "SColl": scoll,
+        "MColl": mcoll,
     }
 
     selected_params = {

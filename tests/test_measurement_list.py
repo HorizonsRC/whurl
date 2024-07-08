@@ -4,7 +4,6 @@ from hurl import measurement_list
 def test_get_measurement_list_url():
     base_url = "http://hilltopdev.horizons.govt.nz/boo.hts"
     params = {
-        "service": "Hilltop",
         "site": "Manawatu at Teachers College",
         "collection": "AtmosphericPressure",
         "units": "Yes",

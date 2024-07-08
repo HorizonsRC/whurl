@@ -3,7 +3,6 @@ from urllib.parse import urlencode
 
 def get_site_list_url(
     base_url,
-    service="Hilltop",
     location=None,
     bounding_box=None,
     measurement=None,
@@ -11,10 +10,11 @@ def get_site_list_url(
     site_parameters=None,
     target=None,
     syn_level=None,
+    fill_cols=None,
 ):
     params = {
         "Request": "SiteList",
-        "Service": service,
+        "Service": "Hilltop",
         "Location": location,
         "BBox": bounding_box,
         "Measurement": measurement,
@@ -22,6 +22,7 @@ def get_site_list_url(
         "SiteParameters": site_parameters,
         "Target": target,
         "SynLevel": syn_level,
+        "FillCols": fill_cols,
     }
 
     selected_params = {

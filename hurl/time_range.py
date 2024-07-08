@@ -3,14 +3,13 @@ from urllib.parse import urlencode
 
 def get_time_range_url(
     base_url,
-    service="Hilltop",
     site=None,
     measurement=None,
     format=None,
 ):
     params = {
         "Request": "TimeRange",
-        "Service": service,
+        "Service": "Hilltop",
         "Site": site,
         "Measurement": measurement,
         "Format": format,

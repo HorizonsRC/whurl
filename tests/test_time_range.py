@@ -4,7 +4,6 @@ from hurl import time_range
 def test_get_time_range_url():
     base_url = "http://hilltopdev.horizons.govt.nz/boo.hts"
     params = {
-        "service": "Hilltop",
         "site": "Manawatu at Teachers College",
         "measurement": "Atmospheric Pressure",
         "format": "JSON",

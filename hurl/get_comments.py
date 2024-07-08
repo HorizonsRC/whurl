@@ -1,20 +1,19 @@
 from urllib.parse import urlencode
 
-
-def get_measurement_list_url(
+def get_get_comments_url(
     base_url,
     site=None,
-    collection=None,
-    units=None,
-    target=None,
+    measurement=None,
+    from_datetime=None,
+    to_datetime=None,
 ):
     params = {
-        "Request": "MeasurementList",
+        "Request": "GetComments",
         "Service": "Hilltop",
         "Site": site,
-        "Collection": collection,
-        "Units": units,
-        "Target": target
+        "Measurement": measurement,
+        "From": from_datetime,
+        "To": to_datetime,
     }
 
     selected_params = {

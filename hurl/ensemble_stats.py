@@ -1,20 +1,19 @@
 from urllib.parse import urlencode
 
-
-def get_measurement_list_url(
+def get_ensemble_stats_url(
     base_url,
     site=None,
+    measurement=None,
+    statistic=None,
     collection=None,
-    units=None,
-    target=None,
 ):
     params = {
-        "Request": "MeasurementList",
+        "Request": "EnsembleStats",
         "Service": "Hilltop",
         "Site": site,
+        "Measurement": measurement,
+        "Statistic": statistic,
         "Collection": collection,
-        "Units": units,
-        "Target": target
     }
 
     selected_params = {

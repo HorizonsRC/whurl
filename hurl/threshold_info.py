@@ -1,20 +1,16 @@
 from urllib.parse import urlencode
 
 
-def get_measurement_list_url(
+def get_threshold_info_url(
     base_url,
     site=None,
-    collection=None,
-    units=None,
-    target=None,
+    measurement=None,
 ):
     params = {
-        "Request": "MeasurementList",
+        "Request": "ThresholdInfo",
         "Service": "Hilltop",
         "Site": site,
-        "Collection": collection,
-        "Units": units,
-        "Target": target
+        "Measurement": measurement,
     }
 
     selected_params = {
