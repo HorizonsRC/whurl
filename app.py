@@ -12,7 +12,8 @@ show_pages(
     [
         Page("app.py", "HURL", "🤮"),
         Section("Hilltop Calls"),
-        Page("pages/render_site_list.py", "Site List")
+        Page("pages/render_site_list.py", "Site List"),
+        Page("pages/render_measurement_list.py", "Measurement List"),
     ]
 )
 
