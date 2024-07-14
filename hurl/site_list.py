@@ -1,4 +1,4 @@
-from urllib.parse import urlencode
+from urllib.parse import urlencode, quote
 from hurl.utils import get_hilltop_response
 from xml.etree import ElementTree
 
@@ -31,7 +31,7 @@ def get_site_list_url(
         key: val for key, val in params.items() if val is not None
     }
 
-    url = f"{base_url}?{urlencode(selected_params)}"
+    url = f"{base_url}?{urlencode(selected_params, quote_via=quote)}"
     return url
 
 
