@@ -1,0 +1,5 @@
+[tool.pytest.ini_options]
+markers = [
+  "slow: marks tests as slow (deselect as '-m \"not slow\"')",
+  "remote: marks tests as remote (deselect as '-m \"not remote\"')",
+]

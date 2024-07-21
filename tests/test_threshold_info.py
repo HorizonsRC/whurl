@@ -13,5 +13,5 @@ def test_get_threshold_info_url():
 
     assert (
         url == 
-        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=ThresholdInfo&Service=Hilltop&Site=Manawatu+at+Teachers+College&Measurement=Atmospheric+Pressure"""
+        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=ThresholdInfo&Service=Hilltop&Site=Manawatu%20at%20Teachers%20College&Measurement=Atmospheric%20Pressure"""
     )

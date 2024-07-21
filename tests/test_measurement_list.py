@@ -15,5 +15,5 @@ def test_get_measurement_list_url():
 
     assert (
         url
-        == """http://hilltopdev.horizons.govt.nz/boo.hts?Request=MeasurementList&Service=Hilltop&Site=Manawatu+at+Teachers+College&Collection=AtmosphericPressure&Units=Yes&Target=HtmlSelect"""
+        == """http://hilltopdev.horizons.govt.nz/boo.hts?Request=MeasurementList&Service=Hilltop&Site=Manawatu%20at%20Teachers%20College&Collection=AtmosphericPressure&Units=Yes&Target=HtmlSelect"""
     )

@@ -19,5 +19,5 @@ def test_get_site_list_url():
 
     assert (
         url
-        == """http://hilltopdev.horizons.govt.nz/boo.hts?Request=SiteList&Service=Hilltop&Location=Manawatu+at+Teachers+College&BBox=-40.50279%2C175.09327%2C-39.71855%2C175.95490%2CEPSG%3A4326&Measurement=Atmospheric+Pressure&Collection=AtmosphericPressure&SiteParameters=CatchmentName&Target=HtmlSelect&SynLevel=1&FillCols=Yes"""
+        == """http://hilltopdev.horizons.govt.nz/boo.hts?Request=SiteList&Service=Hilltop&Location=Manawatu%20at%20Teachers%20College&BBox=-40.50279%2C175.09327%2C-39.71855%2C175.95490%2CEPSG%3A4326&Measurement=Atmospheric%20Pressure&Collection=AtmosphericPressure&SiteParameters=CatchmentName&Target=HtmlSelect&SynLevel=1&FillCols=Yes"""
     )

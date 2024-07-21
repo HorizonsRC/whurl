@@ -1,4 +1,4 @@
-from urllib.parse import urlencode
+from urllib.parse import urlencode, quote
 
 def get_recent_data_table_url(
     base_url,
@@ -19,5 +19,5 @@ def get_recent_data_table_url(
         key: val for key, val in params.items() if val is not None
     }
 
-    url = f"{base_url}?{urlencode(selected_params)}"
+    url = f"{base_url}?{urlencode(selected_params, quote_via=quote)}"
     return url

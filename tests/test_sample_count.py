@@ -13,5 +13,5 @@ def test_get_sample_count_url():
 
     assert (
         url == 
-        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=SampleCount&Service=Hilltop&Site=Manawatu+at+Teachers+College&Format=JSON"""
+        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=SampleCount&Service=Hilltop&Site=Manawatu%20at%20Teachers%20College&Format=JSON"""
     )

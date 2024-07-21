@@ -15,5 +15,5 @@ def test_get_ensemble_stats_url():
 
     assert (
         url == 
-        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=EnsembleStats&Service=Hilltop&Site=Manawatu+at+Teachers+College&Measurement=Atmospheric+Pressure&Statistic=MeanDailyExtrema&Collection=AtmosphericPressure"""
+        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=EnsembleStats&Service=Hilltop&Site=Manawatu%20at%20Teachers%20College&Measurement=Atmospheric%20Pressure&Statistic=MeanDailyExtrema&Collection=AtmosphericPressure"""
     )

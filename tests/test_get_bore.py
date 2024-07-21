@@ -13,5 +13,5 @@ def test_get_get_bore_url():
 
     assert (
         url
-        == """http://hilltopdev.horizons.govt.nz/boo.hts?Request=GetBore&Service=Hilltop&Site=Manawatu+at+Teachers+College&BBox=-40.50279%2C175.09327%2C-39.71855%2C175.95490%2CEPSG%3A4326"""
+        == """http://hilltopdev.horizons.govt.nz/boo.hts?Request=GetBore&Service=Hilltop&Site=Manawatu%20at%20Teachers%20College&BBox=-40.50279%2C175.09327%2C-39.71855%2C175.95490%2CEPSG%3A4326"""
     )

@@ -20,5 +20,5 @@ def test_data_table_url():
 
     assert (
         url == 
-        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=DataTable&Service=Hilltop&Site=Manawatu+at+Teachers+College&Measurement=Atmospheric+Pressure&From=1%2F1%2F2021&To=2%2F1%2F2021&TimeInterval=2021-01-01T12%3A00%3A00%2F2021-01-02T12%3A00%3A00&Collection=AtmosphericPressure&Method=Interpolate&Interval=1day&Location=Yes"""
+        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=DataTable&Service=Hilltop&Site=Manawatu%20at%20Teachers%20College&Measurement=Atmospheric%20Pressure&From=1%2F1%2F2021&To=2%2F1%2F2021&TimeInterval=2021-01-01T12%3A00%3A00%2F2021-01-02T12%3A00%3A00&Collection=AtmosphericPressure&Method=Interpolate&Interval=1day&Location=Yes"""
     )

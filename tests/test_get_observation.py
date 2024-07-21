@@ -16,5 +16,5 @@ def test_get_observation_url():
 
     assert (
         url == 
-        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=GetObservation&Service=SOS&FeatureOfInterest=Manawatu+at+Teachers+College&ObservedProperty=AtmosphericPressure&TemporalFilter=TemporalFilter%3Dom%3AphenomenonTime%2C2010-01-01T12%3A00%3A00%2F2011-07-01T14%3A00%3A00"""
+        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=GetObservation&Service=SOS&FeatureOfInterest=Manawatu%20at%20Teachers%20College&ObservedProperty=AtmosphericPressure&TemporalFilter=TemporalFilter%3Dom%3AphenomenonTime%2C2010-01-01T12%3A00%3A00%2F2011-07-01T14%3A00%3A00"""
     )

@@ -15,5 +15,5 @@ def test_get_get_comments_url():
 
     assert (
         url == 
-        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=GetComments&Service=Hilltop&Site=Manawatu+at+Teachers+College&Measurement=Atmospheric+Pressure&From=2021-01-01T00%3A00%3A00&To=2021-01-02T00%3A00%3A00"""
+        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=GetComments&Service=Hilltop&Site=Manawatu%20at%20Teachers%20College&Measurement=Atmospheric%20Pressure&From=2021-01-01T00%3A00%3A00&To=2021-01-02T00%3A00%3A00"""
     )

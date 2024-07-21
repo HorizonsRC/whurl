@@ -14,5 +14,5 @@ def test_get_site_info_url():
 
     assert (
         url == 
-        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=SiteInfo&Service=Hilltop&Site=Manawatu+at+Teachers+College&FieldList=FirstSynonym%2CMedianFlow&Collection=AtmosphericPressure"""
+        """http://hilltopdev.horizons.govt.nz/boo.hts?Request=SiteInfo&Service=Hilltop&Site=Manawatu%20at%20Teachers%20College&FieldList=FirstSynonym%2CMedianFlow&Collection=AtmosphericPressure"""
     )
