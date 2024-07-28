@@ -35,6 +35,6 @@ def get_field_list(
     field_list = []
     for child in root.findall("Site"):
         for field in child.iter():
-            field_list += [field.text]
+            field_list += [field.tag]
     return success, field_list, url
     

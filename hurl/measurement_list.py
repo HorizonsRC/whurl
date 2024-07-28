@@ -29,14 +29,16 @@ def get_measurement_list_url(
 def get_measurement_list(
     base_url, site=None, collection=None, units=None, target=None, timeout=60
 ):
-    url = get_measurement_list_url(base_url, site, collection, units, target)
-    print(url)
+    if target is not None:
+        raise ValueError("HtmlSelect (JSON) not supported.")
+    
+    url = get_measurement_list_url(base_url, site, collection, units)
     
     success, ret_obj = get_hilltop_response(url, timeout=timeout)
 
     root = ElementTree.fromstring(ret_obj.decode())
-    collection_list = []
+    measurement_list = []
     for child in root.findall("Measurement"):
-        collection_list += [child.get("Name")]
+        measurement_list += [child.get("Name")]
     
-    return success, collection_list, url
+    return success, measurement_list, url
