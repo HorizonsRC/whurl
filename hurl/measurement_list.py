@@ -1,6 +1,7 @@
 from urllib.parse import urlencode, quote
 from hurl.utils import get_hilltop_response
 from xml.etree import ElementTree
+import pandas as pd
 
 def get_measurement_list_url(
     base_url,
@@ -38,7 +39,22 @@ def get_measurement_list(
 
     root = ElementTree.fromstring(ret_obj.decode())
     measurement_list = []
-    for child in root.findall("Measurement"):
-        measurement_list += [child.get("Name")]
+    for data_source in root.findall("DataSource"):
+        for measurement in data_source.findall("Measurement"):
+            payload = {"Site": data_source.get("Site")}
+            payload["DataSource"] = data_source.get("Name")
+            payload["TSType"] = data_source.find("TSType").text
+            payload["DataType"] = data_source.find("DataType").text
+            payload["From"] = data_source.find("From").text
+            payload["To"] = data_source.find("To").text
+            payload["Measurement"] = measurement.get("Name")
+            print(payload["Measurement"])
+            for child in measurement:
+                payload[child.tag] = child.text
+            measurement_list += [payload]
+
+    # Convert the list of dictionaries to a dictionary of lists.
+
+    payload_df = pd.DataFrame(measurement_list)
     
-    return success, measurement_list, url
+    return success, payload_df, url

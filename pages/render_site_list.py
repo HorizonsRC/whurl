@@ -6,7 +6,6 @@ from hurl.site_list import get_site_list_url
 from hurl.status import get_status
 from hurl.components import bbox_form
 from streamlit_tags import st_tags
-import pandas as pd
 
 add_page_title()
 
