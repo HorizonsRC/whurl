@@ -40,17 +40,22 @@ for hts_alias in data_file_names:
     for site in site_list[1]:
         measurement_df = get_measurement_list(full_base_url, site)[1]
 
-        if measurement_df.empty:
-            print(f"No measurements available for site {site}.")
-            continue
-
-        # Create a column with the name in the 'Measurement [DataSource]' format
-        measurement_df["FullName"] = (
-            measurement_df["Measurement"] + " [" + measurement_df["DataSource"] + "]"
-        )
-
+        if not measurement_df.empty:
+            # Create a column with the name in the 'Measurement [DataSource]' format
+            measurement_df["FullName"] = (
+                measurement_df["Measurement"] + " [" + measurement_df["DataSource"] + "]"
+            )
         for measurement in measurements:
-            if measurement in list(measurement_df["RequestAs"].values):
+            if measurement in ["RL Section"]:
+                # RL Sections don't show up in MeasurementList, so I'm just going to hope that it's available.
+                print(
+                    f"Measurement is a '{measurement}'. Going for it."
+                )
+                correct_name = "RL Section"
+            elif measurement_df.empty:
+                print(f"No measurements at {site}, so probably no {measurement}.")
+                continue
+            elif measurement in list(measurement_df["RequestAs"].values):
                 # Measurement is found with its request name
                 correct_name = measurement_df[
                     measurement_df["RequestAs"] == measurement
@@ -73,19 +78,26 @@ for hts_alias in data_file_names:
                 print(f"Measurement {measurement} not available for site {site}.")
                 continue
 
-            from_date = measurement_df[measurement_df["Measurement"] == correct_name][
-                "From"
-            ].values[0]
-            request_name = measurement_df[measurement_df["Measurement"] == correct_name][
-                "RequestAs"
-            ].values[0]
+            if correct_name == "RL Section":
+                from_date = None
+                request_name = "RL Section"
+            else:
+                from_date = measurement_df[measurement_df["Measurement"] == correct_name][
+                    "From"
+                ].values[0]
+                request_name = measurement_df[measurement_df["Measurement"] == correct_name][
+                    "RequestAs"
+                ].values[0]
             print(f"From date: {from_date}")
+
+            if from_date is not None:
+                from_date = f"om:phenomenonTime,{from_date}"
 
             url = get_get_observation_url(
                 full_base_url,
                 site_name=site,
-                measurement=measurement,
-                time_range=f"{from_date}",
+                measurement=request_name,
+                time_range=from_date,
             )
             compiled_row = {
                 "DataFile": hts_alias,
