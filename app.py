@@ -1,6 +1,4 @@
-"""
-Main landing page of the app.
-"""
+"""Main landing page of the app."""
 
 from st_pages import Page, Section, show_pages, add_page_title
 

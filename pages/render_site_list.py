@@ -21,6 +21,7 @@ with col2:
 
 
 def pull_measurement_list():
+    print("Pulling measurement list")
     if "collection" not in st.session_state:
         st.session_state.collection = None
     measurement_success, measurement_result, measurement_url = (
@@ -109,6 +110,8 @@ try:
     #     st.session_state.measurement_default = None
     #     st.session_state.measurement_list = pull_measurement_list()
     with col2:
+        print("Measurement default:", st.session_state.measurement_default)
+        print("Measurement list:", st.session_state.measurement_list)
         st.selectbox(
             "Measurement",
             st.session_state.measurement_list,
@@ -124,6 +127,9 @@ except Exception as e:
     )
     st.text_area("Collection List URL:", value=st.session_state.collection_url)
 
+if "measurement" not in st.session_state:
+    st.session_state.measurement = None
+
 location = st.toggle("Location", key="location", value=False)
 
 if location:
@@ -132,7 +138,6 @@ else:
     location = None
 
 bbox_added, bbox = bbox_form(success)
-    
 site_parameters = st_tags(
     label="Site Parameters",
     text="Press Enter to Add",
