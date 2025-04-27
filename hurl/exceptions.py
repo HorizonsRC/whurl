@@ -12,8 +12,8 @@ class HilltopError(Exception):
         super().__init__(message)
 
 
-class HilltopRequestError(HilltopError):
-    """Exception for request failures."""
+class HilltopHTTPError(HilltopError):
+    """Exception for standard HTTP request failures."""
 
     def __init__(
         self,
@@ -29,6 +29,24 @@ class HilltopRequestError(HilltopError):
         self.headers = headers
         full_msg = f"{message} [Status: {status_code}]" if status_code else message
         super().__init__(full_msg)
+
+
+class HilltopResponseError(HilltopError):
+    """Exception for Hilltop XML error response."""
+
+    def __init__(
+        self,
+        message: str,
+        url: Optional[str] = None,
+        raw_response: Optional[str] = None,
+    ):
+        self.raw_response = raw_response
+        self.url = url
+
+        # If we know the url, include it in the message
+        if url:
+            message = f"{message} [URL: {url}]"
+        super().__init__(f"Parse error: {message}")
 
 
 class HilltopParseError(HilltopError):
@@ -57,7 +75,7 @@ class HilltopConfigError(HilltopError):
 
 # Utility function for consistent exception raising
 def raise_for_response(response: httpx.Response) -> None:
-    """Raise HilltopRequestError if request failed."""
+    """Raise HilltopHTTPError if request failed."""
     if response.is_success:
         return
 

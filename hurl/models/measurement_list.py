@@ -1,13 +1,14 @@
 """Contains the functions and models for the Hilltop MeasurementList request."""
 
 import pandas as pd
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Self
 import xmltodict
 from urllib.parse import urlencode, quote
+import httpx
 
-from hurl.exceptions import HilltopParseError
+from hurl.exceptions import HilltopParseError, HilltopResponseError, HilltopHTTPError
 
 
 class HilltopMeasurement(BaseModel):
@@ -78,14 +79,24 @@ class HilltopDataSource(BaseModel):
 class HilltopMeasurementList(BaseModel):
     """Top-level Hilltop MeasurementList response model."""
 
-    agency: str = Field(alias="Agency")
+    agency: Optional[str] = Field(alias="Agency", default=None)
     data_sources: Optional[List[HilltopDataSource]] = Field(
         alias="DataSource", default_factory=list
     )
-
     measurements: Optional[List[HilltopMeasurement]] = Field(
         alias="Measurement", default_factory=list
     )
+    error: Optional[str] = Field(alias="Error", default=None)
+
+    @model_validator(mode="after")
+    def handle_error(self) -> Self:
+        """Handle errors in the response."""
+        if self.error is not None:
+            raise HilltopResponseError(
+                f"Hilltop MeasurementList error: {self.error}",
+                raw_response=self.model_dump(exclude_unset=True, by_alias=True),
+            )
+        return self
 
     def to_dataframe(self) -> pd.DataFrame:
         """Convert the model to a pandas DataFrame."""
@@ -137,31 +148,45 @@ class HilltopMeasurementList(BaseModel):
         return cls(**data)
 
     @classmethod
-    def from_url(cls, url: str, timeout: Optional[int]) -> "HilltopMeasurementList":
+    def from_url(
+        cls, url: str, timeout: Optional[int], client: Optional[httpx.Client] = None
+    ) -> "HilltopMeasurementList":
         """Fetch the XML from the URL and return a HilltopMeasurementList object."""
-        success, response = get_hilltop_response(url, timeout=timeout)
+        if client is None:
+            with httpx.Client() as temp_client:
+                response = temp_client.get(url, timeout=timeout)
+        else:
+            response = client.session.get(url, timeout=timeout)
+
+        if response.status_code != 200:
+            raise HilltopHTTPError(
+                f"Failed to fetch measurement list from Hilltop Server: {response}",
+                url=url,
+            )
         return cls.from_xml(response.text)
 
     @classmethod
     def from_params(
         cls,
         base_url: str,
+        hts_endpoint: str,
         site: Optional[str] = None,
         collection: Optional[str] = None,
         units: Optional[str] = None,
         target: Optional[str] = None,
-        timeout: int = 60,
+        timeout: Optional[int] = 60,
+        client: Optional[httpx.Client] = None,
     ) -> "HilltopMeasurementList":
         """Fetch the XML from the URL and return a HilltopMeasurementList object."""
         url = gen_measurement_list_url(
             base_url=base_url,
+            hts_endpoint=hts_endpoint,
             site=site,
             collection=collection,
             units=units,
             target=target,
         )
-        success, response = get_hilltop_response(url, timeout=timeout)
-        return cls.from_xml(response)
+        return cls.from_url(url=url, timeout=timeout, client=client)
 
     @staticmethod
     def gen_url(

@@ -8,7 +8,13 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 
 from hurl.models.measurement_list import HilltopMeasurementList
-from hurl.exceptions import HilltopParseError, HilltopRequestError, HilltopConfigError, raise_for_response
+from hurl.exceptions import (
+    HilltopParseError,
+    HilltopResponseError,
+    HilltopHTTPError,
+    HilltopConfigError,
+    raise_for_response,
+)
 
 load_dotenv()
 
@@ -55,9 +61,7 @@ class HilltopClient:
             raise_for_response(response)
             return HilltopMeasurementList.from_xml(response.text)
         except ValueError as e:
-            raise HilltopParseError(
-                str(e), url=url, raw_response=response.text
-            )
+            raise HilltopParseError(str(e), url=url, raw_response=response.text)
 
     def close(self):
         """Close the HTTP session."""

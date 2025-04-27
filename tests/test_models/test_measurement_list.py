@@ -1,50 +1,375 @@
 from hurl.client import HilltopClient
 from hurl.models.measurement_list import HilltopMeasurementList
+from hurl.exceptions import HilltopResponseError
 import pytest
+from pathlib import Path
 
 
 @pytest.fixture
-def sample_single_measurement_url():
-    return (
-        "http://hilltopdev.horizons.govt.nz/boo.hts?Service=Hilltop"
-        "&Request=MeasurementList"
-        "&Site=Manawatu at Teachers College"
-        "&Collection=AtmosphericPressure"
+def mock_hilltop_client(mocker):
+    """Mock HilltopClient."""
+    # Mock the response
+    mock_response = mocker.MagicMock()
+    mock_response.text = "<HilltopServer><Agency>TestAgency</Agency></HilltopServer>"
+    mock_response.status_code = 200
+
+    # Mock the session
+    mock_session = mocker.MagicMock()
+    mock_session.get.return_value = mock_response
+
+    # Mock the client context manager
+    mock_client = mocker.MagicMock()
+    mock_client.base_url = "http://example.com"
+    mock_client.hts_endpoint = "foo.hts"
+    mock_client.timeout = 60
+    mock_client.__enter__.return_value = mock_client  # Returns self
+    mock_client.__exit__.return_value = None
+    mock_client.session = mock_session
+
+    # Patch the real client
+    mocker.patch("hurl.client.HilltopClient", return_value=mock_client)
+
+    return {
+        "client": mock_client,
+        "session": mock_session,
+        "response": mock_response,
+    }
+
+
+@pytest.fixture
+def multi_response_xml(request, remote_client):
+    """Load test XML once per test session."""
+    path = (
+        Path(__file__).parent.parent
+        / "fixture_cache"
+        / "measurement_list"
+        / "multi_response.xml"
     )
 
+    if request.config.getoption("--update"):
+        remote_url = HilltopMeasurementList.gen_url(
+            remote_client.base_url,
+            remote_client.hts_endpoint,
+            site="Manawatu at Teachers College",
+        )
+        remote_xml = remote_client.session.get(remote_url).text
 
-def test_measurement_list_from_xml(
-    sample_measurement_list_multi_response_xml
-):
-    """Test that the sample XML can be parsed into a HilltopMeasurementList object."""
-    cached_xml = sample_measurement_list_multi_response_xml
+        path.write_text(remote_xml, encoding="utf-8")
 
-    # Parse the XML into a HilltopMeasurementList object
-    measurement_list = HilltopMeasurementList.from_xml(cached_xml)
+    raw_xml = path.read_text(encoding="utf-8")
 
-    # Test the top level response object
-    assert isinstance(measurement_list, HilltopMeasurementList)
-    assert measurement_list.agency == "Horizons"
+    return raw_xml
 
-    # Test a specific data source
-    water_level_ds = next(
-        (ds for ds in measurement_list.data_sources if ds.name == "Water Level"),
-        None,
-    )
-    assert water_level_ds.site == "Manawatu at Teachers College"
-    assert len(water_level_ds.measurements) > 0
 
-    # Test a specific measurement
-    stage_measurement = next(
-        (m for m in water_level_ds.measurements if m.name == "Stage"), None
-    )
-    mean_v_measurement = next(
-        (m for m in water_level_ds.measurements if m.name == "Mean Velocity"), None
+@pytest.fixture
+def all_response_xml(request, remote_client):
+    """Load test XML once per test session."""
+    path = (
+        Path(__file__).parent.parent
+        / "fixture_cache"
+        / "measurement_list"
+        / "all_response.xml"
     )
 
-    assert stage_measurement.units == "mm"
-    assert stage_measurement.default_measurement is True
-    assert mean_v_measurement.default_measurement is False
+    if request.config.getoption("--update"):
+        remote_url = HilltopMeasurementList.gen_url(
+            remote_client.base_url,
+            remote_client.hts_endpoint,
+        )
+        remote_xml = remote_client.session.get(remote_url).text
 
-    ml_df = measurement_list.to_dataframe()
-    ml_df.to_csv("measurement_list.csv", index=False)
+        path.write_text(remote_xml, encoding="utf-8")
+
+    raw_xml = path.read_text(encoding="utf-8")
+
+    return raw_xml
+
+
+@pytest.fixture
+def error_response_xml(request, remote_client):
+    """Load test XML once per test session."""
+    path = (
+        Path(__file__).parent.parent
+        / "fixture_cache"
+        / "measurement_list"
+        / "error_response.xml"
+    )
+
+    if request.config.getoption("--update"):
+        remote_url = HilltopMeasurementList.gen_url(
+            remote_client.base_url,
+            remote_client.hts_endpoint,
+            site="Not a real site",
+        )
+        remote_xml = remote_client.session.get(remote_url).text
+
+        path.write_text(remote_xml, encoding="utf-8")
+
+    raw_xml = path.read_text(encoding="utf-8")
+    print("RAW ERROR XML")
+    print(raw_xml)
+
+    return raw_xml
+
+
+class TestRemoteFixtures:
+    @pytest.mark.remote
+    @pytest.mark.update
+    def test_multi_response_xml_fixture(
+        self,
+        remote_client,
+        multi_response_xml,
+    ):
+        """Validate the XML response from Hilltop Server."""
+        from hurl.models.measurement_list import HilltopMeasurementList
+
+        cached_xml = multi_response_xml
+
+        remote_url = HilltopMeasurementList.gen_url(
+            remote_client.base_url,
+            remote_client.hts_endpoint,
+            site="Manawatu at Teachers College",
+        )
+        remote_xml = remote_client.session.get(remote_url).text
+
+        remote_xml_cleaned = remote_xml.replace(
+            remote_xml.split("<To>")[1].split("</To>")[0], "<To></To>"
+        )
+        cached_xml_cleaned = cached_xml.replace(
+            cached_xml.split("<To>")[1].split("</To>")[0], "<To></To>"
+        )
+
+        remote_xml_cleaned = remote_xml_cleaned.replace(
+            remote_xml_cleaned.split("<VMFinish>")[1].split("</VMFinish>")[0],
+            "<VMFinish></VMFinish>",
+        )
+        cached_xml_cleaned = cached_xml_cleaned.replace(
+            cached_xml_cleaned.split("<VMFinish>")[1].split("</VMFinish>")[0],
+            "<VMFinish></VMFinish>",
+        )
+
+        # Also need to remove trailing whitespaces from each line
+        remote_xml_cleaned = "\n".join(
+            line.rstrip() for line in remote_xml_cleaned.splitlines()
+        )
+
+        cached_xml_cleaned = "\n".join(
+            line.rstrip() for line in cached_xml_cleaned.splitlines()
+        )
+
+        assert remote_xml_cleaned == cached_xml_cleaned
+
+    @pytest.mark.remote
+    @pytest.mark.update
+    def test_all_response_xml_fixture(
+        self,
+        remote_client,
+        all_response_xml,
+    ):
+        """Validate the XML response from Hilltop Server."""
+        from hurl.models.measurement_list import HilltopMeasurementList
+
+        cached_xml = all_response_xml
+
+        remote_url = HilltopMeasurementList.gen_url(
+            remote_client.base_url,
+            remote_client.hts_endpoint,
+        )
+        print(remote_url)
+        remote_xml = remote_client.session.get(remote_url).text
+
+        assert remote_xml == cached_xml
+
+    @pytest.mark.remote
+    @pytest.mark.update
+    def test_error_response_xml_fixture(
+        self,
+        remote_client,
+        error_response_xml,
+    ):
+        """Validate the XML Error response from Hilltop Server."""
+        from hurl.models.measurement_list import HilltopMeasurementList
+
+        cached_xml = error_response_xml
+
+        remote_url = HilltopMeasurementList.gen_url(
+            remote_client.base_url,
+            remote_client.hts_endpoint,
+            site="NotARealSite",
+        )
+        remote_xml = remote_client.session.get(remote_url).text
+
+        assert remote_xml == cached_xml
+
+
+class TestMeasurementList:
+    def test_gen_measurement_list_url(self):
+        from hurl.models.measurement_list import (
+            gen_measurement_list_url,
+            HilltopMeasurementList,
+        )
+
+        correct_url = (
+            "http://example.com/foo.hts?"
+            "Request=MeasurementList"
+            "&Service=Hilltop"
+            "&Site=River%20At%20Site"
+            "&Collection=collection"
+            "&Units=units"
+            "&Target=target"
+        )
+
+        test_url = gen_measurement_list_url(
+            base_url="http://example.com",
+            hts_endpoint="foo.hts",
+            site="River At Site",
+            collection="collection",
+            units="units",
+            target="target",
+        )
+        assert test_url == correct_url
+
+        blank_url = gen_measurement_list_url(
+            base_url="http://example.com",
+            hts_endpoint="foo.hts",
+        )
+        assert blank_url == (
+            "http://example.com/foo.hts?Request=MeasurementList&Service=Hilltop"
+        )
+
+        test_method_gen_url = HilltopMeasurementList.gen_url(
+            base_url="http://example.com",
+            hts_endpoint="foo.hts",
+            site="River At Site",
+            collection="collection",
+            units="units",
+            target="target",
+        )
+
+        assert test_method_gen_url == correct_url
+
+    def test_from_url(self, mock_hilltop_client):
+        """Test from_url method."""
+        mock_client = mock_hilltop_client["client"]
+        mock_session = mock_hilltop_client["session"]
+
+        test_url = (
+            "http://example.com/foo.hts?"
+            "Request=MeasurementList"
+            "&Service=Hilltop"
+            "&Site=Manawatu%20At%20Teachers%20College"
+        )
+
+        # 5. Test the actual method
+        result = HilltopMeasurementList.from_url(
+            test_url, timeout=60, client=mock_client
+        )
+
+        # 6. Verify behavior
+        mock_session.get.assert_called_once_with(test_url, timeout=60)
+        assert isinstance(result, HilltopMeasurementList)
+
+    def test_from_params(self, mock_hilltop_client):
+        """Test from_params method."""
+        mock_client = mock_hilltop_client["client"]
+        mock_session = mock_hilltop_client["session"]
+
+        result = HilltopMeasurementList.from_params(
+            base_url="http://example.com",
+            hts_endpoint="foo.hts",
+            site="Manawatu At Teachers College",
+            collection="collection",
+            units="units",
+            target="target",
+            timeout=60,
+            client=mock_client,
+        )
+
+        test_url = (
+            "http://example.com/foo.hts?"
+            "Request=MeasurementList"
+            "&Service=Hilltop"
+            "&Site=Manawatu%20At%20Teachers%20College"
+            "&Collection=collection"
+            "&Units=units"
+            "&Target=target"
+        )
+
+        mock_session.get.assert_called_once_with(
+            test_url,
+            timeout=60,
+        )
+        assert isinstance(result, HilltopMeasurementList)
+
+    def test_multi_response_from_xml(
+        self,
+        multi_response_xml,
+    ):
+        """Test that the sample XML can be parsed into a HilltopMeasurementList object."""
+        cached_xml = multi_response_xml
+
+        # Parse the XML into a HilltopMeasurementList object
+        measurement_list = HilltopMeasurementList.from_xml(cached_xml)
+
+        # Test the top level response object
+        assert isinstance(measurement_list, HilltopMeasurementList)
+        assert measurement_list.agency == "Horizons"
+
+        # Test a specific data source
+        water_level_ds = next(
+            (ds for ds in measurement_list.data_sources if ds.name == "Water Level"),
+            None,
+        )
+        assert water_level_ds.site == "Manawatu at Teachers College"
+        assert len(water_level_ds.measurements) > 0
+
+        # Test a specific measurement
+        stage_measurement = next(
+            (m for m in water_level_ds.measurements if m.name == "Stage"), None
+        )
+        mean_v_measurement = next(
+            (m for m in water_level_ds.measurements if m.name == "Mean Velocity"), None
+        )
+
+        assert stage_measurement.units == "mm"
+        assert stage_measurement.default_measurement is True
+        assert mean_v_measurement.default_measurement is False
+
+        ml_df = measurement_list.to_dataframe()
+        ml_df.to_csv("measurement_list.csv", index=False)
+
+    def test_all_from_xml(self, all_response_xml):
+        """Test that the sample XML can be parsed into a HilltopMeasurementList object."""
+        cached_xml = all_response_xml
+
+        # Parse the XML into a HilltopMeasurementList object
+        measurement_list = HilltopMeasurementList.from_xml(cached_xml)
+
+        # Test the top level response object
+        assert isinstance(measurement_list, HilltopMeasurementList)
+        assert measurement_list.agency == "Horizons"
+
+        assert len(measurement_list.measurements) > 0
+
+        sg_measurement = next(
+            (
+                m
+                for m in measurement_list.measurements
+                if m.name == "Internal S.G. [Water Level]"
+            ),
+            None,
+        )
+
+        assert sg_measurement is not None
+        assert sg_measurement.name == "Internal S.G. [Water Level]"
+
+    @pytest.mark.xfail(
+        reason="Validator expected to fail upon encoutering a hilltop error response.",
+        raises=HilltopResponseError,
+    )
+    def test_error_from_xml(self, error_response_xml):
+        """Test that the XML can be parsed into a HilltopMeasurementList object."""
+        cached_xml = error_response_xml
+
+        # Parse the XML into a HilltopMeasurementList object
+        measurement_list = HilltopMeasurementList.from_xml(cached_xml)

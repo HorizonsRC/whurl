@@ -2,15 +2,17 @@
 
 import pytest
 from pathlib import Path
+from hurl.models.measurement_list import HilltopMeasurementList
 
 
-@pytest.fixture(scope="session")
-def sample_measurement_list_multi_response_xml():
-    """Load test XML once per test session."""
-    path = Path(__file__).parent / "fixtures" / "measurement_list_multi_response.xml"
-    raw_xml = path.read_text(encoding="utf-8")
-
-    return path.read_text(encoding="utf-8")
+def pytest_addoption(parser):
+    """Add command line options for pytest."""
+    parser.addoption(
+        "--update",
+        action="store_true",  # True if present, False if not
+        default=False,
+        help="Update the cached XML files with the latest data.",
+    )
 
 
 @pytest.fixture(scope="session")
@@ -18,5 +20,9 @@ def remote_client():
     """Create a remote client for testing."""
     from hurl.client import HilltopClient
 
-    with HilltopClient() as client:
+    client = HilltopClient()
+
+    try:
         yield client
+    finally:
+        client.session.close()
