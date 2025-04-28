@@ -3,6 +3,7 @@ from hurl.models.measurement_list import HilltopMeasurementList
 from hurl.exceptions import HilltopResponseError
 import pytest
 from pathlib import Path
+from tests.conftest import remove_tags
 
 
 @pytest.fixture
@@ -106,8 +107,6 @@ def error_response_xml(request, remote_client):
         path.write_text(remote_xml, encoding="utf-8")
 
     raw_xml = path.read_text(encoding="utf-8")
-    print("RAW ERROR XML")
-    print(raw_xml)
 
     return raw_xml
 
@@ -132,29 +131,17 @@ class TestRemoteFixtures:
         )
         remote_xml = remote_client.session.get(remote_url).text
 
-        remote_xml_cleaned = remote_xml.replace(
-            remote_xml.split("<To>")[1].split("</To>")[0], "<To></To>"
-        )
-        cached_xml_cleaned = cached_xml.replace(
-            cached_xml.split("<To>")[1].split("</To>")[0], "<To></To>"
-        )
+        tags_to_remove = [
+            "To",
+            "VMFinish",
+        ]
 
-        remote_xml_cleaned = remote_xml_cleaned.replace(
-            remote_xml_cleaned.split("<VMFinish>")[1].split("</VMFinish>")[0],
-            "<VMFinish></VMFinish>",
+        # remove the tags To, VMFinish
+        remote_xml_cleaned = remove_tags(
+            remote_xml, tags_to_remove
         )
-        cached_xml_cleaned = cached_xml_cleaned.replace(
-            cached_xml_cleaned.split("<VMFinish>")[1].split("</VMFinish>")[0],
-            "<VMFinish></VMFinish>",
-        )
-
-        # Also need to remove trailing whitespaces from each line
-        remote_xml_cleaned = "\n".join(
-            line.rstrip() for line in remote_xml_cleaned.splitlines()
-        )
-
-        cached_xml_cleaned = "\n".join(
-            line.rstrip() for line in cached_xml_cleaned.splitlines()
+        cached_xml_cleaned = remove_tags(
+            cached_xml, tags_to_remove
         )
 
         assert remote_xml_cleaned == cached_xml_cleaned
@@ -305,7 +292,7 @@ class TestMeasurementList:
         self,
         multi_response_xml,
     ):
-        """Test that the sample XML can be parsed into a HilltopMeasurementList object."""
+        """Test that the XML can be parsed into a HilltopMeasurementList object."""
         cached_xml = multi_response_xml
 
         # Parse the XML into a HilltopMeasurementList object
@@ -339,7 +326,7 @@ class TestMeasurementList:
         ml_df.to_csv("measurement_list.csv", index=False)
 
     def test_all_from_xml(self, all_response_xml):
-        """Test that the sample XML can be parsed into a HilltopMeasurementList object."""
+        """Test that the XML can be parsed into a HilltopMeasurementList object."""
         cached_xml = all_response_xml
 
         # Parse the XML into a HilltopMeasurementList object

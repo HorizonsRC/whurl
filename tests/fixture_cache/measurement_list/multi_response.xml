@@ -8,7 +8,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <Measurement Name="Stage">
 <Item>1</Item>
 <DefaultMeasurement />
@@ -71,7 +71,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 <Ratset1>2</Ratset1>
 <Ratset2>15</Ratset2>
 </Measurement>
@@ -84,7 +84,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 <Ratset1>7</Ratset1>
 <Ratset2>15</Ratset2>
 </Measurement>
@@ -110,7 +110,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 <Ratset1>11</Ratset1>
 <Ratset2>15</Ratset2>
 </Measurement>
@@ -123,7 +123,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-02-10T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="Oneplan-MinQ">
 <Item>1</Item>
@@ -156,7 +156,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="Flow Mean (1 Hour)">
 <Item>1</Item>
@@ -167,7 +167,7 @@
 <MeasurementGroup>Virtual Statistics</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:00:00</VMFinish>
 </Measurement>
 <Measurement Name="Flow Mean (1 Day)">
 <Item>1</Item>
@@ -233,7 +233,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-04-11T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="Volume (Moving 200 Days Total)">
 <Item>1</Item>
@@ -244,7 +244,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-07-20T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="Volume (Moving 365 Days Total)">
 <Item>1</Item>
@@ -255,7 +255,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2024-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="Volume (Moving 400 Days Total)">
 <Item>1</Item>
@@ -266,7 +266,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2024-02-05T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="Volume (Moving 730 Days Total)">
 <Item>1</Item>
@@ -277,7 +277,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2024-12-31T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="Flow MovingAvg (1 Day)">
 <Item>1</Item>
@@ -288,7 +288,7 @@
 <MeasurementGroup>Virtual Statistics</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T12:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="Flow Max (1 Hour)">
 <Item>1</Item>
@@ -299,7 +299,7 @@
 <MeasurementGroup>Virtual Statistics</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T09:00:30</VMFinish>
+<VMFinish>2025-04-28T11:00:30</VMFinish>
 </Measurement>
 <Measurement Name="Flow Mean (1 Month)">
 <Item>1</Item>
@@ -344,7 +344,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="PLBed">
 <Item>1</Item>
@@ -354,7 +354,7 @@
 <MeasurementGroup>Rating Tools</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="Flow Percentile Bin">
 <Item>1</Item>
@@ -375,7 +375,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="Water Level (NZVD2016)">
 <Item>1</Item>
@@ -386,7 +386,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="Annual Volume">
 <Item>1</Item>
@@ -437,7 +437,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:30:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 </DataSource>
 <DataSource Name="Voltage" Site="Manawatu at Teachers College" >
@@ -474,7 +474,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Backup Sensors</SensorGroup>
 <Measurement Name="Stage (backup)">
 <Item>1</Item>
@@ -502,7 +502,7 @@
 <MeasurementGroup>Performance Monitoring</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="Primary Stage Deviation Warning">
 <Item>1</Item>
@@ -513,7 +513,7 @@
 <MeasurementGroup>Performance Monitoring</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="Linear Specfic Yield (Backup)">
 <Item>1</Item>
@@ -523,7 +523,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 </DataSource>
 <DataSource Name="Atmospheric Pressure" Site="Manawatu at Teachers College" >
@@ -533,7 +533,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <Measurement Name="Atmospheric Pressure">
 <Item>1</Item>
 <DefaultMeasurement />
@@ -549,7 +549,7 @@
 <MeasurementGroup>Performance Monitoring</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 <Ratset1>3</Ratset1>
 <Ratset2>15</Ratset2>
 </Measurement>
@@ -575,7 +575,7 @@
 <MeasurementGroup>Virtual Measurements</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 <Ratset1>11</Ratset1>
 <Ratset2>15</Ratset2>
 </Measurement>
@@ -587,7 +587,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Water Quality Sensors</SensorGroup>
 <Measurement Name="Suspended Sediment">
 <Item>1</Item>
@@ -604,7 +604,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Dissolved Oxygen</SensorGroup>
 <Measurement Name="Water Temperature">
 <Item>1</Item>
@@ -620,7 +620,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Dissolved Oxygen</SensorGroup>
 <Measurement Name="DO Saturation">
 <Item>1</Item>
@@ -637,7 +637,7 @@
 <Format>#.##</Format>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 <Ratset1>2</Ratset1>
 <Ratset2>15</Ratset2>
 </Measurement>
@@ -649,7 +649,7 @@
 <Format>#.##</Format>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 <Ratset1>4</Ratset1>
 <Ratset2>15</Ratset2>
 </Measurement>
@@ -661,7 +661,7 @@
 <Format>#.##</Format>
 <VM>1</VM>
 <VMStart>2022-12-31T23:56:00</VMStart>
-<VMFinish>2025-04-28T10:03:00</VMFinish>
+<VMFinish>2025-04-28T11:33:00</VMFinish>
 <Ratset1>8</Ratset1>
 <Ratset2>15</Ratset2>
 </Measurement>
@@ -673,7 +673,7 @@
 <Format>#.##</Format>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:00:00</VMFinish>
 </Measurement>
 <Measurement Name="Dissolved Oxygen (%) Daily Min">
 <Item>1</Item>
@@ -726,7 +726,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Water Quality Sensors</SensorGroup>
 <Measurement Name="pH">
 <Item>1</Item>
@@ -754,7 +754,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Water Quality Sensors</SensorGroup>
 <Measurement Name="Conductivity Low Range (T Comp)">
 <Item>1</Item>
@@ -815,7 +815,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Water level statistics</SensorGroup>
 <Measurement Name="Water level statistics: SD">
 <Item>1</Item>
@@ -833,7 +833,7 @@
 <MeasurementGroup>Performance Monitoring</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 <Measurement Name="WL (+) Limit (SD)">
 <Item>1</Item>
@@ -844,7 +844,7 @@
 <MeasurementGroup>Performance Monitoring</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 </DataSource>
 <DataSource Name="Water level statistics: Point Sample" Site="Manawatu at Teachers College" >
@@ -854,7 +854,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Water level statistics</SensorGroup>
 <Measurement Name="Water level statistics: Point Sample">
 <Item>1</Item>
@@ -871,7 +871,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <Measurement Name="Flow Rate">
 <Item>1</Item>
 <DefaultMeasurement />
@@ -888,7 +888,7 @@
 <MeasurementGroup>Backup Sensors</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 </Measurement>
 </DataSource>
 <DataSource Name="Turbidity: Point Sample" Site="Manawatu at Teachers College" >
@@ -898,7 +898,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Turbidity (ISO)</SensorGroup>
 <Measurement Name="Turbidity: Point Sample">
 <Item>1</Item>
@@ -929,7 +929,7 @@
 <MeasurementGroup>Virtual Water Quality</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 <Ratset1>12</Ratset1>
 <Ratset2>15</Ratset2>
 </Measurement>
@@ -942,7 +942,7 @@
 <MeasurementGroup>Virtual Water Quality</MeasurementGroup>
 <VM>1</VM>
 <VMStart>2023-01-01T00:00:00</VMStart>
-<VMFinish>2025-04-28T10:00:00</VMFinish>
+<VMFinish>2025-04-28T11:30:00</VMFinish>
 <Ratset1>13</Ratset1>
 <Ratset2>15</Ratset2>
 </Measurement>
@@ -1064,7 +1064,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 1 (V1x)">
 <Item>1</Item>
@@ -1081,7 +1081,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 1 (V1y)">
 <Item>1</Item>
@@ -1098,7 +1098,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 2 (V2x)">
 <Item>1</Item>
@@ -1115,7 +1115,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 2 (V2y)">
 <Item>1</Item>
@@ -1132,7 +1132,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 3 (V3x)">
 <Item>1</Item>
@@ -1149,7 +1149,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 3 (V3y)">
 <Item>1</Item>
@@ -1166,7 +1166,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 4 (V4x)">
 <Item>1</Item>
@@ -1183,7 +1183,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 4 (V4y)">
 <Item>1</Item>
@@ -1200,7 +1200,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 5 (V5x)">
 <Item>1</Item>
@@ -1217,7 +1217,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 5 (V5y)">
 <Item>1</Item>
@@ -1234,7 +1234,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 6 (V6x)">
 <Item>1</Item>
@@ -1251,7 +1251,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 6 (V6y)">
 <Item>1</Item>
@@ -1268,7 +1268,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 7 (V7x)">
 <Item>1</Item>
@@ -1285,7 +1285,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 7 (V7y)">
 <Item>1</Item>
@@ -1302,7 +1302,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 8 (V8x)">
 <Item>1</Item>
@@ -1319,7 +1319,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 8 (V8y)">
 <Item>1</Item>
@@ -1336,7 +1336,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 9 (V9x)">
 <Item>1</Item>
@@ -1353,7 +1353,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 9 (V9y)">
 <Item>1</Item>
@@ -1370,7 +1370,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 1 (Beam 1 Amp)">
 <Item>1</Item>
@@ -1387,7 +1387,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 1 (Beam 2 Amp)">
 <Item>1</Item>
@@ -1404,7 +1404,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 2 (Beam 1 Amp)">
 <Item>1</Item>
@@ -1421,7 +1421,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 2 (Beam 2 Amp)">
 <Item>1</Item>
@@ -1438,7 +1438,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 3 (Beam 1 Amp)">
 <Item>1</Item>
@@ -1455,7 +1455,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 3 (Beam 2 Amp)">
 <Item>1</Item>
@@ -1472,7 +1472,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 4 (Beam 1 Amp)">
 <Item>1</Item>
@@ -1489,7 +1489,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 4 (Beam 2 Amp)">
 <Item>1</Item>
@@ -1506,7 +1506,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 5 (Beam 1 Amp)">
 <Item>1</Item>
@@ -1523,7 +1523,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 5 (Beam 2 Amp)">
 <Item>1</Item>
@@ -1540,7 +1540,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 6 (Beam 1 Amp)">
 <Item>1</Item>
@@ -1557,7 +1557,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 6 (Beam 2 Amp)">
 <Item>1</Item>
@@ -1574,7 +1574,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 7 (Beam 1 Amp)">
 <Item>1</Item>
@@ -1591,7 +1591,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 7 (Beam 2 Amp)">
 <Item>1</Item>
@@ -1608,7 +1608,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 8 (Beam 1 Amp)">
 <Item>1</Item>
@@ -1625,7 +1625,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 8 (Beam 2 Amp)">
 <Item>1</Item>
@@ -1642,7 +1642,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 9 (Beam 1 Amp)">
 <Item>1</Item>
@@ -1659,7 +1659,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 <Measurement Name="ADP Cell 9 (Beam 2 Amp)">
 <Item>1</Item>
@@ -1676,7 +1676,7 @@
 <Interpolation>Instant</Interpolation>
 <ItemFormat>1</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Water Quality Sensors</SensorGroup>
 <Measurement Name="ORP">
 <Item>1</Item>
@@ -1693,7 +1693,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 </DataSource>
 <DataSource Name="Voltage" Site="Manawatu at Teachers College" >
 <NumItems>1</NumItems>
@@ -1711,7 +1711,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Backup Sensors</SensorGroup>
 </DataSource>
 <DataSource Name="Atmospheric Pressure" Site="Manawatu at Teachers College" >
@@ -1721,7 +1721,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 </DataSource>
 <DataSource Name="Sediment Sensor" Site="Manawatu at Teachers College" >
 <NumItems>1</NumItems>
@@ -1730,7 +1730,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Water Quality Sensors</SensorGroup>
 </DataSource>
 <DataSource Name="Dissolved Oxygen sensor" Site="Manawatu at Teachers College" >
@@ -1740,7 +1740,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Dissolved Oxygen</SensorGroup>
 </DataSource>
 <DataSource Name="Dissolved Oxygen (%)" Site="Manawatu at Teachers College" >
@@ -1750,7 +1750,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Dissolved Oxygen</SensorGroup>
 </DataSource>
 <DataSource Name="pH sensor" Site="Manawatu at Teachers College" >
@@ -1760,7 +1760,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Water Quality Sensors</SensorGroup>
 </DataSource>
 <DataSource Name="Conductivity Low Range (T Comp)" Site="Manawatu at Teachers College" >
@@ -1770,7 +1770,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Water Quality Sensors</SensorGroup>
 </DataSource>
 <DataSource Name="Campbell Signature" Site="Manawatu at Teachers College" >
@@ -1800,7 +1800,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Water level statistics</SensorGroup>
 </DataSource>
 <DataSource Name="Water level statistics: Point Sample" Site="Manawatu at Teachers College" >
@@ -1810,7 +1810,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Water level statistics</SensorGroup>
 </DataSource>
 <DataSource Name="Flow Rate" Site="Manawatu at Teachers College" >
@@ -1820,7 +1820,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 </DataSource>
 <DataSource Name="Turbidity: Point Sample" Site="Manawatu at Teachers College" >
 <NumItems>1</NumItems>
@@ -1829,7 +1829,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Turbidity (ISO)</SensorGroup>
 </DataSource>
 <DataSource Name="SampleID" Site="Manawatu at Teachers College" >
@@ -1869,7 +1869,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 1 (V1y)" Site="Manawatu at Teachers College" >
@@ -1879,7 +1879,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 2 (V2x)" Site="Manawatu at Teachers College" >
@@ -1889,7 +1889,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 2 (V2y)" Site="Manawatu at Teachers College" >
@@ -1899,7 +1899,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 3 (V3x)" Site="Manawatu at Teachers College" >
@@ -1909,7 +1909,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 3 (V3y)" Site="Manawatu at Teachers College" >
@@ -1919,7 +1919,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 4 (V4x)" Site="Manawatu at Teachers College" >
@@ -1929,7 +1929,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 4 (V4y)" Site="Manawatu at Teachers College" >
@@ -1939,7 +1939,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 5 (V5x)" Site="Manawatu at Teachers College" >
@@ -1949,7 +1949,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 5 (V5y)" Site="Manawatu at Teachers College" >
@@ -1959,7 +1959,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 6 (V6x)" Site="Manawatu at Teachers College" >
@@ -1969,7 +1969,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 6 (V6y)" Site="Manawatu at Teachers College" >
@@ -1979,7 +1979,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 7 (V7x)" Site="Manawatu at Teachers College" >
@@ -1989,7 +1989,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 7 (V7y)" Site="Manawatu at Teachers College" >
@@ -1999,7 +1999,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 8 (V8x)" Site="Manawatu at Teachers College" >
@@ -2009,7 +2009,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 8 (V8y)" Site="Manawatu at Teachers College" >
@@ -2019,7 +2019,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 9 (V9x)" Site="Manawatu at Teachers College" >
@@ -2029,7 +2029,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 9 (V9y)" Site="Manawatu at Teachers College" >
@@ -2039,7 +2039,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 1 (Beam 1 Amp)" Site="Manawatu at Teachers College" >
@@ -2049,7 +2049,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 1 (Beam 2 Amp)" Site="Manawatu at Teachers College" >
@@ -2059,7 +2059,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 2 (Beam 1 Amp)" Site="Manawatu at Teachers College" >
@@ -2069,7 +2069,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 2 (Beam 2 Amp)" Site="Manawatu at Teachers College" >
@@ -2079,7 +2079,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 3 (Beam 1 Amp)" Site="Manawatu at Teachers College" >
@@ -2089,7 +2089,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 3 (Beam 2 Amp)" Site="Manawatu at Teachers College" >
@@ -2099,7 +2099,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 4 (Beam 1 Amp)" Site="Manawatu at Teachers College" >
@@ -2109,7 +2109,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 4 (Beam 2 Amp)" Site="Manawatu at Teachers College" >
@@ -2119,7 +2119,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 5 (Beam 1 Amp)" Site="Manawatu at Teachers College" >
@@ -2129,7 +2129,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 5 (Beam 2 Amp)" Site="Manawatu at Teachers College" >
@@ -2139,7 +2139,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 6 (Beam 1 Amp)" Site="Manawatu at Teachers College" >
@@ -2149,7 +2149,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 6 (Beam 2 Amp)" Site="Manawatu at Teachers College" >
@@ -2159,7 +2159,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 7 (Beam 1 Amp)" Site="Manawatu at Teachers College" >
@@ -2169,7 +2169,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 7 (Beam 2 Amp)" Site="Manawatu at Teachers College" >
@@ -2179,7 +2179,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 8 (Beam 1 Amp)" Site="Manawatu at Teachers College" >
@@ -2189,7 +2189,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 8 (Beam 2 Amp)" Site="Manawatu at Teachers College" >
@@ -2199,7 +2199,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 9 (Beam 1 Amp)" Site="Manawatu at Teachers College" >
@@ -2209,7 +2209,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ADP Cell 9 (Beam 2 Amp)" Site="Manawatu at Teachers College" >
@@ -2219,7 +2219,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>ADP_Cells</SensorGroup>
 </DataSource>
 <DataSource Name="ORP" Site="Manawatu at Teachers College" >
@@ -2229,7 +2229,7 @@
 <Interpolation>Event</Interpolation>
 <ItemFormat>0</ItemFormat>
 <From>2023-01-01T00:00:00</From>
-<To>2025-04-28T10:15:00</To>
+<To>2025-04-28T11:30:00</To>
 <SensorGroup>Water Quality Sensors</SensorGroup>
 </DataSource>
 <DataSource Name="Water Level" Site="Manawatu at Teachers College" >

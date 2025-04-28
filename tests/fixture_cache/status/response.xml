@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<HilltopServer>
+<Agency>Horizons</Agency>
+<Version>2307.4.2.51</Version>
+<ScriptName>/boo.hts</ScriptName>
+<DefaultFile>\\ares\Telemetry\Publictelemetry.hts</DefaultFile>
+<RelayURL></RelayURL>
+<ProcessID>2476</ProcessID>
+<WorkingSet>40.6</WorkingSet>
+<DataFile>
+<Filename>\\ares\Telemetry\Publictelemetry.hts</Filename>
+<UsageCount>1</UsageCount>
+<OpenFor>67953</OpenFor>
+<FullRefresh>67953</FullRefresh>
+<SoftRefresh>67953</SoftRefresh>
+</DataFile>
+</HilltopServer>

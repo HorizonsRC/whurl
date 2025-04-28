@@ -3,6 +3,7 @@
 import pytest
 from pathlib import Path
 from hurl.models.measurement_list import HilltopMeasurementList
+from lxml import etree
 
 
 def pytest_addoption(parser):
@@ -13,6 +14,17 @@ def pytest_addoption(parser):
         default=False,
         help="Update the cached XML files with the latest data.",
     )
+
+
+def remove_tags(xml_str, tags_to_remove):
+    """Shared XML cleaning utility."""
+    root = etree.fromstring(xml_str)
+    for tag in tags_to_remove:
+        for element in root.xpath(f".//{tag}"):
+            parent = element.getparent()
+            if parent is not None:
+                parent.remove(element)
+    return etree.tostring(root, encoding='unicode')
 
 
 @pytest.fixture(scope="session")

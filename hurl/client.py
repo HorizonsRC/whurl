@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 
 from hurl.models.measurement_list import HilltopMeasurementList
+from hurl.models.status import HilltopStatus
 from hurl.exceptions import (
     HilltopParseError,
     HilltopResponseError,
@@ -60,6 +61,22 @@ class HilltopClient:
         try:
             raise_for_response(response)
             return HilltopMeasurementList.from_xml(response.text)
+        except ValueError as e:
+            raise HilltopParseError(str(e), url=url, raw_response=response.text)
+
+    def get_status(
+        self,
+    ) -> HilltopStatus:
+        """Fetch the status from Hilltop Server."""
+        url = HilltopStatus.gen_url(
+            self.base_url, self.hts_endpoint,
+        )
+
+        response = self.session.get(url)
+
+        try:
+            raise_for_response(response)
+            return HilltopStatus.from_xml(response.text)
         except ValueError as e:
             raise HilltopParseError(str(e), url=url, raw_response=response.text)
 
