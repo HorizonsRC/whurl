@@ -8,11 +8,29 @@ from tests.conftest import remove_tags
 
 
 @pytest.fixture
-def mock_hilltop_client(mocker):
+def status_response_xml(request, remote_client):
+    """Fixture for HilltopStatus response XML."""
+    path = Path(__file__).parent.parent / "fixture_cache" / "status" / "response.xml"
+
+    if request.config.getoption("--update"):
+        remote_url = HilltopStatus.gen_url(
+            remote_client.base_url, remote_client.hts_endpoint
+        )
+        remote_xml = remote_client.session.get(remote_url).text
+
+        path.write_text(remote_xml, encoding="utf-8")
+
+    raw_xml = path.read_text(encoding="utf-8")
+
+    return raw_xml
+
+
+@pytest.fixture
+def mock_hilltop_client(mocker, status_response_xml):
     """Mock HilltopClient."""
     # Mock the response
     mock_response = mocker.MagicMock()
-    mock_response.text = "<HilltopServer><Agency>TestAgency</Agency></HilltopServer>"
+    mock_response.text = status_response_xml
     mock_response.status_code = 200
 
     # Mock the session
@@ -36,24 +54,6 @@ def mock_hilltop_client(mocker):
         "session": mock_session,
         "response": mock_response,
     }
-
-
-@pytest.fixture
-def status_response_xml(request, remote_client):
-    """Fixture for HilltopStatus response XML."""
-    path = Path(__file__).parent.parent / "fixture_cache" / "status" / "response.xml"
-
-    if request.config.getoption("--update"):
-        remote_url = HilltopStatus.gen_url(
-            remote_client.base_url, remote_client.hts_endpoint
-        )
-        remote_xml = remote_client.session.get(remote_url).text
-
-        path.write_text(remote_xml, encoding="utf-8")
-
-    raw_xml = path.read_text(encoding="utf-8")
-
-    return raw_xml
 
 
 class TestRemoteFixtures:
@@ -92,7 +92,7 @@ class TestStatus:
             HilltopStatus,
         )
 
-        correct_url = "http://example.com/foo.hts?" "Request=Status" "&Service=Hilltop"
+        correct_url = "http://example.com/foo.hts?Request=Status&Service=Hilltop"
 
         test_url = gen_status_url(
             base_url="http://example.com",
@@ -113,7 +113,7 @@ class TestStatus:
         mock_client = mock_hilltop_client["client"]
         mock_session = mock_hilltop_client["session"]
 
-        test_url = "http://example.com/foo.hts?" "Request=Status" "&Service=Hilltop"
+        test_url = "http://example.com/foo.hts?Request=Status&Service=Hilltop"
 
         # 5. Test the actual method
         result = HilltopStatus.from_url(test_url, timeout=60, client=mock_client)
@@ -121,6 +121,8 @@ class TestStatus:
         # 6. Verify behavior
         mock_session.get.assert_called_once_with(test_url, timeout=60)
         assert isinstance(result, HilltopStatus)
+        assert result.agency == "Horizons"
+        assert result.script_name == "/boo.hts"
 
     def test_from_params(self, mock_hilltop_client):
         """Test from_params method."""

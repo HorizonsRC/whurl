@@ -5,13 +5,20 @@
 <ScriptName>/boo.hts</ScriptName>
 <DefaultFile>\\ares\Telemetry\Publictelemetry.hts</DefaultFile>
 <RelayURL></RelayURL>
-<ProcessID>2476</ProcessID>
-<WorkingSet>40.6</WorkingSet>
+<ProcessID>4764</ProcessID>
+<WorkingSet>122.9</WorkingSet>
 <DataFile>
 <Filename>\\ares\Telemetry\Publictelemetry.hts</Filename>
 <UsageCount>1</UsageCount>
-<OpenFor>67953</OpenFor>
-<FullRefresh>67953</FullRefresh>
-<SoftRefresh>67953</SoftRefresh>
+<OpenFor>1086141</OpenFor>
+<FullRefresh>1086141</FullRefresh>
+<SoftRefresh>51000</SoftRefresh>
+</DataFile>
+<DataFile>
+<Filename>\\ares\Environmental Archive\Integrated_Hydrometric_Archive.dsn</Filename>
+<UsageCount>0</UsageCount>
+<OpenFor>616750</OpenFor>
+<FullRefresh>616750</FullRefresh>
+<SoftRefresh>211328</SoftRefresh>
 </DataFile>
 </HilltopServer>
