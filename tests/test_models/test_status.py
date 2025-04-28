@@ -141,9 +141,7 @@ class TestStatus:
             client=mock_client,
         )
 
-        test_url = (
-            "http://example.com/foo.hts?Request=Status&Service=Hilltop"
-        )
+        test_url = "http://example.com/foo.hts?Request=Status&Service=Hilltop"
 
         mock_session.get.assert_called_once_with(
             test_url,
@@ -153,3 +151,31 @@ class TestStatus:
         assert result.agency == "Horizons"
         assert result.script_name == os.getenv("HILLTOP_HTS_ENDPOINT")
         assert len(result.data_files) == 2
+
+    def test_to_dict(self, status_response_xml):
+        """Test to_dict method."""
+        import xmltodict
+
+        site_list = HilltopStatus.from_xml(status_response_xml)
+        # Convert to dictionary
+        test_dict = site_list.to_dict()
+
+        # Convert all dict values to string for comparison
+        test_dict = {
+            k: (
+                str(v)
+                if not isinstance(v, list) and v is not None
+                else [
+                    {
+                        kk: str(vv) if str(vv) != 'None' else None
+                        for kk, vv in i.items()
+                    }
+                    for i in v
+                ] if isinstance(v, list) else v
+            )
+            for k, v in test_dict.items()
+        }
+
+        naive_dict = xmltodict.parse(status_response_xml)["HilltopServer"]
+
+        assert test_dict == naive_dict

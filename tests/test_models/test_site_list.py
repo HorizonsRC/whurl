@@ -65,9 +65,7 @@ def mock_hilltop_client(mocker, all_response_xml):
 class TestRemoteFixtures:
     @pytest.mark.remote
     @pytest.mark.update
-    def test_all_response_xml_fixture(
-        self, remote_client, all_response_xml
-    ):
+    def test_all_response_xml_fixture(self, remote_client, all_response_xml):
         """Test the all_response_xml fixture."""
         # Get the remote URL
         remote_url = HilltopSiteList.gen_url(
@@ -119,11 +117,7 @@ class TestHilltopSiteList:
         mock_client = mock_hilltop_client["client"]
         mock_session = mock_hilltop_client["session"]
 
-        test_url = (
-            "http://example.com/foo.hts?"
-            "Request=SiteList"
-            "&Service=Hilltop"
-        )
+        test_url = "http://example.com/foo.hts?" "Request=SiteList" "&Service=Hilltop"
 
         site_list = HilltopSiteList.from_url(
             url=test_url,
@@ -140,8 +134,7 @@ class TestHilltopSiteList:
 
         # Check if Manawatu at Teachers College is in the list
         assert any(
-            site.name == "Manawatu at Teachers College"
-            for site in site_list.site_list
+            site.name == "Manawatu at Teachers College" for site in site_list.site_list
         )
 
     def test_from_params(self, mock_hilltop_client):
@@ -190,6 +183,37 @@ class TestHilltopSiteList:
 
         # Check if Manawatu at Teachers College is in the list
         assert any(
-            site.name == "Manawatu at Teachers College"
-            for site in site_list.site_list
+            site.name == "Manawatu at Teachers College" for site in site_list.site_list
         )
+
+    def test_to_dict(self, all_response_xml):
+        """Test to_dict method."""
+        import xmltodict
+
+        site_list = HilltopSiteList.from_xml(all_response_xml)
+        # Convert to dictionary
+        test_dict = site_list.to_dict()
+
+        # HORRIBLE HACK because the naive xmltodict parser just makes everything strings
+        test_dict = {
+            k: (
+                str(v)
+                if not isinstance(v, list) and v is not None
+                else (
+                    [
+                        {
+                            kk: str(vv) if str(vv) != "None" else None
+                            for kk, vv in i.items()
+                        }
+                        for i in v
+                    ]
+                    if isinstance(v, list)
+                    else v
+                )
+            )
+            for k, v in test_dict.items()
+        }
+
+        naive_dict = xmltodict.parse(all_response_xml)["HilltopServer"]
+
+        assert test_dict == naive_dict

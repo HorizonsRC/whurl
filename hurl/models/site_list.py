@@ -42,6 +42,10 @@ class HilltopSiteList(BaseModel):
             return [value]
         return value  # Already a list
 
+    def to_dict(self):
+        """Convert the model to a dictionary."""
+        return self.model_dump(exclude_unset=True, by_alias=True)
+
     @classmethod
     def from_xml(cls, xml_str: str) -> "HilltopSiteList":
         """Parse XML string into HilltopSiteList object."""

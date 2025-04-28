@@ -418,3 +418,30 @@ class TestMeasurementList:
 
         # Parse the XML into a HilltopMeasurementList object
         measurement_list = HilltopMeasurementList.from_xml(cached_xml)
+
+    def test_to_dict(self, all_response_xml):
+        """Test to_dict method."""
+        import xmltodict
+
+        site_list = HilltopMeasurementList.from_xml(all_response_xml)
+        # Convert to dictionary
+        test_dict = site_list.to_dict()
+
+        test_dict = {
+            k: (
+                str(v)
+                if not isinstance(v, list) and v is not None
+                else [
+                    {
+                        kk: str(vv) if str(vv) != 'None' else None
+                        for kk, vv in i.items()
+                    }
+                    for i in v
+                ] if isinstance(v, list) else v
+            )
+            for k, v in test_dict.items()
+        }
+
+        naive_dict = xmltodict.parse(all_response_xml)["HilltopServer"]
+
+        assert test_dict == naive_dict
