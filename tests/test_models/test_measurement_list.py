@@ -1,40 +1,10 @@
 from hurl.client import HilltopClient
 from hurl.models.measurement_list import HilltopMeasurementList
 from hurl.exceptions import HilltopResponseError
+import pandas as pd
 import pytest
 from pathlib import Path
 from tests.conftest import remove_tags
-
-
-@pytest.fixture
-def mock_hilltop_client(mocker):
-    """Mock HilltopClient."""
-    # Mock the response
-    mock_response = mocker.MagicMock()
-    mock_response.text = "<HilltopServer><Agency>TestAgency</Agency></HilltopServer>"
-    mock_response.status_code = 200
-
-    # Mock the session
-    mock_session = mocker.MagicMock()
-    mock_session.get.return_value = mock_response
-
-    # Mock the client context manager
-    mock_client = mocker.MagicMock()
-    mock_client.base_url = "http://example.com"
-    mock_client.hts_endpoint = "foo.hts"
-    mock_client.timeout = 60
-    mock_client.__enter__.return_value = mock_client  # Returns self
-    mock_client.__exit__.return_value = None
-    mock_client.session = mock_session
-
-    # Patch the real client
-    mocker.patch("hurl.client.HilltopClient", return_value=mock_client)
-
-    return {
-        "client": mock_client,
-        "session": mock_session,
-        "response": mock_response,
-    }
 
 
 @pytest.fixture
@@ -109,6 +79,38 @@ def error_response_xml(request, remote_client):
     raw_xml = path.read_text(encoding="utf-8")
 
     return raw_xml
+
+
+@pytest.fixture
+def mock_hilltop_client(mocker, multi_response_xml):
+    """Mock HilltopClient."""
+    # Mock the response
+    mock_response = mocker.MagicMock()
+    mock_response.text = multi_response_xml
+    mock_response.status_code = 200
+
+    # Mock the session
+    mock_session = mocker.MagicMock()
+    mock_session.get.return_value = mock_response
+
+    # Mock the client context manager
+    mock_client = mocker.MagicMock()
+    mock_client.base_url = "http://example.com"
+    mock_client.hts_endpoint = "foo.hts"
+    mock_client.timeout = 60
+    mock_client.__enter__.return_value = mock_client  # Returns self
+    mock_client.__exit__.return_value = None
+    mock_client.session = mock_session
+
+    # Patch the real client
+    mocker.patch("hurl.client.HilltopClient", return_value=mock_client)
+
+    return {
+        "client": mock_client,
+        "session": mock_session,
+        "response": mock_response,
+    }
+
 
 
 class TestRemoteFixtures:
@@ -248,20 +250,48 @@ class TestMeasurementList:
         )
 
         # 5. Test the actual method
-        result = HilltopMeasurementList.from_url(
+        measurement_list = HilltopMeasurementList.from_url(
             test_url, timeout=60, client=mock_client
         )
 
         # 6. Verify behavior
         mock_session.get.assert_called_once_with(test_url, timeout=60)
-        assert isinstance(result, HilltopMeasurementList)
+
+        # Test the top level response object
+        assert isinstance(measurement_list, HilltopMeasurementList)
+        assert measurement_list.agency == "Horizons"
+
+        # Test a specific data source
+        water_level_ds = next(
+            (ds for ds in measurement_list.data_sources if ds.name == "Water Level"),
+            None,
+        )
+        assert water_level_ds.site == "Manawatu at Teachers College"
+        assert len(water_level_ds.measurements) > 0
+
+        # Test a specific measurement
+        stage_measurement = next(
+            (m for m in water_level_ds.measurements if m.name == "Stage"), None
+        )
+        mean_v_measurement = next(
+            (m for m in water_level_ds.measurements if m.name == "Mean Velocity"), None
+        )
+
+        assert stage_measurement.units == "mm"
+        assert stage_measurement.default_measurement is True
+        assert mean_v_measurement.default_measurement is False
+
+        ml_df = measurement_list.to_dataframe()
+
+        assert len(ml_df) > 0
+        assert isinstance(ml_df, pd.DataFrame)
 
     def test_from_params(self, mock_hilltop_client):
         """Test from_params method."""
         mock_client = mock_hilltop_client["client"]
         mock_session = mock_hilltop_client["session"]
 
-        result = HilltopMeasurementList.from_params(
+        measurement_list = HilltopMeasurementList.from_params(
             base_url="http://example.com",
             hts_endpoint="foo.hts",
             site="Manawatu At Teachers College",
@@ -286,7 +316,35 @@ class TestMeasurementList:
             test_url,
             timeout=60,
         )
-        assert isinstance(result, HilltopMeasurementList)
+
+        # Test the top level response object
+        assert isinstance(measurement_list, HilltopMeasurementList)
+        assert measurement_list.agency == "Horizons"
+
+        # Test a specific data source
+        water_level_ds = next(
+            (ds for ds in measurement_list.data_sources if ds.name == "Water Level"),
+            None,
+        )
+        assert water_level_ds.site == "Manawatu at Teachers College"
+        assert len(water_level_ds.measurements) > 0
+
+        # Test a specific measurement
+        stage_measurement = next(
+            (m for m in water_level_ds.measurements if m.name == "Stage"), None
+        )
+        mean_v_measurement = next(
+            (m for m in water_level_ds.measurements if m.name == "Mean Velocity"), None
+        )
+
+        assert stage_measurement.units == "mm"
+        assert stage_measurement.default_measurement is True
+        assert mean_v_measurement.default_measurement is False
+
+        ml_df = measurement_list.to_dataframe()
+
+        assert len(ml_df) > 0
+        assert isinstance(ml_df, pd.DataFrame)
 
     def test_multi_response_from_xml(
         self,
@@ -323,7 +381,8 @@ class TestMeasurementList:
         assert mean_v_measurement.default_measurement is False
 
         ml_df = measurement_list.to_dataframe()
-        ml_df.to_csv("measurement_list.csv", index=False)
+        assert len(ml_df) > 0
+        assert isinstance(ml_df, pd.DataFrame)
 
     def test_all_from_xml(self, all_response_xml):
         """Test that the XML can be parsed into a HilltopMeasurementList object."""

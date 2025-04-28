@@ -1,3 +1,4 @@
+import os
 from hurl.client import HilltopClient
 from hurl.models.status import HilltopStatus
 from hurl.exceptions import HilltopResponseError
@@ -5,6 +6,9 @@ import pytest
 import xmltodict
 from pathlib import Path
 from tests.conftest import remove_tags
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 @pytest.fixture
@@ -122,7 +126,8 @@ class TestStatus:
         mock_session.get.assert_called_once_with(test_url, timeout=60)
         assert isinstance(result, HilltopStatus)
         assert result.agency == "Horizons"
-        assert result.script_name == "/boo.hts"
+        assert result.script_name == os.getenv("HILLTOP_HTS_ENDPOINT")
+        assert len(result.data_files) == 2
 
     def test_from_params(self, mock_hilltop_client):
         """Test from_params method."""
@@ -145,3 +150,6 @@ class TestStatus:
             timeout=60,
         )
         assert isinstance(result, HilltopStatus)
+        assert result.agency == "Horizons"
+        assert result.script_name == os.getenv("HILLTOP_HTS_ENDPOINT")
+        assert len(result.data_files) == 2
