@@ -112,7 +112,6 @@ def mock_hilltop_client(mocker, multi_response_xml):
     }
 
 
-
 class TestRemoteFixtures:
     @pytest.mark.remote
     @pytest.mark.update

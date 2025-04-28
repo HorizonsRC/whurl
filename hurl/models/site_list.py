@@ -1,8 +1,12 @@
 """Hilltop Site List Model."""
+
 from urllib.parse import urlencode, quote
-from hurl.utils import get_hilltop_response
-from xml.etree import ElementTree
 from pydantic import BaseModel, Field, field_validator, model_validator
+from typing import Optional
+import httpx
+from urllib.parse import urlencode, quote
+import xmltodict
+from hurl.exceptions import HilltopParseError, HilltopResponseError, HilltopHTTPError
 
 
 class HilltopSite(BaseModel):
@@ -12,9 +16,10 @@ class HilltopSite(BaseModel):
 
 
 class HilltopSiteList(BaseModel):
-    """Top-level Hilltop MeasurementList response model."""
+    """Top-level Hilltop SiteList response model."""
 
     agency: str = Field(alias="Agency", default=None)
+    version: Optional[str] = Field(alias="Version", default=None)
     site_list: list[HilltopSite] = Field(alias="Site", default_factory=list)
     error: str = Field(alias="Error", default=None)
 
@@ -63,12 +68,19 @@ class HilltopSiteList(BaseModel):
         return cls(**data)
 
     @classmethod
-    def from_url(cls, url: str, timeout: Optional[int]) -> "HilltopSiteList":
+    def from_url(
+        cls, url: str, timeout: Optional[int], client: Optional[httpx.Client] = None
+    ) -> "HilltopSiteList":
         """Fetch and parse XML from a URL into HilltopSiteList object."""
-        success, reponse = get_hilltop_response(url, timeout=timeout)
-        if not success:
+        if client is None:
+            with httpx.Client() as temp_client:
+                response = temp_client.get(url, timeout=timeout)
+        else:
+            response = client.session.get(url, timeout=timeout)
+
+        if response.status_code != 200:
             raise HilltopHTTPError(
-                f"Failed to fetch site list from Hilltop Server: {reponse}",
+                f"Failed to fetch SiteList from Hilltop Server: {response}",
                 url=url,
             )
         return cls.from_xml(response.text)
@@ -77,6 +89,7 @@ class HilltopSiteList(BaseModel):
     def from_params(
         cls,
         base_url: str,
+        hts_endpoint: str,
         location: Optional[str] = None,
         bounding_box: Optional[str] = None,
         measurement: Optional[str] = None,
@@ -86,10 +99,12 @@ class HilltopSiteList(BaseModel):
         syn_level: Optional[str] = None,
         fill_cols: Optional[str] = None,
         timeout: Optional[int] = 60,
+        client: Optional[httpx.Client] = None,
     ) -> "HilltopSiteList":
         """Fetch and parse XML from a URL into HilltopSiteList object."""
-        url = get_site_list_url(
+        url = gen_site_list_url(
             base_url=base_url,
+            hts_endpoint=hts_endpoint,
             location=location,
             bounding_box=bounding_box,
             measurement=measurement,
@@ -99,29 +114,49 @@ class HilltopSiteList(BaseModel):
             syn_level=syn_level,
             fill_cols=fill_cols,
         )
-        success, response = get_hilltop_response(url, timeout=timeout)
-        if not success:
-            raise HilltopHTTPError(
-                f"Failed to fetch site list from Hilltop Server: {response}",
-                url=url,
-            )
-        return cls.from_xml(response)
+        return cls.from_url(url=url, timeout=timeout, client=client)
+
+    @staticmethod
+    def gen_url(
+        base_url: str,
+        hts_endpoint: str,
+        location: Optional[str] = None,
+        bounding_box: Optional[str] = None,
+        measurement: Optional[str] = None,
+        collection: Optional[str] = None,
+        site_parameters: Optional[str] = None,
+        target: Optional[str] = None,
+        syn_level: Optional[str] = None,
+        fill_cols: Optional[str] = None,
+    ):
+        """Generate the URL for the Hilltop SiteList request."""
+        return gen_site_list_url(
+            base_url=base_url,
+            hts_endpoint=hts_endpoint,
+            location=location,
+            bounding_box=bounding_box,
+            measurement=measurement,
+            collection=collection,
+            site_parameters=site_parameters,
+            target=target,
+            syn_level=syn_level,
+            fill_cols=fill_cols,
+        )
 
 
-
-
-
-def get_site_list_url(
-    base_url,
-    location=None,
-    bounding_box=None,
-    measurement=None,
-    collection=None,
-    site_parameters=None,
-    target=None,
-    syn_level=None,
-    fill_cols=None,
+def gen_site_list_url(
+    base_url: str,
+    hts_endpoint: str,
+    location: Optional[str] = None,
+    bounding_box: Optional[str] = None,
+    measurement: Optional[str] = None,
+    collection: Optional[str] = None,
+    site_parameters: Optional[str] = None,
+    target: Optional[str] = None,
+    syn_level: Optional[str] = None,
+    fill_cols: Optional[str] = None,
 ):
+    """Generate the URL for the Hilltop SiteList request."""
     params = {
         "Request": "SiteList",
         "Service": "Hilltop",
@@ -135,44 +170,7 @@ def get_site_list_url(
         "FillCols": fill_cols,
     }
 
-    selected_params = {
-        key: val for key, val in params.items() if val is not None
-    }
+    selected_params = {key: val for key, val in params.items() if val is not None}
 
-    url = f"{base_url}?{urlencode(selected_params, quote_via=quote)}"
+    url = f"{base_url}/{hts_endpoint}?{urlencode(selected_params, quote_via=quote)}"
     return url
-
-
-def get_site_list(
-    base_url,
-    location=None,
-    bounding_box=None,
-    measurement=None,
-    collection=None,
-    site_parameters=None,
-    target=None,
-    syn_level=None,
-    fill_cols=None,
-    timeout=60,
-):
-    url = get_site_list_url(
-        base_url,
-        location,
-        bounding_box,
-        measurement,
-        collection,
-        site_parameters,
-        target,
-        syn_level,
-        fill_cols,
-    )
-    print(url)
-
-    success, ret_obj = get_hilltop_response(url, timeout=timeout)
-
-    root = ElementTree.fromstring(ret_obj.decode())
-    site_list = []
-    for child in root.findall("Site"):
-        site_list += [child.get("Name")]
-
-    return success, site_list, url
