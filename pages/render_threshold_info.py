@@ -1,10 +1,10 @@
 import streamlit as st
 from st_pages import add_page_title
-from hurl.threshold_info import get_threshold_info_url
-from hurl.status import get_status
-from hurl.site_list import get_site_list
-from hurl.measurement_list import get_measurement_list
 
+from hurl.measurement_list import get_measurement_list
+from hurl.site_list import get_site_list
+from hurl.status import get_status
+from hurl.threshold_info import get_threshold_info_url
 
 add_page_title()
 

@@ -1,9 +1,11 @@
 """Shared fixtures for testing."""
 
-import pytest
 from pathlib import Path
-from hurl.models.measurement_list import HilltopMeasurementList
+
+import pytest
 from lxml import etree
+
+from hurl.models.measurement_list import HilltopMeasurementList
 
 
 def pytest_addoption(parser):

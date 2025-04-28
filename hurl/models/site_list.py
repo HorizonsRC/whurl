@@ -1,12 +1,14 @@
 """Hilltop Site List Model."""
 
-from urllib.parse import urlencode, quote
-from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import Optional
+from urllib.parse import quote, urlencode
+
 import httpx
-from urllib.parse import urlencode, quote
 import xmltodict
-from hurl.exceptions import HilltopParseError, HilltopResponseError, HilltopHTTPError
+from pydantic import BaseModel, Field, field_validator, model_validator
+
+from hurl.exceptions import (HilltopHTTPError, HilltopParseError,
+                             HilltopResponseError)
 
 
 class HilltopSite(BaseModel):

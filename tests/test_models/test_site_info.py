@@ -1,5 +1,6 @@
-from hurl import site_info
 import pytest
+
+from hurl import site_info
 
 
 def test_get_site_info_url():

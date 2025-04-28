@@ -1,10 +1,11 @@
 """Hilltop status model."""
 
-from pydantic import BaseModel, Field
-from typing import Optional, List
-from urllib.parse import urlencode, quote
+from typing import List, Optional
+from urllib.parse import quote, urlencode
+
 import httpx
 import xmltodict
+from pydantic import BaseModel, Field
 
 
 class HilltopDataFile(BaseModel):

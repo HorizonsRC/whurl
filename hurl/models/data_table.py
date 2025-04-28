@@ -1,4 +1,5 @@
-from urllib.parse import urlencode, quote
+from urllib.parse import quote, urlencode
+
 
 def get_data_table_url(
     base_url,

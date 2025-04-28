@@ -1,4 +1,4 @@
-from urllib.parse import urlencode, quote
+from urllib.parse import quote, urlencode
 
 
 def get_threshold_info_url(

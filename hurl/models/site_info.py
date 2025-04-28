@@ -1,6 +1,7 @@
-from urllib.parse import urlencode, quote
-from hurl.utils import get_hilltop_response
+from urllib.parse import quote, urlencode
 from xml.etree import ElementTree
+
+from hurl.utils import get_hilltop_response
 
 
 def get_site_info_url(

@@ -5,12 +5,12 @@ This is a simple script for stringing up a bunch of server calls to be used in t
 
 """
 
-import yaml
 import pandas as pd
+import yaml
 
-from hurl.site_list import get_site_list
-from hurl.measurement_list import get_measurement_list
 from hurl.get_observation import get_get_observation_url
+from hurl.measurement_list import get_measurement_list
+from hurl.site_list import get_site_list
 
 # Read in all the hts file file aliases a file.
 with open("data_files.txt") as f:

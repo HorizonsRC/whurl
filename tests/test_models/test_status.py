@@ -1,12 +1,14 @@
 import os
-from hurl.client import HilltopClient
-from hurl.models.status import HilltopStatus
-from hurl.exceptions import HilltopResponseError
+from pathlib import Path
+
 import pytest
 import xmltodict
-from pathlib import Path
-from tests.conftest import remove_tags
 from dotenv import load_dotenv
+
+from hurl.client import HilltopClient
+from hurl.exceptions import HilltopResponseError
+from hurl.models.status import HilltopStatus
+from tests.conftest import remove_tags
 
 load_dotenv()
 
@@ -91,10 +93,7 @@ class TestRemoteFixtures:
 
 class TestStatus:
     def test_gen_status_url(self):
-        from hurl.models.status import (
-            gen_status_url,
-            HilltopStatus,
-        )
+        from hurl.models.status import HilltopStatus, gen_status_url
 
         correct_url = "http://example.com/foo.hts?Request=Status&Service=Hilltop"
 

@@ -1,11 +1,12 @@
 import streamlit as st
 from st_pages import add_page_title
-from hurl.measurement_list import get_measurement_list
+from streamlit_tags import st_tags
+
 from hurl.collection_list import get_collection_list
+from hurl.components import bbox_form
+from hurl.measurement_list import get_measurement_list
 from hurl.site_list import get_site_list_url
 from hurl.status import get_status
-from hurl.components import bbox_form
-from streamlit_tags import st_tags
 
 add_page_title()
 

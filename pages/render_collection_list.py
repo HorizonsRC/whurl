@@ -1,5 +1,6 @@
 import streamlit as st
 from st_pages import add_page_title
+
 from hurl.collection_list import get_collection_list_url
 from hurl.status import get_status
 

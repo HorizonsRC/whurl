@@ -1,5 +1,6 @@
-from hurl import collection_list
 import pytest
+
+from hurl import collection_list
 
 
 def test_get_collection_list_url():

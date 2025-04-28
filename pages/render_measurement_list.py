@@ -1,7 +1,8 @@
 import streamlit as st
 from st_pages import add_page_title
-from hurl.measurement_list import get_measurement_list_url
+
 from hurl.collection_list import get_collection_list
+from hurl.measurement_list import get_measurement_list_url
 from hurl.site_list import get_site_list
 from hurl.status import get_status
 

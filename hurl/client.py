@@ -3,19 +3,16 @@
 import os
 from typing import Optional
 from urllib.parse import urljoin
-import httpx
-from pydantic import BaseModel
-from dotenv import load_dotenv
 
+import httpx
+from dotenv import load_dotenv
+from pydantic import BaseModel
+
+from hurl.exceptions import (HilltopConfigError, HilltopHTTPError,
+                             HilltopParseError, HilltopResponseError,
+                             raise_for_response)
 from hurl.models.measurement_list import HilltopMeasurementList
 from hurl.models.status import HilltopStatus
-from hurl.exceptions import (
-    HilltopParseError,
-    HilltopResponseError,
-    HilltopHTTPError,
-    HilltopConfigError,
-    raise_for_response,
-)
 
 load_dotenv()
 

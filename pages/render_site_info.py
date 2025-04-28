@@ -1,9 +1,10 @@
 import streamlit as st
-from streamlit_tags import st_tags
 from st_pages import add_page_title
+from streamlit_tags import st_tags
+
 from hurl.collection_list import get_collection_list
+from hurl.site_info import get_field_list, get_site_info_url
 from hurl.site_list import get_site_list
-from hurl.site_info import get_site_info_url, get_field_list
 from hurl.status import get_status
 
 add_page_title()

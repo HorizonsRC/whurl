@@ -1,9 +1,11 @@
-from hurl.client import HilltopClient
-from hurl.models.measurement_list import HilltopMeasurementList
-from hurl.exceptions import HilltopResponseError
+from pathlib import Path
+
 import pandas as pd
 import pytest
-from pathlib import Path
+
+from hurl.client import HilltopClient
+from hurl.exceptions import HilltopResponseError
+from hurl.models.measurement_list import HilltopMeasurementList
 from tests.conftest import remove_tags
 
 
@@ -192,10 +194,8 @@ class TestRemoteFixtures:
 
 class TestMeasurementList:
     def test_gen_measurement_list_url(self):
-        from hurl.models.measurement_list import (
-            gen_measurement_list_url,
-            HilltopMeasurementList,
-        )
+        from hurl.models.measurement_list import (HilltopMeasurementList,
+                                                  gen_measurement_list_url)
 
         correct_url = (
             "http://example.com/foo.hts?"

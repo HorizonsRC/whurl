@@ -1,9 +1,10 @@
-from hurl.client import HilltopClient
-from hurl.models.site_list import HilltopSiteList
-from hurl.exceptions import HilltopParseError, HilltopResponseError
+from pathlib import Path
 
 import pytest
-from pathlib import Path
+
+from hurl.client import HilltopClient
+from hurl.exceptions import HilltopParseError, HilltopResponseError
+from hurl.models.site_list import HilltopSiteList
 from tests.conftest import remove_tags
 
 
