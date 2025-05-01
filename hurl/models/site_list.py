@@ -11,6 +11,77 @@ from hurl.exceptions import (HilltopHTTPError, HilltopParseError,
                              HilltopResponseError)
 
 
+class HilltopSiteListRequestParameters(HilltopRequestParameters):
+    """Request parameters for Hilltop SiteList."""
+
+    request: str = Field(default="SiteList", serialization_alias="Request")
+    location: Optional[str] = Field(default=None, serialization_alias="Location")
+    bounding_box: Optional[str] = Field(default=None, serialization_alias="BBox")
+    measurement: Optional[str] = Field(default=None, serialization_alias="Measurement")
+    collection: Optional[str] = Field(default=None, serialization_alias="Collection")
+    site_parameters: Optional[str] = Field(
+        default=None, serialization_alias="SiteParameters"
+    )
+    target: Optional[str] = Field(default=None, serialization_alias="Target")
+    syn_level: Optional[str] = Field(default=None, serialization_alias="SynLevel")
+    fill_cols: Optional[str] = Field(default=None, serialization_alias="FillCols")
+
+    @field_validator("request", mode="before")
+    def validate_request(cls, value):
+        """Validate the request parameter."""
+        if value != "SiteList":
+            raise ValueError("Request must be 'SiteList'")
+        return value
+
+    @field_validator("location", mode="before")
+    def validate_location(cls, value):
+        """
+        Validate the location parameter.
+
+        Acceptable values are 'Yes', 'LatLong', or None.
+
+        'Yes': Provide location in easting and northing format.
+        'LatLong': Provide location in latitude and longitude format (NZGD2000).
+
+        """
+        if value not in ["Yes", "LatLong", None]:
+            raise ValueError("Location must be 'Yes', 'LatLong', or None")
+        return value
+
+    @field_validator("bounding_box", mode="before")
+    def validate_bounding_box(cls, value):
+        """
+        Validate the bounding box parameter.
+
+        The BBox key accepts two easting and northing pairs by default. These define
+        two points diagonally opposite to each other. The order of the pairs is not
+        important, but the easting precedes the northing in each pair.
+
+        The BBox key can be in lat/long if you wish and you use a shortened version of
+        the OGC format. For example to send a bounding box in WGS84:
+
+        >>> BBox=-46.48797124,167.65999182,-44.73293297,168.83236546,EPSG:4326
+
+        Valid EPSG codes are:
+        - EPSG:4326 (WGS84)
+        - EPSG:2193 (NZTM 2000)
+        - EPSG:27200 (NZMG)
+        - EPSG:4167 (NZGD 2000)
+
+        """
+        if value is not None and not isinstance(value, str):
+            raise ValueError("Bounding box must be a string")
+        # Check if the value is in the correct format
+        for part in value.split(","):
+            try:
+                float(part)
+            except ValueError:
+                raise ValueError(
+                    "Bounding box must be a comma-separated string of numbers"
+                )
+        return value
+
+
 class HilltopSite(BaseModel):
     """Represents a single Hilltop site."""
 

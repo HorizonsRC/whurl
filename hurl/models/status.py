@@ -5,7 +5,22 @@ from urllib.parse import quote, urlencode
 
 import httpx
 import xmltodict
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+from hurl.models.request_parameters import HilltopRequestParameters
+
+
+class HilltopStatusRequestParameters(HilltopRequestParameters):
+    """Request parameters for Hilltop status."""
+
+    request: str = Field(default="Status", serialization_alias="Request")
+
+    @field_validator("request", mode="before")
+    def validate_request(cls, value):
+        """Validate the request parameter."""
+        if value != "Status":
+            raise ValueError("Request must be 'Status'")
+        return value
 
 
 class HilltopDataFile(BaseModel):
@@ -35,6 +50,15 @@ class HilltopStatus(BaseModel):
     data_files: Optional[List[HilltopDataFile]] = Field(
         alias="DataFile", default_factory=list
     )
+
+    @field_validator("data_files", mode="before")
+    def validate_data_files(cls, value) -> List[HilltopDataFile]:
+        """Ensure data_files is a list of HilltopDataFile objects."""
+        if value is None:
+            return []
+        if isinstance(value, dict):
+            return [HilltopDataFile(**value)]
+        return [HilltopDataFile(**item) for item in value]
 
     def to_dict(self):
         """Convert the model to a dictionary."""
@@ -98,9 +122,7 @@ class HilltopStatus(BaseModel):
         hts_endpoint,
     ):
         """Generate the URL for the Hilltop Status request."""
-        return gen_status_url(
-            base_url, hts_endpoint
-        )
+        return gen_status_url(base_url, hts_endpoint)
 
 
 def gen_status_url(
@@ -109,12 +131,19 @@ def gen_status_url(
 ):
     """Generate the URL for the Hilltop Status request."""
     params = {
-        "Request": "Status",
-        "Service": "Hilltop",
+        "base_url": base_url,
+        "hts_endpoint": hts_endpoint,
     }
 
-    selected_params = {key: val for key, val in params.items() if val is not None}
+    validated_params = HilltopStatusRequestParameters(**params)
 
-    url = f"{base_url}/{hts_endpoint}?{urlencode(selected_params, quote_via=quote)}"
+    selected_params = validated_params.model_dump(
+        exclude_none=True, by_alias=True, exclude={"base_url", "hts_endpoint"}
+    )
+
+    url = (
+        f"{validated_params.base_url}/{validated_params.hts_endpoint}?"
+        f"{urlencode(selected_params, quote_via=quote)}"
+    )
 
     return url

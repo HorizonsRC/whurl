@@ -6,7 +6,7 @@ import xmltodict
 from dotenv import load_dotenv
 
 from hurl.client import HilltopClient
-from hurl.exceptions import HilltopResponseError
+from hurl.exceptions import HilltopHTTPError, HilltopResponseError
 from hurl.models.status import HilltopStatus
 from tests.conftest import remove_tags
 
@@ -29,37 +29,6 @@ def status_response_xml(request, remote_client):
     raw_xml = path.read_text(encoding="utf-8")
 
     return raw_xml
-
-
-@pytest.fixture
-def mock_hilltop_client(mocker, status_response_xml):
-    """Mock HilltopClient."""
-    # Mock the response
-    mock_response = mocker.MagicMock()
-    mock_response.text = status_response_xml
-    mock_response.status_code = 200
-
-    # Mock the session
-    mock_session = mocker.MagicMock()
-    mock_session.get.return_value = mock_response
-
-    # Mock the client context manager
-    mock_client = mocker.MagicMock()
-    mock_client.base_url = "http://example.com"
-    mock_client.hts_endpoint = "foo.hts"
-    mock_client.timeout = 60
-    mock_client.__enter__.return_value = mock_client  # Returns self
-    mock_client.__exit__.return_value = None
-    mock_client.session = mock_session
-
-    # Patch the real client
-    mocker.patch("hurl.client.HilltopClient", return_value=mock_client)
-
-    return {
-        "client": mock_client,
-        "session": mock_session,
-        "response": mock_response,
-    }
 
 
 class TestRemoteFixtures:
@@ -91,11 +60,11 @@ class TestRemoteFixtures:
         assert remote_xml_cleaned == cached_xml_cleaned
 
 
-class TestStatus:
+class TestParameterValidation:
     def test_gen_status_url(self):
         from hurl.models.status import HilltopStatus, gen_status_url
 
-        correct_url = "http://example.com/foo.hts?Request=Status&Service=Hilltop"
+        correct_url = "http://example.com/foo.hts?Service=Hilltop&Request=Status"
 
         test_url = gen_status_url(
             base_url="http://example.com",
@@ -111,12 +80,46 @@ class TestStatus:
 
         assert test_method_gen_url == correct_url
 
-    def test_from_url(self, mock_hilltop_client):
+    def test_parameter_validators(self):
+        """Test the parameter validators."""
+        from hurl.models.request_parameters import HilltopRequestParameters
+
+        # Test valid parameters
+        params = HilltopRequestParameters(
+            base_url="http://example.com",
+            hts_endpoint="foo.hts",
+            service="Hilltop",
+            request="Status",
+        )
+        assert params.base_url == "http://example.com"
+        assert params.hts_endpoint == "foo.hts"
+        assert params.service == "Hilltop"
+        assert params.request == "Status"
+        # Test invalid parameters
+        with pytest.raises(HilltopHTTPError):
+            HilltopRequestParameters(
+                base_url="Not a url",
+                hts_endpoint="Not an hts file",
+                service="Not Hilltop",
+                request="Not a valid request",
+            )
+
+
+class TestResponseValidation:
+
+    def test_from_url(self, mock_hilltop_client_factory, status_response_xml):
         """Test from_url method."""
+
+        # Set up the mock client
+        mock_hilltop_client = mock_hilltop_client_factory(
+            response_xml=status_response_xml,
+            status_code=200,
+        )
+
         mock_client = mock_hilltop_client["client"]
         mock_session = mock_hilltop_client["session"]
 
-        test_url = "http://example.com/foo.hts?Request=Status&Service=Hilltop"
+        test_url = "http://example.com/foo.hts?Service=Hilltop&Request=Status"
 
         # 5. Test the actual method
         result = HilltopStatus.from_url(test_url, timeout=60, client=mock_client)
@@ -126,10 +129,16 @@ class TestStatus:
         assert isinstance(result, HilltopStatus)
         assert result.agency == "Horizons"
         assert result.script_name == os.getenv("HILLTOP_HTS_ENDPOINT")
-        assert len(result.data_files) == 2
+        assert len(result.data_files) == 1
 
-    def test_from_params(self, mock_hilltop_client):
+    def test_from_params(self, mock_hilltop_client_factory, status_response_xml):
         """Test from_params method."""
+
+        # Set up the mock client
+        mock_hilltop_client = mock_hilltop_client_factory(
+            response_xml=status_response_xml,
+            status_code=200,
+        )
         mock_client = mock_hilltop_client["client"]
         mock_session = mock_hilltop_client["session"]
 
@@ -140,7 +149,7 @@ class TestStatus:
             client=mock_client,
         )
 
-        test_url = "http://example.com/foo.hts?Request=Status&Service=Hilltop"
+        test_url = "http://example.com/foo.hts?Service=Hilltop&Request=Status"
 
         mock_session.get.assert_called_once_with(
             test_url,
@@ -149,7 +158,7 @@ class TestStatus:
         assert isinstance(result, HilltopStatus)
         assert result.agency == "Horizons"
         assert result.script_name == os.getenv("HILLTOP_HTS_ENDPOINT")
-        assert len(result.data_files) == 2
+        assert len(result.data_files) == 1
 
     def test_to_dict(self, status_response_xml):
         """Test to_dict method."""
@@ -164,17 +173,27 @@ class TestStatus:
             k: (
                 str(v)
                 if not isinstance(v, list) and v is not None
-                else [
-                    {
-                        kk: str(vv) if str(vv) != 'None' else None
-                        for kk, vv in i.items()
-                    }
-                    for i in v
-                ] if isinstance(v, list) else v
+                else (
+                    [
+                        {
+                            kk: str(vv) if str(vv) != "None" else None
+                            for kk, vv in i.items()
+                        }
+                        for i in v
+                    ]
+                    if isinstance(v, list)
+                    else v
+                )
             )
             for k, v in test_dict.items()
         }
 
         naive_dict = xmltodict.parse(status_response_xml)["HilltopServer"]
+        # convert the "DataFile" dict to a list of dicts
+        naive_dict["DataFile"] = (
+            [naive_dict["DataFile"]]
+            if isinstance(naive_dict["DataFile"], dict)
+            else naive_dict["DataFile"]
+        )
 
         assert test_dict == naive_dict

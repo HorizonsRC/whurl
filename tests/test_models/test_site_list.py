@@ -32,37 +32,6 @@ def all_response_xml(request, remote_client):
     return raw_xml
 
 
-@pytest.fixture
-def mock_hilltop_client(mocker, all_response_xml):
-    """Mock HilltopClient."""
-    # Mock the response
-    mock_response = mocker.MagicMock()
-    mock_response.text = all_response_xml
-    mock_response.status_code = 200
-
-    # Mock the session
-    mock_session = mocker.MagicMock()
-    mock_session.get.return_value = mock_response
-
-    # Mock the client context manager
-    mock_client = mocker.MagicMock()
-    mock_client.base_url = "http://example.com"
-    mock_client.hts_endpoint = "foo.hts"
-    mock_client.timeout = 60
-    mock_client.__enter__.return_value = mock_client  # Returns self
-    mock_client.__exit__.return_value = None
-    mock_client.session = mock_session
-
-    # Patch the real client
-    mocker.patch("hurl.client.HilltopClient", return_value=mock_client)
-
-    return {
-        "client": mock_client,
-        "session": mock_session,
-        "response": mock_response,
-    }
-
-
 class TestRemoteFixtures:
     @pytest.mark.remote
     @pytest.mark.update
@@ -80,7 +49,7 @@ class TestRemoteFixtures:
         assert all_response_xml == remote_xml
 
 
-class TestHilltopSiteList:
+class TestParameterValidation:
     def test_gen_site_list_url(self):
         from hurl.models.site_list import HilltopSiteList, gen_site_list_url
 
@@ -111,14 +80,23 @@ class TestHilltopSiteList:
             fill_cols="fill_cols",
         )
 
-        assert test_url
+        assert test_url == correct_url
 
-    def test_from_url(self, mock_hilltop_client):
+
+class TestResponseValidation:
+    def test_from_url(self, mock_hilltop_client_factory, all_response_xml):
         """Test from_url method."""
+
+        # Set up the mock client
+        mock_hilltop_client = mock_hilltop_client_factory(
+            response_xml=all_response_xml,
+            status_code=200,
+        )
+
         mock_client = mock_hilltop_client["client"]
         mock_session = mock_hilltop_client["session"]
 
-        test_url = "http://example.com/foo.hts?" "Request=SiteList" "&Service=Hilltop"
+        test_url = "http://example.com/foo.hts?Request=SiteList&Service=Hilltop"
 
         site_list = HilltopSiteList.from_url(
             url=test_url,
@@ -138,8 +116,15 @@ class TestHilltopSiteList:
             site.name == "Manawatu at Teachers College" for site in site_list.site_list
         )
 
-    def test_from_params(self, mock_hilltop_client):
+    def test_from_params(self, mock_hilltop_client_factory, all_response_xml):
         """Test from_params method."""
+
+        # Set up the mock client
+        mock_hilltop_client = mock_hilltop_client_factory(
+            response_xml=all_response_xml,
+            status_code=200,
+        )
+
         mock_client = mock_hilltop_client["client"]
         mock_session = mock_hilltop_client["session"]
 

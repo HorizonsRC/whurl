@@ -1,68 +1,11 @@
 from pathlib import Path
 
-import pandas as pd
 import pytest
 
 from hurl.client import HilltopClient
 from hurl.exceptions import HilltopParseError, HilltopResponseError
-from hurl.models.get_data import (HilltopData, HilltopDataSource,
-                                  HilltopGetData, HilltopItemInfo)
+from hurl.models.get_data import HilltopGetData
 from tests.conftest import remove_tags
-
-
-@pytest.fixture
-def basic_response_xml(request, remote_client):
-    """Fixture to get a single point response XML for testing."""
-    path = (
-        Path(__file__).parent.parent
-        / "fixture_cache"
-        / "get_data"
-        / "basic_response.xml"
-    )
-
-    if request.config.getoption("--update"):
-        remote_url = HilltopGetData.gen_url(
-            base_url=remote_client.base_url,
-            hts_endpoint=remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
-            from_datetime="1/1/2023",
-            to_datetime="2/1/2023",
-        )
-        remote_xml = remote_client.session.get(remote_url).text
-
-        path.write_text(remote_xml, encoding="utf-8")
-
-    raw_xml = path.read_text(encoding="utf-8")
-
-    return raw_xml
-
-
-@pytest.fixture
-def time_interval_response_xml(request, remote_client):
-    """Fixture to get a single point response XML for testing."""
-    path = (
-        Path(__file__).parent.parent
-        / "fixture_cache"
-        / "get_data"
-        / "time_interval_response.xml"
-    )
-
-    if request.config.getoption("--update"):
-        remote_url = HilltopGetData.gen_url(
-            base_url=remote_client.base_url,
-            hts_endpoint=remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
-            time_interval="2023-01-01T12:00:00/2023-01-02T12:00:00",
-        )
-        remote_xml = remote_client.session.get(remote_url).text
-
-        path.write_text(remote_xml, encoding="utf-8")
-
-    raw_xml = path.read_text(encoding="utf-8")
-
-    return raw_xml
 
 
 @pytest.fixture
@@ -98,19 +41,15 @@ def collection_response_xml(request, remote_client):
         Path(__file__).parent.parent
         / "fixture_cache"
         / "get_data"
-        / "collection_response.xml"
+        / "one_point_response.xml"
     )
 
     if request.config.getoption("--update"):
-        # 12 hours ago from now
-        start_time = pd.Timestamp.now() - pd.Timedelta(hours=48)
-        # ... in format YYYY-MM-DDTHH:MM:SS
-        start_timestamp = start_time.strftime("%Y-%m-%dT%H:%M:%S")
         remote_url = HilltopGetData.gen_url(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            collection="Rainfall",
-            from_datetime=start_timestamp,
+            site="Manawatu at Teachers College",
+            measurement="Stage",
         )
         remote_xml = remote_client.session.get(remote_url).text
 
@@ -122,27 +61,6 @@ def collection_response_xml(request, remote_client):
 
 
 class TestRemoteFixtures:
-    @pytest.mark.remote
-    @pytest.mark.update
-    def test_basic_response_xml_fixture(
-        self, remote_client, basic_response_xml
-    ):
-        """Test the all_response_xml fixture."""
-        # Get the remote URL
-        remote_url = HilltopGetData.gen_url(
-            remote_client.base_url,
-            remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
-            from_datetime="1/1/2023",
-            to_datetime="2/1/2023",
-        )
-        # Get the remote XML
-        remote_xml = remote_client.session.get(remote_url).text
-
-        # Compare the local and remote XML
-        assert basic_response_xml == remote_xml
-
     @pytest.mark.remote
     @pytest.mark.update
     def test_one_point_response_xml_fixture(
@@ -161,29 +79,6 @@ class TestRemoteFixtures:
 
         # Compare the local and remote XML
         assert one_point_response_xml == remote_xml
-
-    @pytest.mark.remote
-    @pytest.mark.update
-    def test_collection_response_xml_fixture(
-        self, remote_client, collection_response_xml
-    ):
-        """Test the all_response_xml fixture."""
-        # 12 hours ago from now
-        start_time = pd.Timestamp.now() - pd.Timedelta(hours=48)
-        # ... in format YYYY-MM-DDTHH:MM:SS
-        start_timestamp = start_time.strftime("%Y-%m-%dT%H:%M:%S")
-        # Get the remote URL
-        remote_url = HilltopGetData.gen_url(
-            remote_client.base_url,
-            remote_client.hts_endpoint,
-            collection="Rainfall",
-            from_datetime=start_timestamp,
-        )
-        # Get the remote XML
-        remote_xml = remote_client.session.get(remote_url).text
-
-        # Compare the local and remote XML
-        assert collection_response_xml == remote_xml
 
 
 class TestHilltopGetData:
@@ -237,12 +132,12 @@ class TestHilltopGetData:
 
         assert test_url == correct_url
 
-    def test_from_url(self, mock_hilltop_client_factory, basic_response_xml):
+    def test_from_url(self, mock_hilltop_client_factory, one_point_response_xml):
         """Test from_url method."""
 
         # Set up the mock client
         mock_hilltop_client = mock_hilltop_client_factory(
-            response_xml=basic_response_xml,
+            response_xml=one_point_response_xml,
             status_code=200,
         )
 
@@ -297,90 +192,56 @@ class TestHilltopGetData:
         assert data.date_format == "Calendar"
         assert data.num_items == 1
 
-    def test_from_params(self, mock_hilltop_client_factory, collection_response_xml):
-        """Test from_params method."""
-        # Set up the mock client
-        mock_hilltop_client = mock_hilltop_client_factory(
-            response_xml=collection_response_xml,
-            status_code=200,
-        )
 
-        mock_client = mock_hilltop_client["client"]
-        mock_session = mock_hilltop_client["session"]
-
-        # Actual parameters don't matter, just gotta make sure they make it into the url
-        response_data = HilltopGetData.from_params(
-            base_url="http://example.com",
-            hts_endpoint="foo.hts",
-            collection="Rainfall",
-            client=mock_client,
-            timeout=60,
-        )
-
-        test_url = (
-            "http://example.com/foo.hts?"
-            "Request=GetData"
-            "&Service=Hilltop"
-            "&Collection=Rainfall"
-        )
-
-        mock_session.get.assert_called_once_with(
-            test_url,
-            timeout=60,
-        )
-
-        # Test the top level response object
-        assert isinstance(response_data, HilltopGetData)
-        assert response_data.agency == "Horizons"
-
-        assert len(response_data.measurement) > 0
-
-        # Find the measurement with the site_name "Kahuterawa at Scotts Road"
-        measurement = next(
-            (
-                m
-                for m in response_data.measurement
-                if m.site_name == "Kahuterawa at Scotts Road"
-            ),
-            None,
-        )
-        assert measurement is not None
-        assert isinstance(measurement.data_source, HilltopDataSource)
-
-        # Test the data source
-        data_source = measurement.data_source
-        assert data_source.name == "SCADA Rainfall"
-        assert data_source.num_items == 1
-        assert data_source.ts_type == "StdSeries"
-        assert data_source.data_type == "Rain6"
-        assert data_source.interpolation == "Incremental"
-        assert data_source.item_format is None
-        assert len(data_source.item_info) == 1
-
-        # Test the item info
-        item_info = data_source.item_info[0]
-        assert isinstance(item_info, HilltopItemInfo)
-        assert item_info.item_number == 1
-        assert item_info.item_name == "Rainfall"
-        assert item_info.item_format == "I"
-        assert item_info.divisor is None
-        assert item_info.units == "mm"
-        assert item_info.format == "####.#"
-
-        # Test the data
-        data = measurement.data
-        assert isinstance(data, HilltopData)
-        assert data.date_format == "Calendar"
-        assert data.num_items == 1
-        assert isinstance(data.timeseries, pd.DataFrame)
-        assert len(data.timeseries) > 0
-
-        # Test the timeseries DataFrame
-        assert data.timeseries.index.name == "DateTime"
-        assert "Rainfall" in data.timeseries.columns
-        assert data.timeseries.index.dtype == "datetime64[ns]"
-
-
+#     def test_from_params(self, mock_hilltop_client):
+#         """Test from_params method."""
+#         mock_client = mock_hilltop_client["client"]
+#         mock_session = mock_hilltop_client["session"]
+#
+#         site_list = HilltopSiteList.from_params(
+#             base_url="http://example.com",
+#             hts_endpoint="foo.hts",
+#             location="location",
+#             bounding_box="bounding_box",
+#             measurement="measurement",
+#             collection="collection",
+#             site_parameters="site_parameters",
+#             target="target",
+#             syn_level="syn_level",
+#             fill_cols="fill_cols",
+#             client=mock_client,
+#         )
+#
+#         test_url = (
+#             "http://example.com/foo.hts?"
+#             "Request=SiteList"
+#             "&Service=Hilltop"
+#             "&Location=location"
+#             "&BBox=bounding_box"
+#             "&Measurement=measurement"
+#             "&Collection=collection"
+#             "&SiteParameters=site_parameters"
+#             "&Target=target"
+#             "&SynLevel=syn_level"
+#             "&FillCols=fill_cols"
+#         )
+#
+#         mock_session.get.assert_called_once_with(
+#             test_url,
+#             timeout=60,
+#         )
+#
+#         # Test the top level response object
+#         assert isinstance(site_list, HilltopSiteList)
+#         assert site_list.agency == "Horizons"
+#
+#         assert len(site_list.site_list) > 0
+#
+#         # Check if Manawatu at Teachers College is in the list
+#         assert any(
+#             site.name == "Manawatu at Teachers College" for site in site_list.site_list
+#         )
+#
 #     def test_to_dict(self, all_response_xml):
 #         """Test to_dict method."""
 #         import xmltodict

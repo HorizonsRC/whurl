@@ -40,3 +40,37 @@ def remote_client():
         yield client
     finally:
         client.session.close()
+
+
+@pytest.fixture
+def mock_hilltop_client_factory(mocker):
+    """Mock HilltopClient Factory for testing."""
+
+    def _factory(response_xml="<default>payload</default>", status_code=200):
+        # Mock the response
+        mock_response = mocker.MagicMock()
+        mock_response.text = response_xml
+        mock_response.status_code = status_code
+
+        # Mock the session
+        mock_session = mocker.MagicMock()
+        mock_session.get.return_value = mock_response
+
+        # Mock the client context manager
+        mock_client = mocker.MagicMock()
+        mock_client.base_url = "http://example.com"
+        mock_client.hts_endpoint = "foo.hts"
+        mock_client.timeout = 60
+        mock_client.__enter__.return_value = mock_client  # Returns self
+        mock_client.__exit__.return_value = None
+        mock_client.session = mock_session
+
+        # Patch the real client
+        mocker.patch("hurl.client.HilltopClient", return_value=mock_client)
+
+        return {
+            "client": mock_client,
+            "session": mock_session,
+            "response": mock_response,
+        }
+    return _factory
