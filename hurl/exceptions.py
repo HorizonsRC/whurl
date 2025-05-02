@@ -32,6 +32,19 @@ class HilltopHTTPError(HilltopError):
         super().__init__(full_msg)
 
 
+class HilltopRequestError(Exception):
+    """Exception for malformed Hilltop API request."""
+
+    def __init__(
+        self,
+        message: str,
+        url: Optional[str] = None,
+    ):
+        self.url = url
+        full_msg = f"{message} [URL: {url}]" if url else message
+        super().__init__(full_msg)
+
+
 class HilltopResponseError(HilltopError):
     """Exception for Hilltop XML error response."""
 

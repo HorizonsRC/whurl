@@ -1,10 +1,14 @@
 from pathlib import Path
 
 import pytest
+from urllib.parse import urlencode, quote
 
 from hurl.client import HilltopClient
-from hurl.exceptions import HilltopParseError, HilltopResponseError
-from hurl.models.site_list import HilltopSiteList
+from hurl.exceptions import (HilltopHTTPError, HilltopParseError,
+                             HilltopResponseError, HilltopRequestError)
+from hurl.models.site_list import (HilltopSiteList,
+                                   HilltopSiteListRequestParameters,
+                                   gen_site_list_url)
 from tests.conftest import remove_tags
 
 
@@ -53,34 +57,173 @@ class TestParameterValidation:
     def test_gen_site_list_url(self):
         from hurl.models.site_list import HilltopSiteList, gen_site_list_url
 
+        base_url = "http://example.com"
+        hts_endpoint = "foo.hts"
+
+        correct_params = {
+            "Service": "Hilltop",
+            "Request": "SiteList",
+            "Location": "Yes",
+            "BBox": "1223456,1234567,1234567,1234667,EPSG:4326",
+            "Measurement": "measurement",
+            "Collection": "collection",
+            "SiteParameters": "site_parameters",
+            "Target": "HtmlSelect",
+            "SynLevel": "2",
+            "FillCols": "Yes",
+        }
+
         correct_url = (
-            "http://example.com/foo.hts?"
-            "Request=SiteList"
-            "&Service=Hilltop"
-            "&Location=location"
-            "&BoundingBox=bounding_box"
-            "&Measurement=measurement"
-            "&Collection=collection"
-            "&SiteParameters=site_parameters"
-            "&Target=target"
-            "&SynLevel=syn_level"
-            "&FillCols=fill_cols"
+            f"{base_url}/{hts_endpoint}?"
+            f"{urlencode(correct_params, quote_via=quote)}"
         )
 
         test_url = gen_site_list_url(
             base_url="http://example.com",
             hts_endpoint="foo.hts",
-            location="location",
-            bounding_box="bounding_box",
+            location="Yes",
+            bounding_box="1223456,1234567,1234567,1234667,EPSG:4326",
             measurement="measurement",
             collection="collection",
             site_parameters="site_parameters",
-            target="target",
-            syn_level="syn_level",
-            fill_cols="fill_cols",
+            target="HtmlSelect",
+            syn_level="2",
+            fill_cols="Yes",
         )
 
         assert test_url == correct_url
+
+    @pytest.mark.xfail(raises=HilltopRequestError)
+    def test_invalid_location(self):
+        """Test invalid location field raises HilltopRequestError."""
+
+        test_url = gen_site_list_url(
+            base_url="http://example.com",
+            hts_endpoint="foo.hts",
+            location="Not Yes or LatLong",
+        )
+
+    def test_invalid_bounding_box(self):
+        """Test invalid bounding box raises HilltopRequestError."""
+        # Only three coords
+        with pytest.raises(HilltopRequestError):
+            test_url = gen_site_list_url(
+                base_url="http://example.com",
+                hts_endpoint="foo.hts",
+                bounding_box="2027000,5698000,2085000",
+            )
+
+        # Too many coords
+        with pytest.raises(HilltopRequestError):
+            test_url = gen_site_list_url(
+                base_url="http://example.com",
+                hts_endpoint="foo.hts",
+                bounding_box="2027000,5698000,2085000,2085000,5698000,2085000,5698000",
+            )
+
+        # Invalid EPSG
+        with pytest.raises(HilltopRequestError):
+            test_url = gen_site_list_url(
+                base_url="http://example.com",
+                hts_endpoint="foo.hts",
+                bounding_box="2027000,5698000,2085000,2085000,EPSG:1234",
+            )
+
+        # Only three coords and a valid EPSG
+        with pytest.raises(HilltopRequestError):
+            test_url = gen_site_list_url(
+                base_url="http://example.com",
+                hts_endpoint="foo.hts",
+                bounding_box="2027000,5698000,2085000,EPSG:4326",
+            )
+
+        # A valid bounding box
+        test_url = gen_site_list_url(
+            base_url="http://example.com",
+            hts_endpoint="foo.hts",
+            bounding_box="2027000,5698000,2085000,5698001,EPSG:4326",
+        )
+
+    @pytest.mark.xfail(raises=HilltopRequestError)
+    def test_invalid_target(self):
+        """Test invalid target raises HilltopRequestError."""
+        test_url = gen_site_list_url(
+            base_url="http://example.com",
+            hts_endpoint="foo.hts",
+            target="Not HtmlSelect",
+        )
+
+    def test_invalid_syn_level(self):
+        """Test invalid syn_level raises HilltopRequestError."""
+
+        # Test invalid syn_level
+        with pytest.raises(HilltopRequestError):
+            test_url = gen_site_list_url(
+                base_url="http://example.com",
+                hts_endpoint="foo.hts",
+                target="HtmlSelect",
+                syn_level="Not 1, 2 or None",
+            )
+
+        # Test valid syn_level without target
+        with pytest.raises(HilltopRequestError) as excinfo:
+            test_url = gen_site_list_url(
+                base_url="http://example.com",
+                hts_endpoint="foo.hts",
+                syn_level="2",
+            )
+
+        # Test invalid syn_level without target
+        with pytest.raises(HilltopRequestError):
+            test_url = gen_site_list_url(
+                base_url="http://example.com",
+                hts_endpoint="foo.hts",
+                syn_level="3",
+            )
+
+        # Test valid everything
+        test_url = gen_site_list_url(
+            base_url="http://example.com",
+            hts_endpoint="foo.hts",
+            target="HtmlSelect",
+            syn_level="2",
+        )
+
+    def test_invalid_fill_cols(self):
+        """Test invalid fill_cols raises HilltopRequestError."""
+
+        # Test invalid fill_cols
+        with pytest.raises(HilltopRequestError):
+            test_url = gen_site_list_url(
+                base_url="http://example.com",
+                hts_endpoint="foo.hts",
+                site_parameters="SiteParameters",
+                fill_cols="Not Yes or None",
+            )
+
+        # Test valid fill_cols without site_parameters
+        with pytest.raises(HilltopRequestError):
+            test_url = gen_site_list_url(
+                base_url="http://example.com",
+                hts_endpoint="foo.hts",
+                fill_cols="Yes",
+            )
+
+        # Test invalid fill_cols without site_parameters
+        with pytest.raises(HilltopRequestError):
+            test_url = gen_site_list_url(
+                base_url="http://example.com",
+                hts_endpoint="foo.hts",
+                fill_cols="Not Yes or None",
+            )
+
+        # Test valid everything
+        test_url = gen_site_list_url(
+            base_url="http://example.com",
+            hts_endpoint="foo.hts",
+            site_parameters="SiteParameters",
+            fill_cols="Yes",
+        )
 
 
 class TestResponseValidation:
@@ -144,8 +287,8 @@ class TestResponseValidation:
 
         test_url = (
             "http://example.com/foo.hts?"
-            "Request=SiteList"
-            "&Service=Hilltop"
+            "Service=Hilltop"
+            "&Request=SiteList"
             "&Location=location"
             "&BBox=bounding_box"
             "&Measurement=measurement"

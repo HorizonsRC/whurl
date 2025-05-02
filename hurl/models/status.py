@@ -128,12 +128,16 @@ class HilltopStatus(BaseModel):
 def gen_status_url(
     base_url,
     hts_endpoint,
+    **kwargs,
 ):
     """Generate the URL for the Hilltop Status request."""
     params = {
         "base_url": base_url,
         "hts_endpoint": hts_endpoint,
     }
+
+    # Add all other parameters to the params dictionary
+    params = {**params, **kwargs}
 
     validated_params = HilltopStatusRequestParameters(**params)
 

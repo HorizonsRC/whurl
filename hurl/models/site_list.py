@@ -1,6 +1,6 @@
 """Hilltop Site List Model."""
 
-from typing import Optional
+from typing import Optional, Self
 from urllib.parse import quote, urlencode
 
 import httpx
@@ -8,7 +8,8 @@ import xmltodict
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 from hurl.exceptions import (HilltopHTTPError, HilltopParseError,
-                             HilltopResponseError)
+                             HilltopResponseError, HilltopRequestError)
+from hurl.models.request_parameters import HilltopRequestParameters
 
 
 class HilltopSiteListRequestParameters(HilltopRequestParameters):
@@ -45,7 +46,7 @@ class HilltopSiteListRequestParameters(HilltopRequestParameters):
 
         """
         if value not in ["Yes", "LatLong", None]:
-            raise ValueError("Location must be 'Yes', 'LatLong', or None")
+            raise HilltopRequestError("Location must be 'Yes', 'LatLong', or None")
         return value
 
     @field_validator("bounding_box", mode="before")
@@ -70,16 +71,95 @@ class HilltopSiteListRequestParameters(HilltopRequestParameters):
 
         """
         if value is not None and not isinstance(value, str):
-            raise ValueError("Bounding box must be a string")
-        # Check if the value is in the correct format
-        for part in value.split(","):
+            raise HilltopRequestError("Bounding box must be a string")
+
+        # Split the bounding box into parts
+        parts = value.split(",") if value else []
+
+        if len(parts) < 4:
+            raise HilltopRequestError(
+                "Bounding box must contain at least four values "
+                "(two pairs of coordinates)"
+            )
+        if len(parts) > 5:
+            raise HilltopRequestError(
+                "Bounding box must contain at most five values "
+                "(two pairs of coordinates and an optional EPSG code)"
+            )
+        epsg_code = parts[-1] if len(parts) == 5 else None
+        coordinates = parts[:-1] if epsg_code else parts
+
+        if epsg_code not in ["EPSG:4326", "EPSG:2193", "EPSG:27200", "EPSG:4167"]:
+            raise HilltopRequestError(
+                "Invalid EPSG code. Valid codes are: "
+                "EPSG:4326 (WGS84), "
+                "EPSG:2193 (NZTM 2000), "
+                "EPSG:27200 (NZMG), "
+                "EPSG:4167 (NZGD 2000). "
+                "Disregard the name in the parenthesis, only supply EPSG:XXXX. "
+            )
+
+        for coord in coordinates:
             try:
-                float(part)
+                float(coord)
             except ValueError:
-                raise ValueError(
-                    "Bounding box must be a comma-separated string of numbers"
+                raise HilltopRequestError(
+                    "Bounding box coordinates must be numeric values"
                 )
+
         return value
+
+    @field_validator("target", mode="before")
+    def validate_target(cls, value):
+        """Validate the target parameter."""
+        if value != "HtmlSelect":
+            raise HilltopRequestError(
+                "Only JSON and XML response formats are supported. "
+                "Use 'HtmlSelect' to request JSON, or leave it blank for XML."
+            )
+        if value is not None and not isinstance(value, str):
+            raise HilltopRequestError("Target must be a string")
+        return value
+
+    @model_validator(mode="after")
+    def validate_syn_level_and_fill_cols(self) -> Self:
+        """
+        Validate the SynLevel and FillCols parameters.
+
+        SynLevel only valid when 'Target' is 'HtmlSelect'.
+        FillCols only valid when SiteParameters are supplied.
+
+        The syn_level key accepts the numbers 1 or 2.
+        The FillCols key accepts the word "Yes".
+
+        """
+        # Check if the target is 'HtmlSelect'
+        if self.target == "HtmlSelect":
+            if self.syn_level not in ["1", "2", None]:
+                raise HilltopRequestError(
+                    "SynLevel must be '1' or '2' or blank when Target is 'HtmlSelect'"
+                )
+        else:
+            # If target is not 'HtmlSelect', syn_level should be None
+            if self.syn_level is not None:
+                raise HilltopRequestError(
+                    "SynLevel must be None when Target is not 'HtmlSelect'"
+                )
+
+        if self.site_parameters:
+            if self.fill_cols not in ["Yes", None]:
+                raise HilltopRequestError(
+                    "FillCols must be 'Yes' or left blank when "
+                    "SiteParameters are supplied"
+                )
+        else:
+            # If target is not 'HtmlSelect', syn_level should be None
+            if self.fill_cols is not None:
+                raise HilltopRequestError(
+                    "FillCols must be None when no SiteParameters are supplied"
+                )
+
+        return self
 
 
 class HilltopSite(BaseModel):
@@ -224,30 +304,30 @@ class HilltopSiteList(BaseModel):
 def gen_site_list_url(
     base_url: str,
     hts_endpoint: str,
-    location: Optional[str] = None,
-    bounding_box: Optional[str] = None,
-    measurement: Optional[str] = None,
-    collection: Optional[str] = None,
-    site_parameters: Optional[str] = None,
-    target: Optional[str] = None,
-    syn_level: Optional[str] = None,
-    fill_cols: Optional[str] = None,
+    service: str = "Hilltop",
+    request: str = "SiteList",
+    **kwargs,
 ):
     """Generate the URL for the Hilltop SiteList request."""
-    params = {
-        "Request": "SiteList",
-        "Service": "Hilltop",
-        "Location": location,
-        "BBox": bounding_box,
-        "Measurement": measurement,
-        "Collection": collection,
-        "SiteParameters": site_parameters,
-        "Target": target,
-        "SynLevel": syn_level,
-        "FillCols": fill_cols,
-    }
+    validated_params = HilltopSiteListRequestParameters(
+        base_url=base_url,
+        hts_endpoint=hts_endpoint,
+        service=service,
+        request=request,
+        **kwargs,
+    )
 
-    selected_params = {key: val for key, val in params.items() if val is not None}
+    selected_params = validated_params.model_dump(
+        exclude_unset=True,
+        by_alias=True,
+        exclude={"base_url", "hts_endpoint"},
+    )
 
-    url = f"{base_url}/{hts_endpoint}?{urlencode(selected_params, quote_via=quote)}"
+    print(selected_params)
+
+    url = (
+        f"{validated_params.base_url}/{validated_params.hts_endpoint}?"
+        f"{urlencode(selected_params, quote_via=quote)}"
+    )
+
     return url
