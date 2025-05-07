@@ -1,21 +1,15 @@
-import os
-from pathlib import Path
+"""Test the HilltopStatus class."""
 
 import pytest
-import xmltodict
-from dotenv import load_dotenv
-
-from hurl.client import HilltopClient
-from hurl.exceptions import HilltopHTTPError, HilltopResponseError
-from hurl.models.status import HilltopStatus
-from tests.conftest import remove_tags
-
-load_dotenv()
 
 
 @pytest.fixture
 def status_response_xml(request, remote_client):
     """Fixture for HilltopStatus response XML."""
+    from pathlib import Path
+
+    from hurl.models.status import HilltopStatus
+
     path = Path(__file__).parent.parent / "fixture_cache" / "status" / "response.xml"
 
     if request.config.getoption("--update"):
@@ -37,6 +31,7 @@ class TestRemoteFixtures:
     def test_response_xml_fixture(self, remote_client, status_response_xml):
         """Validate the status response XML fixture."""
         from hurl.models.status import HilltopStatus
+        from tests.conftest import remove_tags
 
         cached_xml = status_response_xml
 
@@ -83,6 +78,7 @@ class TestParameterValidation:
     def test_parameter_validators(self):
         """Test the parameter validators."""
         from hurl.models.request_parameters import HilltopRequestParameters
+        from hurl.exceptions import HilltopHTTPError
 
         # Test valid parameters
         params = HilltopRequestParameters(
@@ -109,6 +105,12 @@ class TestResponseValidation:
 
     def test_from_url(self, mock_hilltop_client_factory, status_response_xml):
         """Test from_url method."""
+        import os
+        from dotenv import load_dotenv
+
+        from hurl.models.status import HilltopStatus
+
+        load_dotenv()
 
         # Set up the mock client
         mock_hilltop_client = mock_hilltop_client_factory(
@@ -133,6 +135,12 @@ class TestResponseValidation:
 
     def test_from_params(self, mock_hilltop_client_factory, status_response_xml):
         """Test from_params method."""
+        import os
+        from dotenv import load_dotenv
+
+        from hurl.models.status import HilltopStatus
+
+        load_dotenv()
 
         # Set up the mock client
         mock_hilltop_client = mock_hilltop_client_factory(
@@ -163,6 +171,7 @@ class TestResponseValidation:
     def test_to_dict(self, status_response_xml):
         """Test to_dict method."""
         import xmltodict
+        from hurl.models.status import HilltopStatus
 
         site_list = HilltopStatus.from_xml(status_response_xml)
         # Convert to dictionary

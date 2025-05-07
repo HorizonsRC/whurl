@@ -1,9 +1,5 @@
 """Hilltop API Exceptions."""
 
-from typing import Any, Dict, Optional
-
-import httpx
-
 
 class HilltopError(Exception):
     """Base exception for all Hilltop-related errors."""
@@ -13,32 +9,13 @@ class HilltopError(Exception):
         super().__init__(message)
 
 
-class HilltopHTTPError(HilltopError):
-    """Exception for standard HTTP request failures."""
-
-    def __init__(
-        self,
-        message: str,
-        status_code: Optional[int] = None,
-        url: Optional[str] = None,
-        method: Optional[str] = None,
-        headers: Optional[Dict[str, str]] = None,
-    ):
-        self.status_code = status_code
-        self.url = url
-        self.method = method
-        self.headers = headers
-        full_msg = f"{message} [Status: {status_code}]" if status_code else message
-        super().__init__(full_msg)
-
-
-class HilltopRequestError(Exception):
+class HilltopRequestError(HilltopError):
     """Exception for malformed Hilltop API request."""
 
     def __init__(
         self,
         message: str,
-        url: Optional[str] = None,
+        url: str | None = None,
     ):
         self.url = url
         full_msg = f"{message} [URL: {url}]" if url else message
@@ -51,8 +28,8 @@ class HilltopResponseError(HilltopError):
     def __init__(
         self,
         message: str,
-        url: Optional[str] = None,
-        raw_response: Optional[str] = None,
+        url: str | None = None,
+        raw_response: str | None = None,
     ):
         self.raw_response = raw_response
         self.url = url
@@ -69,8 +46,8 @@ class HilltopParseError(HilltopError):
     def __init__(
         self,
         message: str,
-        url: Optional[str] = None,
-        raw_response: Optional[str] = None,
+        url: str | None = None,
+        raw_response: str | None = None,
     ):
         self.raw_response = raw_response
         self.url = url
@@ -84,24 +61,5 @@ class HilltopParseError(HilltopError):
 class HilltopConfigError(HilltopError):
     """Exception for configuration issues."""
 
-    pass
-
-
-# Utility function for consistent exception raising
-def raise_for_response(response: httpx.Response) -> None:
-    """Raise HilltopHTTPError if request failed."""
-    if response.is_success:
-        return
-
-    try:
-        error_detail = response.json().get("error", "Unknown error")
-    except ValueError:
-        error_detail = response.text or "No error details"
-
-    raise HilltopRequestError(
-        message=f"API request failed: {error_detail}",
-        status_code=response.status_code,
-        url=str(response.url),
-        method=response.request.method,
-        headers=dict(response.headers),
-    )
+    def __init__(self, message: str = "Hilltop configuration error"):
+        super().__init__(message)

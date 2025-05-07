@@ -1,13 +1,14 @@
+
 """Validation models for request parameters."""
 
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlencode, quote
 
 from pydantic import BaseModel, Field, field_validator
 
-from hurl.exceptions import HilltopHTTPError
+from hurl.exceptions import HilltopRequestError
 
 
-class HilltopRequestParameters(BaseModel):
+class BaseHilltopRequest(BaseModel):
     """Base model for Hilltop request parameters."""
 
     base_url: str = Field(
@@ -32,28 +33,28 @@ class HilltopRequestParameters(BaseModel):
         """Validate the base URL."""
         result = urlparse(value)
         if not all([result.scheme, result.netloc]):
-            raise HilltopHTTPError("Invalid base URL")
+            raise HilltopRequestError("Invalid base URL")
         return value
 
     @field_validator("hts_endpoint", mode="before")
     def validate_hts_endpoint(cls, value):
         """Validate the HTS endpoint."""
         if not value.endswith(".hts"):
-            raise HilltopHTTPError("HTS endpoint must end with .hts")
+            raise HilltopRequestError("HTS endpoint must end with .hts")
         return value
 
     @field_validator("service", mode="before")
     def validate_service(cls, value):
         """Validate the service name."""
         if not value:
-            raise HilltopHTTPError("Service name cannot be empty")
+            raise HilltopRequestError("Service name cannot be empty")
         if value in ["SOS", "WFS"]:
-            raise HilltopHTTPError(
+            raise HilltopRequestError(
                 "SOS and WFS are not currently supported. "
                 'Currently only "Hilltop" is supported'
             )
         if value != "Hilltop":
-            raise HilltopHTTPError(
+            raise HilltopRequestError(
                 'Unknown service name. Currently only "Hilltop" is supported'
             )
         return value
@@ -62,10 +63,25 @@ class HilltopRequestParameters(BaseModel):
     def validate_request(cls, value):
         """Validate the request name."""
         if not value:
-            raise HilltopHTTPError("Request name cannot be empty")
+            raise HilltopRequestError("Request name cannot be empty")
         if value not in ["Status", "SiteList", "MeasurementList", "GetData"]:
-            raise HilltopHTTPError(
+            raise HilltopRequestError(
                 'Unknown request name. Currently only "Status", "SiteList", '
                 '"MeasurementList" and "GetData" are supported'
             )
         return value
+
+    def gen_url(self) -> str:
+        """Generate the URL for the Hilltop request."""
+        selected_params = self.model_dump(
+            exclude_none=True,
+            by_alias=True,
+            exclude={"base_url", "hts_endpoint"},
+        )
+
+        url = (
+            f"{self.base_url}/{self.hts_endpoint}?"
+            f"{urlencode(selected_params, quote_via=quote)}"
+        )
+
+        return url

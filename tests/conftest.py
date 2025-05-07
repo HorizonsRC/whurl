@@ -5,8 +5,6 @@ from pathlib import Path
 import pytest
 from lxml import etree
 
-from hurl.models.measurement_list import HilltopMeasurementList
-
 
 def pytest_addoption(parser):
     """Add command line options for pytest."""

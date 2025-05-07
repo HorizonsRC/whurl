@@ -1,3 +1,15 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name="hurl"
+version="0.1.0"
+
+[tool.setuptools]
+packages = ["hurl"]
+package-dir = {"" = "."}
+
 [tool.pytest.ini_options]
 markers = [
   "slow: marks tests as slow (deselect as '-m \"not slow\"')",
