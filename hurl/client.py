@@ -9,9 +9,9 @@ from pydantic import BaseModel
 from hurl.exceptions import (HilltopConfigError, HilltopParseError,
                              HilltopResponseError)
 from hurl.schemas.requests import (MeasurementListRequest, SiteListRequest,
-                                   StatusRequest)
+                                   StatusRequest, GetDataRequest)
 from hurl.schemas.responses import (MeasurementListResponse, SiteListResponse,
-                                    StatusResponse)
+                                    StatusResponse, GetDataResponse)
 
 load_dotenv()
 
@@ -83,10 +83,20 @@ class HilltopClient:
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        print(params.gen_url())
         response = self.session.get(params.gen_url())
         self._validate_response(response)
         return StatusResponse.from_xml(response.text)
+
+    def get_data(self, **kwargs) -> GetDataResponse:
+        """Fetch data from Hilltop Server."""
+        params = GetDataRequest(
+            base_url=self.base_url,
+            hts_endpoint=self.hts_endpoint,
+            **kwargs,
+        )
+        response = self.session.get(params.gen_url())
+        self._validate_response(response)
+        return GetDataResponse.from_xml(response.text)
 
     def close(self):
         """Close the HTTP session."""
