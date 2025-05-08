@@ -5,10 +5,10 @@ from urllib.parse import quote, urlencode
 import httpx
 import pandas as pd
 import xmltodict
-from pydantic import (BaseModel, Field, ConfigDict, PrivateAttr, field_validator,
-                      model_validator)
+from pydantic import (BaseModel, ConfigDict, Field, PrivateAttr,
+                      field_validator, model_validator)
 
-from hurl.exceptions import HilltopParseError
+from hurl.exceptions import HilltopParseError, HilltopResponseError
 
 
 class GetDataResponse(BaseModel):
@@ -27,7 +27,7 @@ class GetDataResponse(BaseModel):
                 item_name: str = Field(alias="ItemName")
                 item_format: str = Field(alias="ItemFormat")
                 divisor: float | None = Field(alias="Divisor", default=None)
-                units: str = Field(alias="Units")
+                units: str | None = Field(alias="Units", default=None)
                 format: str = Field(alias="Format")
 
                 def to_dict(self):
@@ -110,9 +110,7 @@ class GetDataResponse(BaseModel):
         site_name: str = Field(alias="@SiteName")
         data_source: DataSource = Field(alias="DataSource")
         data: Data = Field(alias="Data", default_factory=list)
-        tideda_site_number: str | None = Field(
-            alias="TidedaSiteNumber", default=None
-        )
+        tideda_site_number: str | None = Field(alias="TidedaSiteNumber", default=None)
 
         @model_validator(mode="after")
         def transfer_item_info(self) -> "self":
@@ -124,6 +122,7 @@ class GetDataResponse(BaseModel):
 
     agency: str = Field(alias="Agency", default=None)
     measurement: list[Measurement] = Field(alias="Measurement", default_factory=list)
+    error: str | None = Field(alias="Error", default=None)
 
     @field_validator("measurement", mode="before")
     def validate_measurement(cls, value: dict | list) -> list[Measurement]:
@@ -138,10 +137,49 @@ class GetDataResponse(BaseModel):
         """Convert the model to a dictionary."""
         return self.model_dump(exclude_unset=True, by_alias=True)
 
+    @model_validator(mode="after")
+    def handle_error(self) -> "self":
+        """Handle errors in the response."""
+        if self.error is not None:
+            raise HilltopResponseError(
+                f"Hilltop MeasurementList error: {self.error}",
+                raw_response=self.model_dump(exclude_unset=True, by_alias=True),
+            )
+        return self
+
+    def to_dataframe(self):
+        """Convert the model to a pandas DataFrame."""
+        frames = []
+        for measurement in self.measurement:
+            frame = measurement.data.timeseries
+            if not frame.empty:
+                frame["Site"] = measurement.site_name
+                frame["DataSource"] = measurement.data_source.name
+                frames.append(frame)
+        if len(frames) == 0:
+            return pd.DataFrame()
+        else:
+            return pd.concat(frames, ignore_index=False)
+
     @classmethod
     def from_xml(cls, xml_str: str) -> "GetDataResponse":
         """Parse XML string into GetData object."""
         response = xmltodict.parse(xml_str)
+        if "HilltopServer" in response:
+            # HilltopServer is the root element for Hilltop responses
+            # Except for GetData. BUT if it's an error we're back to HilltopError
+            data = response["HilltopServer"]
+            if "Error" in data:
+                raise HilltopResponseError(
+                    f"Hilltop GetData error: {data['Error']}",
+                    raw_response=xml_str,
+                )
+            else:
+                # This is a Hilltop error response, not a GetData response
+                raise HilltopParseError(
+                    "Unexpected Hilltop XML response.",
+                    raw_response=xml_str,
+                )
         if "Hilltop" not in response:
             raise HilltopParseError(
                 "Unexpected Hilltop XML response.",

@@ -61,6 +61,7 @@ class HilltopClient:
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
+        print(params.gen_url())
         response = self.session.get(params.gen_url())
         self._validate_response(response)
         return MeasurementListResponse.from_xml(response.text)
@@ -94,6 +95,7 @@ class HilltopClient:
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
+        print(params.gen_url())
         response = self.session.get(params.gen_url())
         self._validate_response(response)
         return GetDataResponse.from_xml(response.text)

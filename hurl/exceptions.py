@@ -54,7 +54,7 @@ class HilltopParseError(HilltopError):
 
         # If we know the url, include it in the message
         if url:
-            message = f"{message} [URL: {url}]"
+            message = f"{message} [URL: {url}], Raw response: {raw_response}"
         super().__init__(f"Parse error: {message}")
 
 
