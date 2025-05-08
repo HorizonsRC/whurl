@@ -86,12 +86,11 @@ class TestResponseValidation:
             text=all_response_xml,
         )
 
-        client = HilltopClient(
+        with HilltopClient(
             base_url=base_url,
             hts_endpoint=hts_endpoint,
-        )
-
-        result = client.get_site_list()
+        ) as client:
+            result = client.get_site_list()
 
         assert isinstance(result, SiteListResponse)
         assert result.agency == "Horizons"

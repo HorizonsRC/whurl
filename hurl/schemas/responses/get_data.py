@@ -55,10 +55,6 @@ class GetDataResponse(BaseModel):
                 """Convert the model to a dictionary."""
                 return self.model_dump(exclude_unset=True, by_alias=True)
 
-            def to_dict(self):
-                """Convert the model to a dictionary."""
-                return self.model_dump(exclude_unset=True, by_alias=True)
-
         class Data(BaseModel):
             """Represents the data model containing data points."""
 

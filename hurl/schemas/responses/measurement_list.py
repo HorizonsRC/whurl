@@ -72,26 +72,31 @@ class MeasurementListResponse(BaseModel):
         )
 
         @field_validator("measurements", mode="before")
-        def validate_measurements(cls, value) -> list[dict[str, any]]:
+        def validate_measurements(cls, value) -> list["Measurement"]:
             """Ensure measurements is a list, even when there is only one."""
             if value is None:
                 return []
             if isinstance(value, dict):
-                return [value]
-            return value  # Already a list
+                return [cls.Measurement(**value)]
+            return [cls.Measurement(**item) for item in value]
 
         def to_dict(self):
             """Convert the model to a dictionary."""
             return self.model_dump(exclude_unset=True, by_alias=True)
 
     agency: str | None = Field(alias="Agency", default=None)
-    data_sources: list["DataSource"] = Field(
-        alias="DataSource", default_factory=list
-    )
-    measurements: list["Measurement"] = Field(
-        alias="Measurement", default_factory=list
-    )
+    data_sources: list["DataSource"] = Field(alias="DataSource", default_factory=list)
+    measurements: list["DataSource.Measurement"] = Field(alias="Measurement", default_factory=list)
     error: str | None = Field(alias="Error", default=None)
+
+    @field_validator("measurements", mode="before")
+    def validate_measurements(cls, value) -> list["Measurement"]:
+        """Ensure measurements is a list, even when there is only one."""
+        if value is None:
+            return []
+        if isinstance(value, dict):
+            return [cls.DataSource.Measurement(**value)]
+        return [cls.DataSource.Measurement(**item) for item in value]
 
     @model_validator(mode="after")
     def handle_error(self) -> "self":
