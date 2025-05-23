@@ -6,6 +6,7 @@ entries in the GW WQ files.
 
 """
 
+import json
 import os
 import re
 
@@ -28,169 +29,333 @@ def search_for_bore_number(text):
 
     return match.group(0) if match else None
 
- 
+
 def handle_file_1(filename):
     """Handle file access_data/GWQuality Data up to end of 2007.xlsx."""
     print("Processing file: ", filename)
     # Read the Excel file into a DataFrame
     df = pd.read_excel(filename)
-    print("Columns in file:", df.columns)
+    print("columns in file:", df.columns)
     print(df.head())
     processed_sites = []
 
-    col_lookup = {
-        "Temp": [
-            "Field Temperature (HRC)",
-            "Temperature (HRC)",
-        ],
-        "EC": [
-            "Field Conductivity (HRC)",
-            "Conductivity (HRC)",
-        ],
-        "TDS": "Total Dissolved Solids (HRC)",
-        "pH": [
-            "Field pH (HRC)",
-            "pH (HRC)",
-        ],
-        "Eh": "Redox Potential (HRC)",
-        "Turbidity": "Turbidity EPA (HRC)",
-        "Ca": [
-            "Calcium Hardness (HRC)",
-            "Dissolved Calcium (HRC)",
-        ],
-        "Mg": [
-            "Acid Soluble Magnesium (HRC)",
-            "Dissolved Magnesium (HRC)",
-        ],
-        "Na": [
-            "Acid Soluble Sodium (HRC)",
-            "Dissolved Sodium (HRC)",
-        ],
-        "K": [
-            "Acid Soluble Potassium (HRC)",
-            "Total Potassium (HRC)",
-            "Dissolved Potassium (HRC)",
-        ],
-        "Fe": [
-            "Acid Soluble Iron (HRC)",
-            "Total Iron (HRC)",
-            "Dissolved Iron (HRC)",
-        ],
-        "Mn": [
-            "Total Manganese (HRC)",
-            "Dissolved Manganese (HRC)",
-        ],
-        "B": [
-            "Total Boron (HRC)",
-            "Dissolved Boron (HRC)",
-        ],
-        "HCO3": [
-            "Bicarbonate (HRC)",
-            "Alkalinity bicarbonate (HRC)",
-        ],
-        "CO2": "Free Carbon Dioxide (HRC)",
-        "SO4": "Sulfate (HRC)",
-        "Cl": "Chloride (HRC)",
-        "F": "Fluoride (HRC)",
-        "Br": "Bromide (HRC)",
-        "NH4": "Ammoniacal-N (HRC)",
-        "NO2": "Nitrite (HRC)",
-        "NO3": "Nitrate (HRC)",
-        "PO4": "TDP Phosphate (HRC)",
-    }
+    # Read in the col lookup from a json file
+    with open("param_lookup_DB1.json", "r") as f:
+        col_lookup = json.load(f)
+    records = df.melt(id_vars=["Well", "Date"], value_vars=col_lookup.keys())
+    # Drop all records with value = nan
+    records = records.dropna(subset=["value"])
 
     with HilltopClient(
         hts_endpoint="Groundwater.hts",
     ) as client:
-        # Get the site list
-        hilltop_sites = client.get_site_list(location="Yes").to_dataframe()
+        results = []
 
-        for index, row in df.iterrows():
-            site_entry = {
-                "access_table": filename.replace(".xlsx", ""),
-                "name": None,
-                "found": False,
-                "found_as": None,
-                "acc_easting": None,
-                "acc_northing": None,
-                "htp_easting": None,
-                "htp_northing": None,
-                "location_match": False,
-                "other_names": None,
+        well_param_cache = {}
+        hilltop_sites = client.get_site_list(location="Yes").to_dataframe()
+        for index, row in records.iterrows():
+            print("================================================")
+            print(
+                f"Processing row {index}: Date={row['Date']}, "
+                f"Var={row['variable']}, Value={row['value']}"
+            )
+            entry = {
+                "well": row["Well"],
+                "well found": None,
+                "parameter": row["variable"],
+                "parameter found": None,
+                "found under data source": None,
+                "found as measurement": None,
+                "record date": row["Date"],
+                "record value": row["value"],
+                "timestamp match": None,
+                "value match": None,
+                "record value in hts": None,
             }
 
-            # Check the "Well" column
+            # Check if well in sites
             if str(row["Well"]) in hilltop_sites["@Name"].values:
-                site_entry["name"] = str(row["Well"])
-                site_entry["found"] = True
-                site_entry["found_as"] = "Well"
-            elif search_for_bore_number(row["Well"]) in hilltop_sites["@Name"].values:
-                site_entry["name"] = search_for_bore_number(row["Well"])
-                site_entry["found"] = True
-                site_entry["found_as"] = "substring of Well"
-                site_entry["other_names"] = row["Well"]
-            if site_entry["found"]:
-                correct_site = hilltop_sites[
-                    hilltop_sites["@Name"] == site_entry["name"]
-                ]
-                if not correct_site.empty:
-                    site_entry["htp_easting"] = correct_site["Easting"].values[0]
-                    site_entry["htp_northing"] = correct_site["Northing"].values[0]
-            else:
-                site_entry["name"] = row["Well"]
-
-            if site_entry["found"]:
-                measurement_list = client.get_measurement_list(
-                    site=site_entry["name"],
-                    units="Yes",
-                ).to_dataframe()
-                print("Measurement list for site: ", site_entry["name"])
-
-                for col, htp_name in col_lookup.items():
-                    if not isinstance(htp_name, list):
-                        htp_name = [htp_name]
-                    for measurement in htp_name:
-                        if measurement in measurement_list["DataSource"].values:
-                            found_measurement = measurement_list[
-                                measurement_list["DataSource"] == measurement
-                            ]["RequestAs"]
-
-                            if not found_measurement.empty:
-                                found_measurement = found_measurement.values[0]
+                entry["well found"] = True
+                print("Found well: ", row["Well"])
+                # Find a measurement_list for this well
+                if str(row["Well"]) in well_param_cache:
+                    well_params = well_param_cache[str(row["Well"])]
+                else:
+                    well_params = client.get_measurement_list(
+                        site=str(row["Well"]),
+                        units="Yes",
+                    ).to_dataframe()
+                    well_param_cache[str(row["Well"])] = well_params
+                # Check if variable in well_params under any name
+                poss_names = col_lookup[row["variable"]]
+                for name in poss_names:
+                    if name in well_params["DataSource"].values:
+                        entry["parameter found"] = True
+                        entry["found under data source"] = name
+                        found_measurement = well_params[
+                            well_params["DataSource"] == name
+                        ]["RequestAs"]
+                        if not found_measurement.empty:
                             print(
-                                f"Found measurement {measurement} in site "
-                                f"{site_entry['name']} as {found_measurement}"
+                                f"Found variable {row['variable']} "
+                                f"as {found_measurement.values[0]}"
                             )
-                            data_value = row[col]
-                            data_start_time = row["Date"]
-                            data_end_time = row["Date"] + pd.Timedelta(days=1)
-
-                            if not pd.isna(data_value):
+                            entry["found as measurement"] = found_measurement.values[0]
+                        else:
+                            print(
+                                f"Found data source {row['variable']} "
+                                f"but no measurement found"
+                            )
+                            entry["found as measurement"] = None
+                        try:
+                            hts_data = client.get_data(
+                                site=str(row["Well"]),
+                                measurement=entry["found as measurement"],
+                                from_datetime=str(row["Date"]),
+                                to_datetime=str(row["Date"]),
+                            ).to_dataframe()
+                            if not hts_data.empty:
+                                found_data = hts_data[hts_data.columns[0]].values[0]
+                                entry["timestamp match"] = True
                                 print(
-                                    f"Searching for value: {row[col]} "
-                                    f"taken at {row['Date']}"
+                                    "Timestamp match: ",
+                                    hts_data,
                                 )
-                                try:
-                                    hts_data = client.get_data(
-                                        site=site_entry["name"],
-                                        measurement=found_measurement,
-                                        from_datetime=str(data_start_time),
-                                        to_datetime=str(data_end_time),
-                                    ).to_dataframe()
-                                    if not hts_data.empty:
-                                        print(
-                                            "Data found: ",
-                                            hts_data[hts_data.columns[0]],
+                                if float(found_data) == float(row["value"]):
+                                    print(
+                                        f"Data matches: {row['value']} == "
+                                        f"{found_data}"
+                                    )
+                                    entry["value match"] = True
+                                    entry["record value in hts"] = found_data
+                                    break
+                                elif (
+                                    (float(found_data) * 10 == float(row["value"]))
+                                    or (float(found_data) / 10 == float(row["value"]))
+                                    or (
+                                        (  # data within 10% of each other
+                                            float(found_data) * 0.9
+                                            <= float(row["value"])
                                         )
-                                    else:
-                                        print("No data found.")
-                                except HilltopResponseError as e:
-                                    print(f"No data found in this time range.")
-                                    hts_data = pd.DataFrame()
-            processed_sites.append(site_entry)
+                                        and (
+                                            float(found_data) * 1.1
+                                            >= float(row["value"])
+                                        )
+                                    )
+                                ):
+                                    print("Close match:")
+                                    entry["value match"] = "close"
+                                    entry["record value in hts"] = found_data
+                                else:
+                                    print(
+                                        f"Data does not match: {row['value']} != "
+                                        f"{found_data}"
+                                    )
+                                    entry["value match"] = False
+                                    entry["record value in hts"] = found_data
+                            else:
+                                print("No data found.")
+                                entry["timestamp match"] = False
+                        except HilltopResponseError:
+                            print(f"No data found in this time range.")
+                            entry["timestamp match"] = False
+                if entry["parameter found"] is None:
+                    print(f"Parameter not found: {row['variable']}")
+                    entry["parameter found"] = False
+            else:
+                print(f"Well not found: {row['Well']}")
+                entry["well found"] = False
+            results.append(entry)
 
-    processed_df = pd.DataFrame(processed_sites).drop_duplicates()
-    processed_df.to_csv("crosschecked_lab_measurements.csv", index=False)
+        results_df = pd.DataFrame(results)
+        results_df.to_csv("wq_crosscheck_results_db1.csv", index=False)
+
+        post_map = {}
+        for index, row in results_df.iterrows():
+            if row["parameter"] not in post_map.keys():
+                post_map[row["parameter"]] = {}
+
+            if row["found under data source"] is None:
+                key = "None"
+            else:
+                key = row["found under data source"]
+            if key in post_map[row["parameter"]].keys():
+                post_map[row["parameter"]][key] += 1
+            else:
+                post_map[row["parameter"]][key] = 1
+
+        # Save the post_map to a json file
+        with open("parameter_results_db1.json", "w") as f:
+            json.dump(post_map, f, indent=4)
+
+
+def handle_file_2(filename):
+    """Handle file access_data/GWQuality Data up to end of 2007.xlsx."""
+    print("Processing file: ", filename)
+    # Read the Excel file into a DataFrame
+    df = pd.read_excel(filename, dtype={"Station_ID": str})
+    print("columns in file:", df.columns)
+    print(df.head())
+    processed_sites = []
+
+    # Read in the col lookup from a json file
+    with open("param_lookup_DB2.json", "r") as f:
+        col_lookup = json.load(f)
+
+    records = df.dropna(subset=["Value"])
+
+    with HilltopClient(
+        hts_endpoint="Groundwater.hts",
+    ) as client:
+        results = []
+
+        well_param_cache = {}
+        hilltop_sites = client.get_site_list(location="Yes").to_dataframe()
+        for index, row in records.iterrows():
+            print("================================================")
+            print(
+                f"Processing row {index}: Date={row['Date_Collected']}, "
+                f"Var={row['Parameter']}, Value={row['Value']}"
+            )
+            entry = {
+                "well": row["Station_ID"],
+                "well found": None,
+                "parameter": row["Parameter"],
+                "parameter found": None,
+                "found under data source": None,
+                "found as measurement": None,
+                "record date": row["Date_Collected"],
+                "record value": row["Value"],
+                "timestamp match": None,
+                "value match": None,
+                "record value in hts": None,
+            }
+
+            # Check if well in sites
+            if str(row["Station_ID"]) in hilltop_sites["@Name"].values:
+                entry["well found"] = True
+                print("Found well: ", row["Station_ID"])
+                # Find a measurement_list for this well
+                if str(row["Station_ID"]) in well_param_cache:
+                    well_params = well_param_cache[str(row["Station_ID"])]
+                else:
+                    well_params = client.get_measurement_list(
+                        site=str(row["Station_ID"]),
+                        units="Yes",
+                    ).to_dataframe()
+                    well_param_cache[str(row["Station_ID"])] = well_params
+                # Check if Parameter in well_params under any name
+                poss_names = col_lookup[row["Parameter"]]
+                if poss_names is None:
+                    entry["parameter found"] = False
+                    continue
+
+                for name in poss_names:
+                    if name in well_params["DataSource"].values:
+                        entry["parameter found"] = True
+                        entry["found under data source"] = name
+                        found_measurement = well_params[
+                            well_params["DataSource"] == name
+                        ]["RequestAs"]
+                        if not found_measurement.empty:
+                            print(
+                                f"Found Parameter {row['Parameter']} "
+                                f"as {found_measurement.values[0]}"
+                            )
+                            entry["found as measurement"] = found_measurement.values[0]
+                        else:
+                            print(
+                                f"Found data source {row['Parameter']} "
+                                f"but no measurement found"
+                            )
+                            entry["found as measurement"] = None
+                        try:
+                            hts_data = client.get_data(
+                                site=str(row["Station_ID"]),
+                                measurement=entry["found as measurement"],
+                                from_datetime=str(row["Date_Collected"]),
+                                to_datetime=str(row["Date_Collected"]),
+                            ).to_dataframe()
+                            if not hts_data.empty:
+                                found_data = hts_data[hts_data.columns[0]].values[0]
+                                entry["timestamp match"] = True
+                                # handle the case where the value is a string
+                                try:
+                                    value = float(row["Value"])
+                                    found_data = float(found_data)
+                                except ValueError:
+                                    if str(row["Value"]) == str(found_data):
+                                        entry["value match"] = True
+                                        entry["record value in hts"] = found_data
+                                    break
+
+                                if found_data == value:
+                                    print(
+                                        f"Data matches: {row['Value']} == "
+                                        f"{found_data}"
+                                    )
+                                    entry["value match"] = True
+                                    entry["record value in hts"] = found_data
+                                    break
+                                elif (
+                                    (found_data * 10 == value)
+                                    or (found_data / 10 == value)
+                                    or (
+                                        (  # data within 10% of each other
+                                            found_data * 0.9 <= value
+                                        )
+                                        and (found_data * 1.1 >= value)
+                                    )
+                                ):
+                                    print("Close match:")
+                                    entry["value match"] = "close"
+                                    entry["record value in hts"] = found_data
+                                else:
+                                    print(
+                                        f"Data does not match: {row['Value']} != "
+                                        f"{found_data}"
+                                    )
+                                    entry["value match"] = False
+                                    entry["record value in hts"] = found_data
+                            else:
+                                print("No data found.")
+                                entry["timestamp match"] = False
+                        except HilltopResponseError:
+                            print(f"No data found in this time range.")
+                            entry["timestamp match"] = False
+                if entry["parameter found"] is None:
+                    print(f"Parameter not found: {row['Parameter']}")
+                    entry["parameter found"] = False
+            else:
+                print(f"Station_ID not found: {row['Station_ID']}")
+                entry["well found"] = False
+            results.append(entry)
+
+        results_df = pd.DataFrame(results)
+        results_df.to_csv("wq_crosscheck_results_db2.csv", index=False)
+
+        print("Results saved to wq_crosscheck_results_db2.csv")
+
+        # Get all the unique parameters
+
+        post_map = {}
+        for index, row in results_df.iterrows():
+            if row["parameter"] not in post_map.keys():
+                post_map[row["parameter"]] = {}
+
+            if row["found under data source"] is None:
+                key = "None"
+            else:
+                key = row["found under data source"]
+            if key in post_map[row["parameter"]].keys():
+                post_map[row["parameter"]][key] += 1
+            else:
+                post_map[row["parameter"]][key] = 1
+
+        # Save the post_map to a json file
+
+        with open("parameter_results_db2.json", "w") as f:
+            json.dump(post_map, f, indent=4)
 
 
 if __name__ == "__main__":
@@ -198,3 +363,5 @@ if __name__ == "__main__":
     filename_2 = "access_data/Horizons_Water_Quality.xlsx"
 
     handle_file_1(filename_1)
+
+    handle_file_2(filename_2)

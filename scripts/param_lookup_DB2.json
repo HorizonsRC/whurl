@@ -1,0 +1,126 @@
+{
+  "Alkalinity Bicarbonate": "Alkalinity bicarbonate (HRC)",
+  "Alkalinity Carbonate": "Alkalinity carbonate (HRC)",
+  "Aluminium Total": "Total Aluminium (HRC)",
+  "Ammoniacal Nitrogen": "Ammoniacal-N (HRC)",
+  "Ammonium": null,
+  "Arsenic Acid Soluble": "Acid Soluble Arsenic (HRC)",
+  "Arsenic Dissolved": [
+    "Dissolved Arsenic (HRC)",
+    "Dissolved Arsenic (APHA 3125)"
+  ],
+  "Arsenic Trace": [
+    "Dissolved Arsenic (HRC)",
+    "Dissolved Arsenic (APHA 3125)",
+    "Acid Soluble Arsenic (HRC)",
+    "Total Arsenic (HRC)"
+  ],
+  "Barometric Pressure": "Field Baro Pressure (HRC)",
+  "Bicarbonate": "Bicarbonate (HRC)",
+  "Biochemical Oxygen Demand": "BOD5 (HRC)",
+  "Boron": ["Total Boron (HRC)", "Dissolved Boron (HRC)"],
+  "Boron Trace": ["Total Boron (HRC)", "Dissolved Boron (HRC)"],
+  "Bromide": "Bromide (HRC)",
+  "Cadmium Acid Soluble": null,
+  "Cadmium Total": "Total Cadmium (HRC)",
+  "Calcium": "Dissolved Calcium (HRC)",
+  "Carbon Dioxide": ["Free Carbon Dioxide (HRC)"],
+  "Carbonaceous Biochemical Oxygen Demand": "Total Carbonaceous BOD5 (HRC)",
+  "Chloride": ["Chloride (HRC)"],
+  "Chromium Total": "Total Chromium (HRC)",
+  "Chromium Trace": "Total Chromium (HRC)",
+  "Conductivity Field": ["Field Conductivity (HRC)", "Conductivity (HRC)"],
+  "Conductivity at 25degC": ["Field Conductivity (HRC)", "Conductivity (HRC)"],
+  "Copper Dissolved": "Total Copper (HRC)",
+  "Copper Total": "Total Copper (HRC)",
+  "Copper Trace": "Total Copper (HRC)",
+  "Dissolved Oxygen": "Dissolved Oxygen (HRC)",
+  "Dissolved Oxygen Lab": "Dissolved Oxygen (HRC)",
+  "Dissolved Oxygen Saturation": "Field DO Saturation (HRC)",
+  "Dissolved Reactive Phosphorus": "Dissolved Reactive Phosphorus (HRC)",
+  "E Coli": ["E. coli by MPN (HRC)", "E.coli MPN DF4 (HRC)"],
+  "Enterococci": ["Enterococci (HRC)", "Enterococci by MPN (HRC)"],
+  "Faecal Coliforms": [
+    "Total Coliforms (HRC)",
+    "Faecal coliforms by MPN (HRC)"
+  ],
+  "Fluoride": ["Fluoride (HRC)"],
+  "Hardness Calcium": "Calcium Hardness (HRC)",
+  "Hardness Magnesium": "Magnesium Hardness (HRC)",
+  "Hardness Total": "Total Hardness (HRC)",
+  "Iron Soluble Trace": ["Dissolved Iron (HRC)", "Acid Soluble Iron (HRC)"],
+  "Iron Total": "Total Iron (HRC)",
+  "Lead Total": "Total Lead (HRC)",
+  "Magnesium": [
+    "Total Magnesium (HRC)",
+    "Dissolved Magnesium (HRC)",
+    "Acid Soluble Magnesium (HRC)"
+  ],
+  "Manganese": [
+    "Total Manganese (HRC)",
+    "Dissolved Manganese (HRC)",
+    "Acid Soluble Manganese (HRC)"
+  ],
+  "Manganese Trace": [
+    "Total Manganese (HRC)",
+    "Dissolved Manganese (HRC)",
+    "Acid Soluble Manganese (HRC)"
+  ],
+  "Nickel Total": "Total Nickel (HRC)",
+  "Nitrate": [
+    "Nitrate (HRC) Raw Compare",
+    "Nitrate (HRC)",
+    "Nitrate (HRC-NEMS)"
+  ],
+  "Nitrate Nitrogen": null,
+  "Nitrite": ["Nitrite (HRC)", "Nitrite (HRC-NEMS)"],
+  "Nitrite Nitrogen": null,
+  "Nitrogen Total": [
+    "Total Nitrogen (HRC)",
+    "Total Oxydised Nitrogen (HRC)",
+    "Soluble Inorganic Nitrogen (HRC)",
+    "SIN Calculated (HRC)"
+  ],
+  "Oxidation Reduction Potential": null,
+  "Phosphate": ["TDP Phosphate (HRC)", "POM (HRC)"],
+  "Phosphate Phosphorus": "TDP Phosphate (HRC)",
+  "Potassium": [
+    "Total Potassium (HRC)",
+    "Dissolved Potassium (HRC)",
+    "Acid Soluble Potassium (HRC)"
+  ],
+  "Silica": ["Total Silica (HRC)", "Dissolved Silica (HRC)"],
+  "Silica Trace": ["Total Silica (HRC)", "Dissolved Silica (HRC)"],
+  "Sodium": ["Dissolved Sodium (HRC)", "Acid Soluble Sodium (HRC)"],
+  "Static Water Level": ["Water Level below Ground", "GroundWater"],
+  "Static Water Level Pressure": null,
+  "Temperature": [
+    "Temperature (HRC)",
+    "Field Temperature (HRC)",
+    "Sample Temperature on Arrival (HRC)",
+    "NEMS Temperature Deviation"
+  ],
+  "Total Alkalinity": ["Total Alkalinity (HRC)"],
+  "Total Coliforms": ["Total Coliforms (HRC)"],
+  "Total Dissolved Phosphorus": [
+    "TDP Phosphate (HRC)",
+    "Total Phosphorus (HRC)"
+  ],
+  "Total Dissolved Solids": ["Total Dissolved Solids (HRC)"],
+  "Total Nitrogen": ["Total Nitrogen (HRC)"],
+  "Total Oxidised Nitrogen": [
+    "Total Oxidised Nitrogen (HRC)",
+    "Total Oxidised Nitrogen (LAWNZ)",
+    "TON Flux"
+  ],
+  "Total Petroleum Hydrocarbons": null,
+  "Total Suspended Solids": "Total Suspended Solids (HRC)",
+  "Turbidity": [
+    "Turbidity EPA (HRC)",
+    "Turbidity ISO (HRC)",
+    "Turbidity ISO-NTU (HRC)",
+    "QA - Turb ISO - SSC Ratio"
+  ],
+  "Zinc Total": "Total Zinc (HRC)",
+  "pH": ["pH (HRC)", "Field pH (HRC)"]
+}

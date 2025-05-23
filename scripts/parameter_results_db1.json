@@ -1,0 +1,97 @@
+{
+    "Temp": {
+        "Temperature (HRC)": 206,
+        "None": 888,
+        "Field Temperature (HRC)": 562,
+        "Sample Temperature on Arrival (HRC)": 2
+    },
+    "EC": {
+        "Conductivity (HRC)": 1992,
+        "None": 1321,
+        "Field Conductivity (HRC)": 303
+    },
+    "TDS": {
+        "None": 501
+    },
+    "pH": {
+        "pH (HRC)": 1006,
+        "None": 2002,
+        "Field pH (HRC)": 546
+    },
+    "Eh": {
+        "None": 88
+    },
+    "Turbidity": {
+        "Turbidity EPA (HRC)": 357
+    },
+    "Ca": {
+        "Dissolved Calcium (HRC)": 766,
+        "None": 1518,
+        "Calcium Hardness (HRC)": 149
+    },
+    "Mg": {
+        "Dissolved Magnesium (HRC)": 741,
+        "None": 1656,
+        "Acid Soluble Magnesium (HRC)": 4
+    },
+    "Na": {
+        "Dissolved Sodium (HRC)": 1066,
+        "None": 1221,
+        "Acid Soluble Sodium (HRC)": 19
+    },
+    "K": {
+        "Dissolved Potassium (HRC)": 1017,
+        "None": 1203,
+        "Acid Soluble Potassium (HRC)": 19
+    },
+    "Fe": {
+        "Dissolved Iron (HRC)": 637,
+        "None": 2090,
+        "Total Iron (HRC)": 382,
+        "Acid Soluble Iron (HRC)": 92
+    },
+    "Mn": {
+        "Dissolved Manganese (HRC)": 454,
+        "None": 842,
+        "Total Manganese (HRC)": 327
+    },
+    "B": {
+        "Dissolved Boron (HRC)": 53,
+        "None": 189
+    },
+    "HCO3": {
+        "Alkalinity bicarbonate (HRC)": 568,
+        "None": 1770,
+        "Bicarbonate (HRC)": 347
+    },
+    "CO2": {
+        "None": 1193
+    },
+    "SO4": {
+        "None": 1735
+    },
+    "Cl": {
+        "None": 2960
+    },
+    "F": {
+        "None": 651
+    },
+    "Br": {
+        "None": 249
+    },
+    "NH4": {
+        "None": 1872
+    },
+    "NO2": {
+        "Nitrite (HRC)": 171,
+        "None": 268
+    },
+    "NO3": {
+        "Nitrate (HRC)": 1809,
+        "None": 638,
+        "Nitrate (HRC-NEMS)": 10
+    },
+    "PO4": {
+        "None": 596
+    }
+}

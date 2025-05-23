@@ -5,8 +5,14 @@ from urllib.parse import quote, urlencode
 import httpx
 import pandas as pd
 import xmltodict
-from pydantic import (BaseModel, ConfigDict, Field, PrivateAttr,
-                      field_validator, model_validator)
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    PrivateAttr,
+    field_validator,
+    model_validator,
+)
 
 from hurl.exceptions import HilltopParseError, HilltopResponseError
 
@@ -167,7 +173,7 @@ class GetDataResponse(BaseModel):
         response = xmltodict.parse(xml_str)
         if "HilltopServer" in response:
             # HilltopServer is the root element for Hilltop responses
-            # Except for GetData. BUT if it's an error we're back to HilltopError
+            # Except for GetData. BUT if it's an error we're back to Hilltop
             data = response["HilltopServer"]
             if "Error" in data:
                 raise HilltopResponseError(

@@ -1,0 +1,39 @@
+{
+  "Temp": [
+    "Field Temperature (HRC)",
+    "Temperature (HRC)",
+    "Sample Temperature on Arrival (HRC)",
+    "NEMS Temperature Deviation"
+  ],
+  "EC": ["Field Conductivity (HRC)", "Conductivity (HRC)"],
+  "TDS": "Total Dissolved Solids (HRC)",
+  "pH": ["Field pH (HRC)", "pH (HRC)"],
+  "Eh": "Redox Potential (HRC)",
+  "Turbidity": [
+    "Turbidity EPA (HRC)",
+    "Turbidity ISO (HRC)",
+    "Turbidity ISO-NTU (HRC)",
+    "QA - Turb ISO - SSC Ratio"
+  ],
+  "Ca": ["Calcium Hardness (HRC)", "Dissolved Calcium (HRC)"],
+  "Mg": ["Acid Soluble Magnesium (HRC)", "Dissolved Magnesium (HRC)"],
+  "Na": ["Acid Soluble Sodium (HRC)", "Dissolved Sodium (HRC)"],
+  "K": [
+    "Acid Soluble Potassium (HRC)",
+    "Total Potassium (HRC)",
+    "Dissolved Potassium (HRC)"
+  ],
+  "Fe": ["Acid Soluble Iron (HRC)", "Total Iron (HRC)", "Dissolved Iron (HRC)"],
+  "Mn": ["Total Manganese (HRC)", "Dissolved Manganese (HRC)"],
+  "B": ["Total Boron (HRC)", "Dissolved Boron (HRC)"],
+  "HCO3": ["Bicarbonate (HRC)", "Alkalinity bicarbonate (HRC)"],
+  "CO2": "Free Carbon Dioxide (HRC)",
+  "SO4": "Sulphate (HRC)",
+  "Cl": "Chloride (HRC)",
+  "F": "Fluoride (HRC)",
+  "Br": "Bromide (HRC)",
+  "NH4": "Ammoniacal-N (HRC)",
+  "NO2": ["Nitrite (HRC)", "Nitrite (HRC-NEMS)"],
+  "NO3": ["Nitrate (HRC)", "Nitrate (HRC-NEMS)"],
+  "PO4": "TDP Phosphate (HRC)"
+}

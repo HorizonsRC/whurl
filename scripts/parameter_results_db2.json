@@ -1,0 +1,211 @@
+{
+    "Copper Total": {
+        "None": 193
+    },
+    "Sodium": {
+        "Dissolved Sodium (HRC)": 985,
+        "Acid Soluble Sodium (HRC)": 129
+    },
+    "Chromium Total": {
+        "None": 194
+    },
+    "Static Water Level": {
+        "None": 336,
+        "GroundWater": 5
+    },
+    "Arsenic Dissolved": {
+        "Dissolved Arsenic (HRC)": 7
+    },
+    "Copper Dissolved": {
+        "None": 5
+    },
+    "Conductivity at 25degC": {
+        "Conductivity (HRC)": 1447
+    },
+    "Faecal Coliforms": {
+        "Faecal coliforms by MPN (HRC)": 180
+    },
+    "Enterococci": {
+        "Enterococci (HRC)": 191
+    },
+    "Manganese": {
+        "Total Manganese (HRC)": 732,
+        "Dissolved Manganese (HRC)": 248,
+        "Acid Soluble Manganese (HRC)": 62
+    },
+    "Chloride": {
+        "Chloride (HRC)": 1097
+    },
+    "Hardness Calcium": {
+        "None": 716
+    },
+    "Hardness Magnesium": {
+        "None": 685
+    },
+    "Hardness Total": {
+        "None": 691
+    },
+    "Ammoniacal Nitrogen": {
+        "None": 875
+    },
+    "Nitrite": {
+        "Nitrite (HRC)": 413
+    },
+    "Iron Total": {
+        "None": 1021
+    },
+    "Potassium": {
+        "Dissolved Potassium (HRC)": 940,
+        "Acid Soluble Potassium (HRC)": 129
+    },
+    "Total Alkalinity": {
+        "Total Alkalinity (HRC)": 1114
+    },
+    "Carbon Dioxide": {
+        "Free Carbon Dioxide (HRC)": 668
+    },
+    "Dissolved Reactive Phosphorus": {
+        "None": 923
+    },
+    "pH": {
+        "pH (HRC)": 732,
+        "Field pH (HRC)": 603
+    },
+    "Silica": {
+        "None": 367,
+        "Dissolved Silica (HRC)": 614,
+        "Total Silica (HRC)": 232
+    },
+    "Turbidity": {
+        "Turbidity EPA (HRC)": 703,
+        "Turbidity ISO-NTU (HRC)": 2
+    },
+    "Temperature": {
+        "Field Temperature (HRC)": 903,
+        "Temperature (HRC)": 27
+    },
+    "Barometric Pressure": {
+        "None": 35
+    },
+    "Alkalinity Bicarbonate": {
+        "None": 28
+    },
+    "Boron Trace": {
+        "Total Boron (HRC)": 27
+    },
+    "Calcium": {
+        "None": 337
+    },
+    "Total Coliforms": {
+        "Total Coliforms (HRC)": 55,
+        "None": 1
+    },
+    "Magnesium": {
+        "Acid Soluble Magnesium (HRC)": 27,
+        "Dissolved Magnesium (HRC)": 390
+    },
+    "Total Nitrogen": {
+        "None": 26,
+        "Total Nitrogen (HRC)": 1
+    },
+    "Nitrate": {
+        "Nitrate (HRC)": 83
+    },
+    "Total Oxidised Nitrogen": {
+        "Total Oxidised Nitrogen (HRC)": 27
+    },
+    "Total Dissolved Phosphorus": {
+        "TDP Phosphate (HRC)": 50
+    },
+    "Phosphate": {
+        "TDP Phosphate (HRC)": 50
+    },
+    "Dissolved Oxygen": {
+        "None": 229
+    },
+    "Conductivity Field": {
+        "Field Conductivity (HRC)": 362,
+        "Conductivity (HRC)": 5
+    },
+    "Alkalinity Carbonate": {
+        "None": 28
+    },
+    "Arsenic Trace": {
+        "Dissolved Arsenic (HRC)": 28
+    },
+    "Bromide": {
+        "None": 224
+    },
+    "Dissolved Oxygen Saturation": {
+        "None": 52
+    },
+    "Iron Soluble Trace": {
+        "Dissolved Iron (HRC)": 27
+    },
+    "Fluoride": {
+        "Fluoride (HRC)": 325
+    },
+    "Silica Trace": {
+        "Total Silica (HRC)": 26
+    },
+    "Bicarbonate": {
+        "None": 183
+    },
+    "Arsenic Acid Soluble": {
+        "None": 85
+    },
+    "Boron": {
+        "Dissolved Boron (HRC)": 79,
+        "None": 168
+    },
+    "E Coli": {
+        "E.coli MPN DF4 (HRC)": 129,
+        "E. coli by MPN (HRC)": 100
+    },
+    "Phosphate Phosphorus": {
+        "None": 160
+    },
+    "Dissolved Oxygen Lab": {
+        "None": 1
+    },
+    "Total Dissolved Solids": {
+        "Total Dissolved Solids (HRC)": 222
+    },
+    "Copper Trace": {
+        "None": 1
+    },
+    "Manganese Trace": {
+        "Total Manganese (HRC)": 1
+    },
+    "Chromium Trace": {
+        "None": 1
+    },
+    "Nitrogen Total": {
+        "Soluble Inorganic Nitrogen (HRC)": 4,
+        "Total Nitrogen (HRC)": 59
+    },
+    "Carbonaceous Biochemical Oxygen Demand": {
+        "None": 2
+    },
+    "Total Suspended Solids": {
+        "None": 1
+    },
+    "Biochemical Oxygen Demand": {
+        "None": 1
+    },
+    "Nickel Total": {
+        "None": 7
+    },
+    "Aluminium Total": {
+        "None": 7
+    },
+    "Cadmium Total": {
+        "None": 7
+    },
+    "Lead Total": {
+        "None": 7
+    },
+    "Zinc Total": {
+        "None": 7
+    }
+}
