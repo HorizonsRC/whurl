@@ -8,10 +8,12 @@ from pydantic import BaseModel
 
 from hurl.exceptions import (HilltopConfigError, HilltopParseError,
                              HilltopResponseError)
-from hurl.schemas.requests import (MeasurementListRequest, SiteListRequest,
-                                   StatusRequest, GetDataRequest)
-from hurl.schemas.responses import (MeasurementListResponse, SiteListResponse,
-                                    StatusResponse, GetDataResponse)
+from hurl.schemas.requests import (MeasurementListRequest, CollectionListRequest,
+                                   SiteInfoRequest, SiteListRequest, StatusRequest,
+                                GetDataRequest, TimeRangeRequest)
+from hurl.schemas.responses import (MeasurementListResponse, CollectionListResponse,
+                                    SiteInfoResponse, SiteListResponse, StatusResponse,
+                                    GetDataResponse, TimeRangeResponse)
 
 load_dotenv()
 
@@ -54,6 +56,28 @@ class HilltopClient:
                 raw_response=e.response.text,
             ) from e
 
+    def get_collection_list(self, **kwargs) -> CollectionListResponse:
+        """Fetch the collection list from Hilltop Server."""
+        params = CollectionListRequest(
+            base_url=self.base_url,
+            hts_endpoint=self.hts_endpoint,
+            **kwargs,
+        )
+        response = self.session.get(params.gen_url())
+        self._validate_response(response)
+        return CollectionListResponse.from_xml(response.text)
+
+    def get_data(self, **kwargs) -> GetDataResponse:
+        """Fetch data from Hilltop Server."""
+        params = GetDataRequest(
+            base_url=self.base_url,
+            hts_endpoint=self.hts_endpoint,
+            **kwargs,
+        )
+        response = self.session.get(params.gen_url())
+        self._validate_response(response)
+        return GetDataResponse.from_xml(response.text)
+
     def get_measurement_list(self, **kwargs) -> MeasurementListResponse:
         """Fetch the measurement list from Hilltop Server."""
         params = MeasurementListRequest(
@@ -61,10 +85,20 @@ class HilltopClient:
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        print(params.gen_url())
         response = self.session.get(params.gen_url())
         self._validate_response(response)
         return MeasurementListResponse.from_xml(response.text)
+
+    def get_site_info(self, **kwargs) -> SiteInfoResponse:
+        """Fetch the site list from Hilltop Server."""
+        params = SiteInfoRequest(
+            base_url=self.base_url,
+            hts_endpoint=self.hts_endpoint,
+            **kwargs,
+        )
+        response = self.session.get(params.gen_url())
+        self._validate_response(response)
+        return SiteInfoResponse.from_xml(response.text)
 
     def get_site_list(self, **kwargs) -> SiteListResponse:
         """Fetch the site list from Hilltop Server."""
@@ -88,17 +122,16 @@ class HilltopClient:
         self._validate_response(response)
         return StatusResponse.from_xml(response.text)
 
-    def get_data(self, **kwargs) -> GetDataResponse:
-        """Fetch data from Hilltop Server."""
-        params = GetDataRequest(
+    def get_time_range(self, **kwargs) -> TimeRangeResponse:
+        """Fetch the TimeRange from Hilltop Server."""
+        params = TimeRangeRequest(
             base_url=self.base_url,
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        print(params.gen_url())
         response = self.session.get(params.gen_url())
         self._validate_response(response)
-        return GetDataResponse.from_xml(response.text)
+        return TimeRangeResponse.from_xml(response.text)
 
     def close(self):
         """Close the HTTP session."""

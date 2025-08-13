@@ -1,4 +1,4 @@
-"""Hilltop Status response model."""
+"""Hilltop Status response schema."""
 
 from __future__ import annotations
 

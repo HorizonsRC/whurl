@@ -1,5 +1,7 @@
 """Tests for the Status response schema."""
 
+import os
+
 import pytest
 import pytest_httpx
 

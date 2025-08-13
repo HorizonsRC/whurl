@@ -88,6 +88,13 @@ class GetDataRequest(BaseHilltopRequest):
         if value is None:
             return None
 
+        if not isinstance(value, str):
+            raise HilltopRequestError(
+                f"Invalid time interval format: '{value}'.\n"
+                "Expected ISO8601 interval/duration or Hilltop special keywords "
+                "('Data Start', 'Data End', 'now')."
+            )
+
         # Check for interval (start/end or start/duration or duration/end)
         if "/" in value:
             part1, part2 = value.split("/", 1)
@@ -131,9 +138,15 @@ class GetDataRequest(BaseHilltopRequest):
 
             # Case 3: Part1 is datetime/keyword, Part2 is duration
             try:
-                if part1 != "Data Start" or parse_datetime(part1):
+                if part1 == "Data Start" or parse_datetime(part1):
                     parse_duration(part2)
                     return value
+                else:
+                    raise HilltopRequestError(
+                        f"Invalid time interval format: '{value}'.\n"
+                        "Expected ISO8601 interval/duration or Hilltop special keywords "
+                        "('Data Start', 'Data End', 'now')."
+                    )
             except ISO8601Error as e:
                 pass
             except ValueError as e:

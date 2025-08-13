@@ -162,5 +162,4 @@ cython_debug/
 #.idea/
 
 # Data Files
-scripts/access_data/*
-!scripts/access_data/.gitkeep
+scripts/*
