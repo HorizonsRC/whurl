@@ -3,17 +3,21 @@
 import os
 
 import httpx
+import certifi
+
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
 from hurl.exceptions import (HilltopConfigError, HilltopParseError,
                              HilltopResponseError)
-from hurl.schemas.requests import (MeasurementListRequest, CollectionListRequest,
-                                   SiteInfoRequest, SiteListRequest, StatusRequest,
-                                GetDataRequest, TimeRangeRequest)
-from hurl.schemas.responses import (MeasurementListResponse, CollectionListResponse,
-                                    SiteInfoResponse, SiteListResponse, StatusResponse,
-                                    GetDataResponse, TimeRangeResponse)
+from hurl.schemas.requests import (CollectionListRequest, GetDataRequest,
+                                   MeasurementListRequest, SiteInfoRequest,
+                                   SiteListRequest, StatusRequest,
+                                   TimeRangeRequest)
+from hurl.schemas.responses import (CollectionListResponse, GetDataResponse,
+                                    MeasurementListResponse, SiteInfoResponse,
+                                    SiteListResponse, StatusResponse,
+                                    TimeRangeResponse)
 
 load_dotenv()
 
@@ -33,6 +37,8 @@ class HilltopClient:
         self.session = httpx.Client(
             timeout=httpx.Timeout(timeout=timeout),
             limits=httpx.Limits(max_connections=10),
+            verify=False,  # TEMPORARY! # Disable SSL verification for testing
+            follow_redirects=True,
         )
 
         if not self.base_url:
@@ -47,6 +53,7 @@ class HilltopClient:
 
     def _validate_response(self, response: httpx.Response) -> None:
         """Raise HilltopResponseError if the response is not successful."""
+        print(f"Response status code: {response.status_code}")
         try:
             response.raise_for_status()
         except httpx.HTTPStatusError as e:
@@ -85,6 +92,7 @@ class HilltopClient:
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
+        print(params.gen_url())
         response = self.session.get(params.gen_url())
         self._validate_response(response)
         return MeasurementListResponse.from_xml(response.text)
@@ -118,6 +126,7 @@ class HilltopClient:
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
+        print(params.gen_url())
         response = self.session.get(params.gen_url())
         self._validate_response(response)
         return StatusResponse.from_xml(response.text)

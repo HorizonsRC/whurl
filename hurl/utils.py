@@ -102,3 +102,21 @@ def validate_hilltop_interval_notation(value: str) -> str:
         )
 
     return value
+
+
+def sanitise_xml_attributes(xml_str: str) -> str:
+    """Sanitise XML attributes by escaping special characters."""
+    clean = re.sub(
+        r'="([^"]*.*)"',
+        lambda m: '="'
+        + (
+            m.group(1)
+            .replace('"', "&quot;")
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+        )
+        + '"',
+        xml_str,
+    )
+    return clean

@@ -3,9 +3,13 @@
 from typing import Any, Dict
 
 import xmltodict
+
+from xml.parsers.expat import ExpatError
+
 from pydantic import BaseModel, Field, model_validator
 
 from hurl.exceptions import HilltopParseError, HilltopResponseError
+from hurl.utils import sanitise_xml_attributes
 
 
 class SiteInfoResponse(BaseModel):
@@ -38,7 +42,13 @@ class SiteInfoResponse(BaseModel):
     @classmethod
     def from_xml(cls, xml_str: str) -> "SiteInfoResponse":
         """Parse the XML string and return a SiteInfoResponse instance."""
-        response = xmltodict.parse(xml_str)
+        try:
+            response = xmltodict.parse(sanitise_xml_attributes(xml_str))
+        except ExpatError as e:
+            raise HilltopParseError(
+                "Failed to parse XML response", raw_response=xml_str
+            ) from e
+
         if "HilltopServer" not in response:
             raise HilltopParseError(
                 "Unexpected HilltopServer response format", raw_response=xml_str

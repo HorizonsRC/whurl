@@ -57,7 +57,8 @@ class SiteListResponse(BaseModel):
         df = pd.DataFrame(sites)
 
         df["Agency"] = data["Agency"]
-        df["Version"] = data["Version"]
+        if "Version" in data:
+            df["Version"] = data["Version"]
         if "Projection" in data:
             df["Projection"] = data["Projection"]
 
