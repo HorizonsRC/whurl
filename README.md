@@ -1,6 +1,6 @@
-# HURL - Hilltop URL Request Library
+# HURL - Hydro URL Generator
 
-A Python client library for interacting with Hilltop Server APIs, developed by Horizons Regional Council. HURL provides a clean, Pythonic interface for fetching environmental and scientific data from Hilltop servers.
+A Python client library for interacting with Hilltop Server APIs, developed by Horizons Regional Council as a dependency of [Hydrobot](https://github.com/HorizonsRC/hydrobot). HURL provides a clean, Pythonic interface for fetching environmental and scientific data from Hilltop servers.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
@@ -8,7 +8,9 @@ A Python client library for interacting with Hilltop Server APIs, developed by H
 
 ## Overview
 
-HURL (Hilltop URL Request Library) is designed to simplify interactions with Hilltop Server, a platform commonly used for storing and managing environmental data such as water levels, flow rates, rainfall measurements, and other scientific observations. The library handles URL generation, request validation, XML parsing, and provides structured Python objects for easy data manipulation.
+HURL (Hydro URL Generator) is designed to simplify interactions with Hilltop Server, a platform commonly used for storing and managing environmental data such as water levels, flow rates, rainfall measurements, and other scientific observations. The library handles URL generation, request validation, XML parsing, and provides structured Python objects for easy data manipulation.
+
+> **⚠️ Work in Progress**: This library is currently under active development. While core functionality is stable and tested, not all Hilltop API endpoints are supported yet. See the [Planned Features](#planned-features) section for upcoming enhancements.
 
 ### Key Features
 
@@ -19,6 +21,19 @@ HURL (Hilltop URL Request Library) is designed to simplify interactions with Hil
 - **Error Handling**: Comprehensive exception handling with detailed error messages
 - **Configuration Management**: Support for environment variables and direct configuration
 - **Context Manager Support**: Proper resource cleanup with `with` statement support
+
+## Planned Features
+
+The following features are planned for future releases:
+
+- **WFS (Web Feature Service) Support**: Integration with WFS endpoints for geospatial data access
+- **SOS (Sensor Observation Service) Calls**: Support for OGC SOS standard endpoints
+- **Kisters KiWIS Integration**: Native support for Kisters KiWIS (Kisters Water Information System) APIs
+- **Web Frontend Interface**: A user-friendly web interface featuring:
+  - Interactive dropdown menus for site and measurement selection
+  - Dynamic URL construction based on user selections
+  - "Download as" functionality for various output formats (CSV, JSON, XML)
+  - Real-time data preview capabilities
 
 ## Installation
 
@@ -453,6 +468,8 @@ python -m pytest tests/
 
 ### Running Tests
 
+HURL uses a comprehensive testing strategy that includes both local mocked tests and remote API validation using a fixture cache system.
+
 ```bash
 # Run all tests
 python -m pytest
@@ -461,9 +478,36 @@ python -m pytest
 python -m pytest -m "not remote"  # Skip remote tests
 python -m pytest -m "not slow"    # Skip slow tests
 
-# Run with coverage
-python -m pytest --cov=hurl
+# Update fixture cache with latest API responses
+python -m pytest --update -m remote
 ```
+
+#### Testing Strategy & Fixture Cache
+
+HURL implements a sophisticated testing approach using cached API responses to ensure tests remain consistent and fast while still validating against real API behavior:
+
+- **Fixture Cache**: Pre-recorded XML responses from actual Hilltop servers are stored in `tests/fixture_cache/`
+- **Remote Validation**: Tests marked with `@pytest.mark.remote` can validate cached responses against live API endpoints
+- **Update Mechanism**: The `--update` option makes remote calls to refresh cached responses, ensuring tests track API changes accurately
+- **Selective Mocking**: The `httpx_mock` system allows bypassing mocks for specific domains during cache updates
+
+**Example Usage:**
+```bash
+# Update all cached fixtures from remote APIs
+python -m pytest --update -m "remote and update"
+
+# Run tests without making remote calls (uses cached fixtures)
+python -m pytest -m "not remote"
+
+# Validate cached responses against remote API (requires connectivity)
+python -m pytest -m remote
+```
+
+This strategy ensures that:
+1. Tests run quickly in CI/CD environments using cached responses
+2. API changes are detected when `--update` is run periodically
+3. Tests remain reliable even when remote APIs are unavailable
+4. Response schema validation stays current with actual API behavior
 
 ### Code Style
 
