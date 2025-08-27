@@ -1,0 +1,119 @@
+"""Mixins for Pydantic models in hurl.schemas."""
+
+from typing import Any, Dict, Set
+import yaml
+from pydantic import BaseModel
+
+
+class ModelReprMixin:
+    """Mixin providing YAML-style __repr__ and __str__ methods for Pydantic models.
+    
+    This mixin provides pretty-printed, recursive output for Pydantic models using PyYAML.
+    String representations begin with a header indicating the model type and show all set
+    values with proper indentation and line breaks. Unset/None parameters are excluded
+    unless specified in _repr_include_unset.
+    
+    Attributes:
+        _repr_include_unset (Set[str]): Field names to always include even if unset/None.
+    """
+    
+    # Fields to always include in repr even if None/unset - can be overridden in subclasses
+    _repr_include_unset: Set[str] = set()
+    
+    def _to_yaml_dict(self) -> Dict[str, Any]:
+        """Convert model to dictionary suitable for YAML output.
+        
+        Returns:
+            Dictionary representation excluding unset values unless in _repr_include_unset.
+        """
+        # Get all field values, excluding unset ones
+        data = self.model_dump(exclude_unset=True)
+        
+        # Add any fields that should always be included
+        if hasattr(self, '_repr_include_unset') and self._repr_include_unset:
+            all_data = self.model_dump(exclude_unset=False)
+            for field in self._repr_include_unset:
+                if field in all_data:
+                    data[field] = all_data[field]
+        
+        # Remove None values unless they're explicitly required
+        filtered_data = {}
+        for key, value in data.items():
+            if value is None and (not hasattr(self, '_repr_include_unset') or key not in self._repr_include_unset):
+                continue  # Skip None values
+            filtered_data[key] = value
+        
+        return self._process_nested_models(filtered_data)
+    
+    def _process_nested_models(self, data: Any) -> Any:
+        """Recursively process nested models and lists for YAML representation.
+        
+        Args:
+            data: Data to process (could be dict, list, BaseModel, etc.)
+            
+        Returns:
+            Processed data with nested models converted appropriately.
+        """
+        if isinstance(data, dict):
+            result = {}
+            for key, value in data.items():
+                result[key] = self._process_nested_models(value)
+            return result
+        elif isinstance(data, list):
+            return [self._process_nested_models(item) for item in data]
+        elif isinstance(data, BaseModel):
+            # For nested models, get their yaml dict representation
+            if hasattr(data, '_to_yaml_dict'):
+                return data._to_yaml_dict()
+            else:
+                return data.model_dump(exclude_unset=True)
+        else:
+            # Handle special types that need formatting
+            import pandas as pd
+            if isinstance(data, pd.DataFrame):
+                # Convert DataFrame to a more readable format
+                if data.empty:
+                    return "<Empty DataFrame>"
+                else:
+                    # Convert to a simple table representation
+                    return f"<DataFrame: {data.shape[0]} rows × {data.shape[1]} columns>"
+            elif isinstance(data, pd.Series):
+                return f"<Series: {len(data)} values>"
+            elif hasattr(data, 'to_dict') and callable(data.to_dict):
+                try:
+                    return data.to_dict()
+                except:
+                    return str(data)
+            return data
+    
+    def _to_yaml(self) -> str:
+        """Generate YAML string representation of the model.
+        
+        Returns:
+            YAML formatted string with model header.
+        """
+        class_name = self.__class__.__name__
+        data = self._to_yaml_dict()
+        
+        # Create the header with the class name
+        yaml_content = {class_name: data}
+        
+        # Use PyYAML to generate clean output
+        yaml_str = yaml.dump(
+            yaml_content,
+            default_flow_style=False,
+            allow_unicode=True,
+            sort_keys=False,
+            indent=2,
+            width=80
+        )
+        
+        return yaml_str.rstrip()  # Remove trailing newline
+    
+    def __repr__(self) -> str:
+        """Return YAML-style representation of the model."""
+        return self._to_yaml()
+    
+    def __str__(self) -> str:
+        """Return YAML-style string representation of the model."""
+        return self._to_yaml()
