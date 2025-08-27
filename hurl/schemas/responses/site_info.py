@@ -9,6 +9,8 @@ from xml.parsers.expat import ExpatError
 from pydantic import BaseModel, Field, model_validator
 
 from hurl.exceptions import HilltopParseError, HilltopResponseError
+
+from hurl.exceptions import HilltopParseError, HilltopResponseError
 from hurl.utils import sanitise_xml_attributes
 
 
@@ -38,6 +40,7 @@ class SiteInfoResponse(BaseModel):
 
     agency: str = Field(alias="Agency", default=None)
     site: list[Site] = Field(alias="Site", default_factory=list)
+    request: Any = Field(default=None, exclude=True)
 
     @classmethod
     def from_xml(cls, xml_str: str) -> "SiteInfoResponse":

@@ -1,6 +1,7 @@
 """Schema for TimeRange responses."""
 
 from datetime import datetime
+from typing import Any
 
 import httpx
 import xmltodict
@@ -18,6 +19,7 @@ class TimeRangeResponse(BaseModel):
     from_time: str | datetime = Field(alias="From")
     to_time: str | datetime = Field(alias="To")
     units: str = Field(alias="Units")
+    request: Any = Field(default=None, exclude=True)
 
     def to_dict(self):
         """Convert the model to a dictionary."""
