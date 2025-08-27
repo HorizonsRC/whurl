@@ -103,13 +103,11 @@ class TestResponseValidation:
             text=status_response_xml,
         )
 
-        # Call the client as normal
-        client = HilltopClient(
+        with HilltopClient(
             base_url=base_url,
             hts_endpoint=hts_endpoint,
-        )
-
-        result = client.get_status()
+        ) as client:
+            result = client.get_status()
 
         assert isinstance(result, StatusResponse)
         assert result.agency == "Horizons"
