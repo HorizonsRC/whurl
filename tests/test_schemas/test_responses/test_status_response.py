@@ -72,6 +72,7 @@ class TestRemoteFixtures:
             "OpenFor",
             "FullRefresh",
             "SoftRefresh",
+            "DataFile",
         ]
 
         # remove the tags OpenFor, FullRefresh and SoftRefresh and their contents
@@ -122,6 +123,7 @@ class TestResponseValidation:
         from hurl.schemas.responses import StatusResponse
 
         site_list = StatusResponse.from_xml(status_response_xml)
+
         # Convert to dictionary
         test_dict = site_list.to_dict()
 
