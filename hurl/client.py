@@ -83,7 +83,9 @@ class HilltopClient:
         )
         response = self.session.get(params.gen_url())
         self._validate_response(response)
-        return GetDataResponse.from_xml(response.text)
+        result = GetDataResponse.from_xml(response.text)
+        result.request = params
+        return result
 
     def get_measurement_list(self, **kwargs) -> MeasurementListResponse:
         """Fetch the measurement list from Hilltop Server."""
