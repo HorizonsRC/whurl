@@ -517,6 +517,83 @@ This project uses:
 - Black for code formatting (if applicable)
 - Comprehensive docstrings
 
+## Model String Representations
+
+All Pydantic models in HURL use a custom YAML-style string representation that provides clean, readable output for debugging and logging.
+
+### YAML-Style Output
+
+All models inherit from `ModelReprMixin`, which provides pretty-printed output:
+
+```python
+from hurl.client import HilltopClient
+
+with HilltopClient() as client:
+    # Get data request shows clean YAML output
+    data = client.get_data(
+        site="YourSiteName",
+        measurement="Flow",
+        from_datetime="2023-01-01T00:00:00"
+    )
+    
+    print(str(data))
+    # Output:
+    # GetDataResponse:
+    #   agency: Your Agency
+    #   measurement:
+    #   - site_name: YourSiteName
+    #     data_source:
+    #       name: Flow DataSource
+    #       num_items: 1
+    #       ts_type: StdSeries
+    #       data_type: Flow
+    #       interpolation: Discrete
+    #       item_info:
+    #       - item_number: 1
+    #         item_name: Flow
+    #         item_format: F2
+    #         units: m³/s
+    #         format: F
+    #     data:
+    #       date_format: Calendar
+    #       num_items: 100
+    #       timeseries: '<DataFrame: 100 rows × 1 columns>'
+```
+
+### Features of Model Representations
+
+- **Headers**: Each model output starts with the model class name
+- **Nested Models**: Recursive formatting of nested objects with proper indentation
+- **Lists**: Clean formatting of lists and collections  
+- **Null Exclusion**: None/null values are automatically excluded for cleaner output
+- **DataFrame Handling**: Pandas DataFrames show summary information instead of raw data
+- **YAML Valid**: Output can be parsed as valid YAML
+
+### Including Null Values
+
+For specific use cases where you need to show None/null values, define `repr_include_unset` in your model:
+
+```python
+from typing import ClassVar, Set
+from pydantic import BaseModel
+from hurl.schemas.mixins import ModelReprMixin
+
+class CustomModel(ModelReprMixin, BaseModel):
+    repr_include_unset: ClassVar[Set[str]] = {"important_field"}
+    
+    name: str
+    optional_field: str = None      # Will be excluded
+    important_field: str = None     # Will be included even if None
+    
+model = CustomModel(name="test")
+print(str(model))
+# CustomModel:
+#   name: test
+#   important_field: null
+```
+
+This makes debugging and logging much more readable compared to default Pydantic output.
+
 ## Configuration Reference
 
 ### Environment Variables

@@ -15,18 +15,19 @@ from pydantic import (
 )
 
 from hurl.exceptions import HilltopParseError, HilltopResponseError
+from hurl.schemas.mixins import ModelReprMixin
 
 
-class GetDataResponse(BaseModel):
+class GetDataResponse(ModelReprMixin, BaseModel):
     """Top-level Hilltop GetData response model."""
 
-    class Measurement(BaseModel):
+    class Measurement(ModelReprMixin, BaseModel):
         """Represents a single Hilltop measurement containing data sources and data."""
 
-        class DataSource(BaseModel):
+        class DataSource(ModelReprMixin, BaseModel):
             """Represents a data source containing info about the fields in the data."""
 
-            class ItemInfo(BaseModel):
+            class ItemInfo(ModelReprMixin, BaseModel):
                 """Describes a data type in the data."""
 
                 item_number: int = Field(alias="@ItemNumber")
@@ -61,7 +62,7 @@ class GetDataResponse(BaseModel):
                 """Convert the model to a dictionary."""
                 return self.model_dump(exclude_unset=True, by_alias=True)
 
-        class Data(BaseModel):
+        class Data(ModelReprMixin, BaseModel):
             """Represents the data model containing data points."""
 
             date_format: str = Field(alias="@DateFormat")

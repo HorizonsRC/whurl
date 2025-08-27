@@ -9,6 +9,7 @@ from pydantic import Field, ValidationError, field_validator, model_validator
 
 from hurl.exceptions import HilltopRequestError
 from hurl.schemas.requests.base import BaseHilltopRequest
+from hurl.schemas.mixins import ModelReprMixin
 from hurl.utils import validate_hilltop_interval_notation
 
 
