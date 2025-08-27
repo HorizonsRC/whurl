@@ -1,23 +1,18 @@
 """GetData response schema."""
 
 from __future__ import annotations
-from typing import Any
+
 from urllib.parse import quote, urlencode
 
 import httpx
 import pandas as pd
 import xmltodict
-from pydantic import (
-    BaseModel,
-    ConfigDict,
-    Field,
-    PrivateAttr,
-    field_validator,
-    model_validator,
-)
+from pydantic import (BaseModel, ConfigDict, Field, PrivateAttr,
+                      field_validator, model_validator)
 
 from hurl.exceptions import HilltopParseError, HilltopResponseError
 from hurl.schemas.mixins import ModelReprMixin
+from hurl.schemas.requests import GetDataRequest
 
 
 class GetDataResponse(ModelReprMixin, BaseModel):
@@ -132,7 +127,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
     agency: str = Field(alias="Agency", default=None)
     measurement: list[Measurement] = Field(alias="Measurement", default_factory=list)
     error: str | None = Field(alias="Error", default=None)
-    request: Any = Field(default=None, exclude=True)
+    request: GetDataRequest | None = Field(default=None, exclude=True)
 
     @field_validator("measurement", mode="before")
     def validate_measurement(cls, value: dict | list) -> list[Measurement]:

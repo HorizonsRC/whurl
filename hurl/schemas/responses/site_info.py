@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field, model_validator
 from hurl.exceptions import HilltopParseError, HilltopResponseError
 
 from hurl.schemas.mixins import ModelReprMixin
+from hurl.schemas.requests import SiteInfoRequest
 
 from hurl.utils import sanitise_xml_attributes
 
@@ -41,7 +42,7 @@ class SiteInfoResponse(ModelReprMixin, BaseModel):
 
     agency: str = Field(alias="Agency", default=None)
     site: list[Site] = Field(alias="Site", default_factory=list)
-    request: Any = Field(default=None, exclude=True)
+    request: SiteInfoRequest | None = Field(default=None, exclude=True)
 
     @classmethod
     def from_xml(cls, xml_str: str) -> "SiteInfoResponse":

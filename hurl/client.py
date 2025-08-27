@@ -65,95 +65,95 @@ class HilltopClient:
 
     def get_collection_list(self, **kwargs) -> CollectionListResponse:
         """Fetch the collection list from Hilltop Server."""
-        params = CollectionListRequest(
+        request = CollectionListRequest(
             base_url=self.base_url,
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        response = self.session.get(params.gen_url())
+        response = self.session.get(request.gen_url())
         self._validate_response(response)
         result = CollectionListResponse.from_xml(response.text)
-        result.request = params
+        result.request = request
         return result
 
     def get_data(self, **kwargs) -> GetDataResponse:
         """Fetch data from Hilltop Server."""
-        params = GetDataRequest(
+        request = GetDataRequest(
             base_url=self.base_url,
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        response = self.session.get(params.gen_url())
+        response = self.session.get(request.gen_url())
         self._validate_response(response)
         result = GetDataResponse.from_xml(response.text)
-        result.request = params
+        result.request = request
         return result
 
     def get_measurement_list(self, **kwargs) -> MeasurementListResponse:
         """Fetch the measurement list from Hilltop Server."""
-        params = MeasurementListRequest(
+        request = MeasurementListRequest(
             base_url=self.base_url,
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        print(params.gen_url())
-        response = self.session.get(params.gen_url())
+        print(request.gen_url())
+        response = self.session.get(request.gen_url())
         self._validate_response(response)
         result = MeasurementListResponse.from_xml(response.text)
-        result.request = params
+        result.request = request
         return result
 
     def get_site_info(self, **kwargs) -> SiteInfoResponse:
         """Fetch the site list from Hilltop Server."""
-        params = SiteInfoRequest(
+        request = SiteInfoRequest(
             base_url=self.base_url,
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        response = self.session.get(params.gen_url())
+        response = self.session.get(request.gen_url())
         self._validate_response(response)
         result = SiteInfoResponse.from_xml(response.text)
-        result.request = params
+        result.request = request
         return result
 
     def get_site_list(self, **kwargs) -> SiteListResponse:
         """Fetch the site list from Hilltop Server."""
-        params = SiteListRequest(
+        request = SiteListRequest(
             base_url=self.base_url,
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        response = self.session.get(params.gen_url())
+        response = self.session.get(request.gen_url())
         self._validate_response(response)
         result = SiteListResponse.from_xml(response.text)
-        result.request = params
+        result.request = request
         return result
 
     def get_status(self, **kwargs) -> StatusResponse:
         """Fetch the status from Hilltop Server."""
-        params = StatusRequest(
+        request = StatusRequest(
             base_url=self.base_url,
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        print(params.gen_url())
-        response = self.session.get(params.gen_url())
+        print(request.gen_url())
+        response = self.session.get(request.gen_url())
         self._validate_response(response)
         result = StatusResponse.from_xml(response.text)
-        result.request = params
+        result.request = request
         return result
 
     def get_time_range(self, **kwargs) -> TimeRangeResponse:
         """Fetch the TimeRange from Hilltop Server."""
-        params = TimeRangeRequest(
+        request = TimeRangeRequest(
             base_url=self.base_url,
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        response = self.session.get(params.gen_url())
+        response = self.session.get(request.gen_url())
         self._validate_response(response)
         result = TimeRangeResponse.from_xml(response.text)
-        result.request = params
+        result.request = request
         return result
 
     def close(self):

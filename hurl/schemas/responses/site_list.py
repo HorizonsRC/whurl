@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 
 from hurl.exceptions import HilltopParseError, HilltopResponseError
 from hurl.schemas.mixins import ModelReprMixin
+from hurl.schemas.requests import SiteListRequest
 
 
 class SiteListResponse(ModelReprMixin, BaseModel):
@@ -29,7 +30,7 @@ class SiteListResponse(ModelReprMixin, BaseModel):
     projection: str | None = Field(alias="Projection", default=None)
     site_list: list[Site] = Field(alias="Site", default_factory=list)
     error: str = Field(alias="Error", default=None)
-    request: Any = Field(default=None, exclude=True)
+    request: SiteListRequest | None = Field(default=None, exclude=True)
 
     @model_validator(mode="after")
     def handle_error(self) -> "SiteListResponse":

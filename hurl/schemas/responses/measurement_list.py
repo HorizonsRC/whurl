@@ -1,7 +1,7 @@
 """Contains the functions and models for the Hilltop MeasurementList request."""
 
 from datetime import datetime
-from typing import List, Optional, Self, Any
+from typing import List, Optional, Self
 from urllib.parse import quote, urlencode
 
 import httpx
@@ -15,6 +15,7 @@ from hurl.exceptions import (
     HilltopResponseError,
 )
 from hurl.schemas.mixins import ModelReprMixin
+from hurl.schemas.requests import MeasurementListRequest
 
 
 class MeasurementListResponse(ModelReprMixin, BaseModel):
@@ -89,7 +90,7 @@ class MeasurementListResponse(ModelReprMixin, BaseModel):
     data_sources: list["DataSource"] = Field(alias="DataSource", default_factory=list)
     measurements: list["DataSource.Measurement"] = Field(alias="Measurement", default_factory=list)
     error: str | None = Field(alias="Error", default=None)
-    request: Any = Field(default=None, exclude=True)
+    request: MeasurementListRequest | None = Field(default=None, exclude=True)
 
     @field_validator("measurements", mode="before")
     def validate_measurements(cls, value) -> list["Measurement"]:

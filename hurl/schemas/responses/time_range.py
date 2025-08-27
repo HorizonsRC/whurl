@@ -1,7 +1,6 @@
 """Schema for TimeRange responses."""
 
 from datetime import datetime
-from typing import Any
 
 import httpx
 import xmltodict
@@ -9,6 +8,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from hurl.exceptions import HilltopResponseError
 from hurl.schemas.mixins import ModelReprMixin
+from hurl.schemas.requests import TimeRangeRequest
 
 
 class TimeRangeResponse(ModelReprMixin, BaseModel):
@@ -20,7 +20,7 @@ class TimeRangeResponse(ModelReprMixin, BaseModel):
     from_time: str | datetime = Field(alias="From")
     to_time: str | datetime = Field(alias="To")
     units: str = Field(alias="Units")
-    request: Any = Field(default=None, exclude=True)
+    request: TimeRangeRequest | None = Field(default=None, exclude=True)
 
     def to_dict(self):
         """Convert the model to a dictionary."""

@@ -1,12 +1,13 @@
 """Hilltop Status response schema."""
 
 from __future__ import annotations
-from typing import Any
 
 import xmltodict
 from pydantic import BaseModel, Field, field_validator
 
 from hurl.schemas.mixins import ModelReprMixin
+from hurl.schemas.requests import StatusRequest
+
 
 class StatusResponse(ModelReprMixin, BaseModel):
     """Represents the status of a Hilltop server."""
@@ -28,7 +29,7 @@ class StatusResponse(ModelReprMixin, BaseModel):
     process_id: int | None = Field(alias="ProcessID", default=None)
     working_set: float | None = Field(alias="WorkingSet", default=None)
     data_files: list[DataFile] | None = Field(alias="DataFile", default_factory=list)
-    request: Any = Field(default=None, exclude=True)
+    request: StatusRequest | None = Field(default=None, exclude=True)
 
     @field_validator("data_files", mode="before")
     def validate_data_files(cls, value) -> list["StatusResponse.DataFile"]:

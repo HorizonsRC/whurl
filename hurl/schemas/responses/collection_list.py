@@ -1,12 +1,12 @@
 """Contains the schema for the Hilltop CollectionList response."""
 
-from typing import Any
-
 import xmltodict
 
 from pydantic import BaseModel, Field, field_validator
 
 from hurl.schemas.mixins import ModelReprMixin
+from hurl.schemas.requests import CollectionListRequest
+
 
 class CollectionListResponse(ModelReprMixin, BaseModel):
     """Top-level Hilltop CollectionList response model."""
@@ -43,7 +43,7 @@ class CollectionListResponse(ModelReprMixin, BaseModel):
 
     title: str | None = Field(alias="Title", default=None)
     collections: list[Collection] = Field(alias="Collection", default_factory=list)
-    request: Any = Field(default=None, exclude=True)
+    request: CollectionListRequest | None = Field(default=None, exclude=True)
 
     def to_dict(self):
         """Convert the model to a dictionary."""
