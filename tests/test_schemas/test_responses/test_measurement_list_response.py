@@ -323,14 +323,11 @@ class TestMeasurementList:
         assert sg_measurement is not None
         assert sg_measurement.name == "Internal S.G. [Water Level]"
 
-    @pytest.mark.xfail(
-        reason="Validator expected to fail upon encoutering a hilltop error response."
-    )
     def test_error_from_xml(self, httpx_mock, error_response_xml):
         """Test that the XML can be parsed into a MeasurementListResponse object."""
 
         from hurl.client import HilltopClient
-        from hurl.exceptions import HilltopRequestError
+        from hurl.exceptions import HilltopResponseError
         from hurl.schemas.requests import MeasurementListRequest
         from hurl.schemas.responses import MeasurementListResponse
 
@@ -340,7 +337,7 @@ class TestMeasurementList:
         # Generate the remote URL
         test_url = MeasurementListRequest(
             base_url=base_url,
-            hts_endpoint=base_url,
+            hts_endpoint=hts_endpoint,
         ).gen_url()
 
         httpx_mock.add_response(
@@ -349,11 +346,12 @@ class TestMeasurementList:
             text=error_response_xml,
         )
 
-        with HilltopClient(
-            base_url=base_url,
-            hts_endpoint=hts_endpoint,
-        ) as client:
-            measurement_list = client.get_measurement_list()
+        with pytest.raises(HilltopResponseError):
+            with HilltopClient(
+                base_url=base_url,
+                hts_endpoint=hts_endpoint,
+            ) as client:
+                measurement_list = client.get_measurement_list()
 
     def test_multi_response_xml(self, httpx_mock, multi_response_xml):
         """Test multiple measurement response."""

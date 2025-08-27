@@ -43,7 +43,6 @@ class TestParameterValidation:
 
         assert test_url == correct_url
 
-    @pytest.mark.xfail(reason="Invalid location parameter raises HilltopRequestError")
     def test_invalid_location(self):
         """Test invalid location field raises HilltopRequestError."""
         from hurl.exceptions import HilltopRequestError
@@ -61,7 +60,6 @@ class TestParameterValidation:
         from hurl.exceptions import HilltopRequestError
         from hurl.schemas.requests import SiteListRequest
 
-        print("what")
         # Only three coords
         with pytest.raises(HilltopRequestError):
             test_url = SiteListRequest(
@@ -101,7 +99,6 @@ class TestParameterValidation:
             bounding_box="2027000,5698000,2085000,5698001,EPSG:4326",
         ).gen_url()
 
-    @pytest.mark.xfail(reason="Invalid target parameter raises HilltopRequestError")
     def test_invalid_target(self):
         """Test invalid target raises HilltopRequestError."""
         from hurl.exceptions import HilltopRequestError

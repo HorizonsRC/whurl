@@ -161,9 +161,9 @@ print('✓ Library is fully functional and ready for development')
 │   ├── schemas/                       # Request/Response schemas
 │   └── utils.py                       # Utility functions
 ├── tests/                             # Test directory
-│   ├── test_utils.py                 # Utility tests (WORKS)
-│   ├── test_schemas/test_requests/   # Request validation tests (WORKS) 
-│   ├── test_schemas/test_responses/  # Response tests (NAMING CONFLICTS)
+│   ├── test_utils.py                 # Utility tests
+│   ├── test_schemas/test_requests/   # Request validation tests
+│   ├── test_schemas/test_responses/  # Response tests
 │   ├── fixture_cache/                # Cached API responses for testing
 │   └── conftest.py                   # Shared test fixtures
 ├── pyproject.toml                    # Modern Python project config
@@ -202,14 +202,8 @@ python -m pytest --update -m "remote and update" --maxfail=1
 
 ## Critical Warnings
 
-### Test Suite Limitations
-- **DO NOT run** `python -m pytest tests/` directly - it fails due to naming conflicts
-- **ALWAYS use specific paths**: `tests/test_utils.py tests/test_schemas/test_requests/`
-- **Response tests** in `tests/test_schemas/test_responses/` conflict with request tests
-
 ### Environment Dependencies
 - **Client instantiation requires** environment variables or will fail with: "Base URL must be provided or set in environment variables"
-- **Remote tests need** network connectivity to `flood.horizons.govt.nz`
 
 ### Performance Expectations
 - **Setup**: ~3 minutes total (pip installs can be slow, NEVER CANCEL)
@@ -242,7 +236,6 @@ with HilltopClient() as client:
 - Check: Python path and virtual environment
 
 ### Test Failures
-- Use specific test paths, not `tests/` directory
 - Clean cache: `find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true`
 
 ### Client Configuration Errors  

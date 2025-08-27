@@ -247,6 +247,7 @@ class TestRemoteFixtures:
         from urllib.parse import urlparse
 
         from hurl.schemas.requests import GetDataRequest
+        from tests.conftest import remove_tags
 
         # Get the remote URL
         remote_url = GetDataRequest(
@@ -266,8 +267,12 @@ class TestRemoteFixtures:
         # Get the remote XML
         remote_xml = remote_client.session.get(remote_url).text
 
+        # remove the time tags (will change often)
+        remote_xml_cleaned = remove_tags(remote_xml, ["T", "E"])
+        basic_response_xml_cleaned = remove_tags(basic_response_xml, ["T", "E"])
+
         # Compare the local and remote XML
-        assert basic_response_xml == remote_xml
+        assert basic_response_xml_cleaned == remote_xml_cleaned
 
     @pytest.mark.remote
     @pytest.mark.update
@@ -279,6 +284,7 @@ class TestRemoteFixtures:
         from urllib.parse import urlparse
 
         from hurl.schemas.requests import GetDataRequest
+        from tests.conftest import remove_tags
 
         # Get the remote URL
         remote_url = GetDataRequest(
@@ -296,8 +302,12 @@ class TestRemoteFixtures:
         # Get the remote XML
         remote_xml = remote_client.session.get(remote_url).text
 
+        # remove the time tags (will change often)
+        remote_xml_cleaned = remove_tags(remote_xml, ["T", "E"])
+        one_point_response_xml_cleaned = remove_tags(one_point_response_xml, ["T", "E"])
+
         # Compare the local and remote XML
-        assert one_point_response_xml == remote_xml
+        assert one_point_response_xml_cleaned == remote_xml_cleaned
 
     @pytest.mark.remote
     @pytest.mark.update
@@ -311,6 +321,7 @@ class TestRemoteFixtures:
         import pandas as pd
 
         from hurl.schemas.requests import GetDataRequest
+        from tests.conftest import remove_tags
 
         # 12 hours ago from now
         start_time = pd.Timestamp.now() - pd.Timedelta(hours=48)
@@ -332,8 +343,14 @@ class TestRemoteFixtures:
         # Get the remote XML
         remote_xml = remote_client.session.get(remote_url).text
 
+        # remove the time tags (will change often)
+        remote_xml_cleaned = remove_tags(remote_xml, ["T", "E"])
+        collection_response_xml_cleaned = remove_tags(
+            collection_response_xml, ["T", "E"]
+        )
+
         # Compare the local and remote XML
-        assert collection_response_xml == remote_xml
+        assert collection_response_xml_cleaned == remote_xml_cleaned
 
     @pytest.mark.remote
     @pytest.mark.update
@@ -907,5 +924,5 @@ class TestResponseValidation:
 
         # Check that the timeseries ends at the expected time
         assert data.timeseries.index[-1] == expected_start_time + pd.Timedelta(
-                days=2, hours=2
-                        )
+            days=2, hours=2
+        )
