@@ -23,7 +23,7 @@ pip install pytest pytest-mock pytest-httpx
 pip install httpx pydantic lxml pandas python-dotenv isodate xmltodict certifi
 
 # Run core tests - takes <1 second
-python -m pytest tests/test_utils.py tests/test_schemas/test_requests/ --quiet
+python -m pytest tests/ -m 'not remote'
 ```
 
 **CRITICAL TIMING**: 
@@ -35,34 +35,27 @@ python -m pytest tests/test_utils.py tests/test_schemas/test_requests/ --quiet
 
 **Working Test Commands** (these work reliably):
 ```bash
-# Run core request validation tests - <1 second
-python -m pytest tests/test_utils.py tests/test_schemas/test_requests/ -v
-
-# Run only utility tests - <1 second  
-python -m pytest tests/test_utils.py -v
-
-# Run only request schema tests - <1 second
-python -m pytest tests/test_schemas/test_requests/ -v
-
 # Run tests excluding remote API calls - <1 second
-python -m pytest tests/test_utils.py tests/test_schemas/test_requests/ -m "not remote"
+python -m pytest tests/ -m "not remote"
 ```
 
-**IMPORTANT**: Full test suite has naming conflicts between `tests/test_schemas/test_requests/` and `tests/test_schemas/test_responses/` that prevent running `python -m pytest tests/` directly. Always use the specific paths above.
+**IMPORTANT**: Full test suite requires configuration of and connection to remote API. Always run tests with -m "not remote".
 
 ### Environment Setup for Client Testing
 
 **ALWAYS set these environment variables when testing client functionality:**
 ```bash
-export HILLTOP_BASE_URL="https://flood.horizons.govt.nz"
-export HILLTOP_HTS_ENDPOINT="boo.hts"
+export HILLTOP_BASE_URL="https://data.council.govt.nz"
+export HILLTOP_HTS_ENDPOINT="foo.hts"
 ```
 
 Or create a `.env` file in the repository root:
 ```env
-HILLTOP_BASE_URL=https://flood.horizons.govt.nz
-HILLTOP_HTS_ENDPOINT=boo.hts
+HILLTOP_BASE_URL=https://data.council.govt.nz
+HILLTOP_HTS_ENDPOINT=foo.hts
 ```
+
+**IMPORTANT**: These variables do not represent a real working API endpoint, and are just for offline testing and debugging.
 
 ## Validation
 
@@ -85,7 +78,7 @@ except Exception as e:
 "
 
 # With environment variables (should succeed)
-HILLTOP_BASE_URL="https://flood.horizons.govt.nz" HILLTOP_HTS_ENDPOINT="boo.hts" python -c "
+HILLTOP_BASE_URL="https://data.council.govt.nz" HILLTOP_HTS_ENDPOINT="foo.hts" python -c "
 from hurl.client import HilltopClient
 client = HilltopClient()
 print(f'Client created: {client.base_url}')
@@ -96,15 +89,15 @@ print(f'Timeout: {client.timeout}')
 
 ### 3. Core Test Suite Validation
 ```bash
-# This should always pass in <1 second
-python -m pytest tests/test_utils.py tests/test_schemas/test_requests/ --quiet
+# This should always pass in <3 seconds
+python -m pytest tests/ -m 'not remote' --quiet
 ```
 
 ### 4. Complete Library Validation Scenario
 **ALWAYS run this complete validation after making changes:**
 
 ```bash
-HILLTOP_BASE_URL="https://flood.horizons.govt.nz" HILLTOP_HTS_ENDPOINT="boo.hts" python -c "
+HILLTOP_BASE_URL="https://data.council.govt.nz" HILLTOP_HTS_ENDPOINT="foo.hts" python -c "
 # Complete validation scenario
 from hurl.client import HilltopClient
 
@@ -174,7 +167,8 @@ print('✓ Library is fully functional and ready for development')
 ### Key Files to Check After Changes
 - **`hurl/client.py`**: Main client implementation
 - **`hurl/schemas/`**: When changing API request/response handling
-- **`tests/test_schemas/test_requests/`**: When adding new request types
+- **`tests/test_schemas/`**: When adding new request/response types
+- **`__init__.py` files: When adding new request/response types
 - **Environment variables**: Always test both with and without `HILLTOP_BASE_URL`
 
 ### Dependencies Reference
@@ -193,8 +187,8 @@ HURL uses a sophisticated testing approach:
 **Remote testing** (requires network connectivity):
 ```bash
 # Set environment variables first
-export HILLTOP_BASE_URL="https://flood.horizons.govt.nz"
-export HILLTOP_HTS_ENDPOINT="boo.hts"
+export HILLTOP_BASE_URL="https://data.council.govt.nz"
+export HILLTOP_HTS_ENDPOINT="foo.hts"
 
 # Update cached fixtures from remote APIs (may take 10-30 seconds)
 python -m pytest --update -m "remote and update" --maxfail=1

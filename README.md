@@ -144,8 +144,8 @@ HilltopClient(
 ```
 
 **Parameters:**
-- `base_url`: The base URL of your Hilltop server (e.g., "https://flood.horizons.govt.nz")
-- `hts_endpoint`: The HTS endpoint path (e.g., "boo.hts", "data.hts")
+- `base_url`: The base URL of your Hilltop server (e.g., "https://data.council.govt.nz")
+- `hts_endpoint`: The HTS endpoint path (e.g., "foo.hts")
 - `timeout`: Request timeout in seconds (default: 60)
 
 ### Client Methods
@@ -600,8 +600,8 @@ This makes debugging and logging much more readable compared to default Pydantic
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `HILLTOP_BASE_URL` | Base URL of Hilltop server | `https://flood.horizons.govt.nz` |
-| `HILLTOP_HTS_ENDPOINT` | HTS endpoint file | `boo.hts` |
+| `HILLTOP_BASE_URL` | Base URL of Hilltop server | `https://data.council.govt.nz` |
+| `HILLTOP_HTS_ENDPOINT` | HTS endpoint file | `foo.hts` |
 
 ### Client Configuration
 
