@@ -72,7 +72,9 @@ class HilltopClient:
         )
         response = self.session.get(params.gen_url())
         self._validate_response(response)
-        return CollectionListResponse.from_xml(response.text)
+        result = CollectionListResponse.from_xml(response.text)
+        result.request = params
+        return result
 
     def get_data(self, **kwargs) -> GetDataResponse:
         """Fetch data from Hilltop Server."""
@@ -83,7 +85,9 @@ class HilltopClient:
         )
         response = self.session.get(params.gen_url())
         self._validate_response(response)
-        return GetDataResponse.from_xml(response.text)
+        result = GetDataResponse.from_xml(response.text)
+        result.request = params
+        return result
 
     def get_measurement_list(self, **kwargs) -> MeasurementListResponse:
         """Fetch the measurement list from Hilltop Server."""
@@ -95,7 +99,9 @@ class HilltopClient:
         print(params.gen_url())
         response = self.session.get(params.gen_url())
         self._validate_response(response)
-        return MeasurementListResponse.from_xml(response.text)
+        result = MeasurementListResponse.from_xml(response.text)
+        result.request = params
+        return result
 
     def get_site_info(self, **kwargs) -> SiteInfoResponse:
         """Fetch the site list from Hilltop Server."""
@@ -106,7 +112,9 @@ class HilltopClient:
         )
         response = self.session.get(params.gen_url())
         self._validate_response(response)
-        return SiteInfoResponse.from_xml(response.text)
+        result = SiteInfoResponse.from_xml(response.text)
+        result.request = params
+        return result
 
     def get_site_list(self, **kwargs) -> SiteListResponse:
         """Fetch the site list from Hilltop Server."""
@@ -117,7 +125,9 @@ class HilltopClient:
         )
         response = self.session.get(params.gen_url())
         self._validate_response(response)
-        return SiteListResponse.from_xml(response.text)
+        result = SiteListResponse.from_xml(response.text)
+        result.request = params
+        return result
 
     def get_status(self, **kwargs) -> StatusResponse:
         """Fetch the status from Hilltop Server."""
@@ -129,7 +139,9 @@ class HilltopClient:
         print(params.gen_url())
         response = self.session.get(params.gen_url())
         self._validate_response(response)
-        return StatusResponse.from_xml(response.text)
+        result = StatusResponse.from_xml(response.text)
+        result.request = params
+        return result
 
     def get_time_range(self, **kwargs) -> TimeRangeResponse:
         """Fetch the TimeRange from Hilltop Server."""
@@ -140,7 +152,9 @@ class HilltopClient:
         )
         response = self.session.get(params.gen_url())
         self._validate_response(response)
-        return TimeRangeResponse.from_xml(response.text)
+        result = TimeRangeResponse.from_xml(response.text)
+        result.request = params
+        return result
 
     def close(self):
         """Close the HTTP session."""

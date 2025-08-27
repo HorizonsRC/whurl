@@ -1,5 +1,7 @@
 """Hilltop SiteList response models."""
 
+from typing import Any
+
 import pandas as pd
 import xmltodict
 from pydantic import BaseModel, Field, field_validator, model_validator
@@ -27,6 +29,7 @@ class SiteListResponse(ModelReprMixin, BaseModel):
     projection: str | None = Field(alias="Projection", default=None)
     site_list: list[Site] = Field(alias="Site", default_factory=list)
     error: str = Field(alias="Error", default=None)
+    request: Any = Field(default=None, exclude=True)
 
     @model_validator(mode="after")
     def handle_error(self) -> "SiteListResponse":

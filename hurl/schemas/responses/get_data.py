@@ -1,5 +1,7 @@
 """GetData response schema."""
 
+from __future__ import annotations
+from typing import Any
 from urllib.parse import quote, urlencode
 
 import httpx
@@ -130,6 +132,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
     agency: str = Field(alias="Agency", default=None)
     measurement: list[Measurement] = Field(alias="Measurement", default_factory=list)
     error: str | None = Field(alias="Error", default=None)
+    request: Any = Field(default=None, exclude=True)
 
     @field_validator("measurement", mode="before")
     def validate_measurement(cls, value: dict | list) -> list[Measurement]:
