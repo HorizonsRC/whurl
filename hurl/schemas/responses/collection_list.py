@@ -6,14 +6,15 @@ import xmltodict
 
 from pydantic import BaseModel, Field, field_validator
 
+from hurl.schemas.mixins import ModelReprMixin
 
-class CollectionListResponse(BaseModel):
+class CollectionListResponse(ModelReprMixin, BaseModel):
     """Top-level Hilltop CollectionList response model."""
 
-    class Collection(BaseModel):
+    class Collection(ModelReprMixin, BaseModel):
         """Represents a single Hilltop collection."""
 
-        class Item(BaseModel):
+        class Item(ModelReprMixin, BaseModel):
             """Represents an item in a Hilltop collection."""
 
             site_name: str | None = Field(alias="SiteName")

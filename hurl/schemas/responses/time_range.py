@@ -8,9 +8,10 @@ import xmltodict
 from pydantic import BaseModel, Field, field_validator
 
 from hurl.exceptions import HilltopResponseError
+from hurl.schemas.mixins import ModelReprMixin
 
 
-class TimeRangeResponse(BaseModel):
+class TimeRangeResponse(ModelReprMixin, BaseModel):
     """Hilltop TimeRange response model."""
 
     agency: str = Field(alias="Agency")

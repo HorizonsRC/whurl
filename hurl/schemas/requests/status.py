@@ -2,6 +2,7 @@
 
 from pydantic import Field, field_validator
 
+from hurl.schemas.mixins import ModelReprMixin
 from hurl.schemas.requests.base import BaseHilltopRequest
 
 

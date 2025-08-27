@@ -6,9 +6,10 @@ from urllib.parse import urlparse, urlencode, quote
 from pydantic import BaseModel, Field, field_validator
 
 from hurl.exceptions import HilltopRequestError
+from hurl.schemas.mixins import ModelReprMixin
 
 
-class BaseHilltopRequest(BaseModel):
+class BaseHilltopRequest(ModelReprMixin, BaseModel):
     """Base model for Hilltop request parameters."""
 
     base_url: str = Field(

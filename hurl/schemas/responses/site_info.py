@@ -10,14 +10,15 @@ from pydantic import BaseModel, Field, model_validator
 
 from hurl.exceptions import HilltopParseError, HilltopResponseError
 
-from hurl.exceptions import HilltopParseError, HilltopResponseError
+from hurl.schemas.mixins import ModelReprMixin
+
 from hurl.utils import sanitise_xml_attributes
 
 
-class SiteInfoResponse(BaseModel):
+class SiteInfoResponse(ModelReprMixin, BaseModel):
     """Represents the response for a Hilltop SiteInfo request."""
 
-    class Site(BaseModel):
+    class Site(ModelReprMixin, BaseModel):
         """Represents the info from a single Hilltop Site."""
 
         name: str = Field(alias="@Name")

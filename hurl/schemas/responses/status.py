@@ -6,11 +6,12 @@ from typing import Any
 import xmltodict
 from pydantic import BaseModel, Field, field_validator
 
+from hurl.schemas.mixins import ModelReprMixin
 
-class StatusResponse(BaseModel):
+class StatusResponse(ModelReprMixin, BaseModel):
     """Represents the status of a Hilltop server."""
 
-    class DataFile(BaseModel):
+    class DataFile(ModelReprMixin, BaseModel):
         """Represents a Hilltop data file."""
 
         filename: str = Field(alias="Filename")
