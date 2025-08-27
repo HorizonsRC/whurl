@@ -5,12 +5,13 @@ import xmltodict
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 from hurl.exceptions import HilltopParseError, HilltopResponseError
+from hurl.schemas.mixins import ModelReprMixin
 
 
-class SiteListResponse(BaseModel):
+class SiteListResponse(ModelReprMixin, BaseModel):
     """Top-level Hilltop SiteList response model."""
 
-    class Site(BaseModel):
+    class Site(ModelReprMixin, BaseModel):
         """Represents a single Hilltop site."""
 
         name: str = Field(alias="@Name")

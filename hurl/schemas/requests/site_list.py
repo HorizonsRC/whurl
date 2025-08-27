@@ -4,6 +4,7 @@ from pydantic import Field, field_validator, model_validator
 
 from hurl.schemas.requests.base import BaseHilltopRequest
 from hurl.exceptions import HilltopRequestError
+from hurl.schemas.mixins import ModelReprMixin
 
 
 class SiteListRequest(BaseHilltopRequest):

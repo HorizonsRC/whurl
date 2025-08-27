@@ -14,15 +14,16 @@ from hurl.exceptions import (
     HilltopRequestError,
     HilltopResponseError,
 )
+from hurl.schemas.mixins import ModelReprMixin
 
 
-class MeasurementListResponse(BaseModel):
+class MeasurementListResponse(ModelReprMixin, BaseModel):
     """Top-level Hilltop MeasurementList response model."""
 
-    class DataSource(BaseModel):
+    class DataSource(ModelReprMixin, BaseModel):
         """Represents a data source containing measurements."""
 
-        class Measurement(BaseModel):
+        class Measurement(ModelReprMixin, BaseModel):
             """Represents a single Hilltop measurement."""
 
             name: str = Field(alias="@Name")

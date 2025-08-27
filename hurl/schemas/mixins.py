@@ -11,35 +11,46 @@ class ModelReprMixin:
     This mixin provides pretty-printed, recursive output for Pydantic models using PyYAML.
     String representations begin with a header indicating the model type and show all set
     values with proper indentation and line breaks. Unset/None parameters are excluded
-    unless specified in _repr_include_unset.
+    unless specified in repr_include_unset.
     
-    Attributes:
-        _repr_include_unset (Set[str]): Field names to always include even if unset/None.
+    To include specific fields even when they are None/unset, define repr_include_unset
+    as a ClassVar in your model:
+    
+    from typing import ClassVar, Set
+    
+    class MyModel(ModelReprMixin, BaseModel):
+        repr_include_unset: ClassVar[Set[str]] = {"important_field"}
+        
+        important_field: str = None
+        other_field: str = None
     """
     
-    # Fields to always include in repr even if None/unset - can be overridden in subclasses
-    _repr_include_unset: Set[str] = set()
+    def _get_repr_include_unset(self) -> Set[str]:
+        """Get the set of fields that should always be included in repr."""
+        # Try to get repr_include_unset from the class
+        return getattr(self.__class__, 'repr_include_unset', set())
     
     def _to_yaml_dict(self) -> Dict[str, Any]:
         """Convert model to dictionary suitable for YAML output.
         
         Returns:
-            Dictionary representation excluding unset values unless in _repr_include_unset.
+            Dictionary representation excluding unset values unless in repr_include_unset.
         """
         # Get all field values, excluding unset ones
         data = self.model_dump(exclude_unset=True)
         
         # Add any fields that should always be included
-        if hasattr(self, '_repr_include_unset') and self._repr_include_unset:
+        include_unset = self._get_repr_include_unset()
+        if include_unset:
             all_data = self.model_dump(exclude_unset=False)
-            for field in self._repr_include_unset:
+            for field in include_unset:
                 if field in all_data:
                     data[field] = all_data[field]
         
         # Remove None values unless they're explicitly required
         filtered_data = {}
         for key, value in data.items():
-            if value is None and (not hasattr(self, '_repr_include_unset') or key not in self._repr_include_unset):
+            if value is None and key not in include_unset:
                 continue  # Skip None values
             filtered_data[key] = value
         
