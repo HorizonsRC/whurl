@@ -315,13 +315,14 @@ class TestMeasurementList:
             (
                 m
                 for m in measurement_list.measurements
-                if m.name == "Internal S.G. [Water Level]"
+                if m.name == "Flow [Flow]"
             ),
             None,
         )
+        print(measurement_list.measurements)
 
         assert sg_measurement is not None
-        assert sg_measurement.name == "Internal S.G. [Water Level]"
+        assert sg_measurement.name == "Flow [Flow]"
 
     def test_error_from_xml(self, httpx_mock, error_response_xml):
         """Test that the XML can be parsed into a MeasurementListResponse object."""

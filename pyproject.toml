@@ -1,14 +1,23 @@
-[build-system]
-requires = ["setuptools>=42"]
-build-backend = "setuptools.build_meta"
-
 [project]
-name="hurl"
-version="0.1.0"
+name = "hurl"
+version = "0.1.0"
+description = "Python API wrapper for Hilltop Server"
+authors = [
+    {name = "nicmostert",email = "nicolas.mostert@horizons.govt.nz"}
+]
+license = {text = "GPL3"}
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pytest (>=8.4.2,<9.0.0)",
+    "pytest-mock (>=3.15.0,<4.0.0)",
+    "pytest-httpx (>=0.35.0,<0.36.0)"
+]
 
-[tool.setuptools]
-packages = ["hurl"]
-package-dir = {"" = "."}
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 markers = [
