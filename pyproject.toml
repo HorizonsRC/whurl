@@ -5,7 +5,7 @@ description = "Python API wrapper for Hilltop Server"
 authors = [
     {name = "nicmostert",email = "nicolas.mostert@horizons.govt.nz"}
 ]
-license = {text = "GPL3"}
+license = "GPL-3.0-or-later"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
