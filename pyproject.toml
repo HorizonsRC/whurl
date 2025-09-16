@@ -33,4 +33,6 @@ markers = [
   "slow: marks tests as slow (deselect as '-m \"not slow\"')",
   "remote: marks tests as remote (deselect as '-m \"not remote\"')",
   "update: updates the api response data cache (deselect as '-m \"not update\"')",
+  "performance_local: marks tests as performance tests for local server",
+  "performance_remote: marks tests as performance tests for remote server",
 ]
