@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Hilltop xmlns="http://www.hilltop.co.nz">
+  <Agency>Test Council</Agency>
+  <Method>GetTimeRange</Method>
+  <Success>Success</Success>
+  <Error></Error>
+  <TimeRange>
+    <From>2020-01-01T00:00:00.000</From>
+    <To>2023-12-31T23:59:59.999</To>
+  </TimeRange>
+</Hilltop>

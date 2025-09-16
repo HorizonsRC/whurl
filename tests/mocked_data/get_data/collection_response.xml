@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Hilltop xmlns="http://www.hilltop.co.nz">
+  <Agency>Test Council</Agency>
+  <Method>GetData</Method>
+  <Success>Success</Success>
+  <Error></Error>
+  <Collection>
+    <SiteName>Test Collection Site</SiteName>
+    <Measurement>
+      <DataType>StageHeight</DataType>
+      <DataSource>Test Collection Site</DataSource>
+      <SiteName>Test Collection Site</SiteName>
+      <ItemName>Stage</ItemName>
+      <Units>m</Units>
+      <Data>
+        <T>2023-01-01T00:00:00</T>
+        <I1>14.95</I1>
+        <T>2023-01-01T01:00:00</T>
+        <I1>15.00</I1>
+      </Data>
+    </Measurement>
+    <Measurement>
+      <DataType>Rainfall</DataType>
+      <DataSource>Test Collection Site</DataSource>
+      <SiteName>Test Collection Site</SiteName>
+      <ItemName>Rainfall</ItemName>
+      <Units>mm</Units>
+      <Data>
+        <T>2023-01-01T00:00:00</T>
+        <I1>0.0</I1>
+        <T>2023-01-01T01:00:00</T>
+        <I1>2.5</I1>
+      </Data>
+    </Measurement>
+  </Collection>
+</Hilltop>

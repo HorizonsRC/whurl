@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Hilltop xmlns="http://www.hilltop.co.nz">
+  <Agency>Test Council</Agency>
+  <Method>MeasurementList</Method>
+  <Success>Success</Success>
+  <Error></Error>
+  <MeasurementList>
+    <Measurement>
+      <MeasurementName>Flow</MeasurementName>
+    </Measurement>
+    <Measurement>
+      <MeasurementName>Level</MeasurementName>
+    </Measurement>
+    <Measurement>
+      <MeasurementName>Rainfall</MeasurementName>
+    </Measurement>
+  </MeasurementList>
+</Hilltop>

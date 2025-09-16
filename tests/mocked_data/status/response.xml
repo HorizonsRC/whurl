@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HilltopServer xmlns="http://www.hilltop.co.nz">
+  <Agency>Test Council</Agency>
+  <Method>GetStatus</Method>
+  <Success>Success</Success>
+  <Error></Error>
+  <Server>HilltopServer</Server>
+  <Version>2.7.5</Version>
+  <ScriptName>test_database.hts</ScriptName>
+  <Database>test_database.hts</Database>
+  <Date>2023-01-01T00:00:00.000Z</Date>
+</HilltopServer>

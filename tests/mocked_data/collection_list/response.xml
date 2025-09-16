@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Hilltop xmlns="http://www.hilltop.co.nz">
+  <Agency>Test Council</Agency>
+  <Method>CollectionList</Method>
+  <Success>Success</Success>
+  <Error></Error>
+  <CollectionList>
+    <Collection>
+      <CollectionName>Hydrology</CollectionName>
+      <CollectionNameLong>Hydrological Monitoring</CollectionNameLong>
+    </Collection>
+    <Collection>
+      <CollectionName>Meteorology</CollectionName>
+      <CollectionNameLong>Meteorological Monitoring</CollectionNameLong>
+    </Collection>
+  </CollectionList>
+</Hilltop>

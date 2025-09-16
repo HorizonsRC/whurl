@@ -14,6 +14,19 @@ def pytest_addoption(parser):
         default=False,
         help="Update the cached XML files with the latest data.",
     )
+    parser.addoption(
+        "--data-source",
+        action="store",
+        default="auto",
+        choices=["auto", "mocked", "cached", "remote"],
+        help="Preferred test data source (auto=cached->mocked fallback)",
+    )
+    parser.addoption(
+        "--skip-missing-data",
+        action="store_true",
+        default=False,
+        help="Skip tests when preferred data source is not available",
+    )
 
 
 def remove_tags(xml_str, tags_to_remove):

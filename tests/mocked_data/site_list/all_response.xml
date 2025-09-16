@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Hilltop xmlns="http://www.hilltop.co.nz">
+  <Agency>Test Council</Agency>
+  <Method>SiteList</Method>
+  <Success>Success</Success>
+  <Error></Error>
+  <SiteList>
+    <Site>
+      <SiteName>Test Site Alpha</SiteName>
+      <Location>
+        <Latitude>-40.356</Latitude>
+        <Longitude>175.611</Longitude>
+      </Location>
+    </Site>
+    <Site>
+      <SiteName>Test Site Beta</SiteName>
+      <Location>
+        <Latitude>-40.356</Latitude>
+        <Longitude>175.612</Longitude>
+      </Location>
+    </Site>
+  </SiteList>
+</Hilltop>

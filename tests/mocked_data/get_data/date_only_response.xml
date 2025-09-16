@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Hilltop xmlns="http://www.hilltop.co.nz">
+  <Agency>Test Council</Agency>
+  <Method>GetData</Method>
+  <Success>Success</Success>
+  <Error></Error>
+  <Measurement>
+    <DataType>StageHeight</DataType>
+    <DataSource>Test Site Alpha</DataSource>
+    <DataSourceName>Test Site Alpha</DataSourceName>
+    <SiteName>Test Site Alpha</SiteName>
+    <ItemName>Stage</ItemName>
+    <Units>m</Units>
+    <Data>
+      <T>2023-01-01</T>
+      <I1>14.95</I1>
+      <T>2023-01-02</T>
+      <I1>15.10</I1>
+      <T>2023-01-03</T>
+      <I1>15.05</I1>
+    </Data>
+  </Measurement>
+</Hilltop>

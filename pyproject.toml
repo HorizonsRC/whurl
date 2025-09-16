@@ -33,4 +33,10 @@ markers = [
   "slow: marks tests as slow (deselect as '-m \"not slow\"')",
   "remote: marks tests as remote (deselect as '-m \"not remote\"')",
   "update: updates the api response data cache (deselect as '-m \"not update\"')",
+  "unit: marks tests as unit tests (use mocked data only)",
+  "integration: marks tests as integration tests (can use any data source)",
+  "performance: marks tests as performance tests (prefer real data)",
+  "mocked_data: tests that use anonymized/mocked data",
+  "cached_data: tests that use cached remote data",
+  "remote_data: tests that require live API access",
 ]
