@@ -20,7 +20,13 @@ dependencies = [
     "isodate (>=0.7.2,<0.8.0)",
     "xmltodict (>=1.0.0,<2.0.0)",
     "certifi (>=2025.8.3,<2026.0.0)",
-    "pyyaml (>=6.0.2,<7.0.0)"
+    "pyyaml (>=6.0.2,<7.0.0)",
+    "fastapi (>=0.116.1,<0.117.0)",
+    "uvicorn (>=0.35.0,<0.36.0)",
+    "pytest-benchmark (>=5.1.0,<6.0.0)",
+    "anyio (>=4.10.0,<5.0.0)",
+    "pytest-asyncio (>=1.2.0,<2.0.0)",
+    "h2 (>=4.3.0,<5.0.0)"
 ]
 
 
@@ -29,6 +35,7 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
+asyncio_mode = "auto"
 markers = [
   "slow: marks tests as slow (deselect as '-m \"not slow\"')",
   "remote: marks tests as remote (deselect as '-m \"not remote\"')",
