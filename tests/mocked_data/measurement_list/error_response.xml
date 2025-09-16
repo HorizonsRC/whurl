@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Hilltop xmlns="http://www.hilltop.co.nz">
+<HilltopServer xmlns="http://www.hilltop.co.nz">
   <Agency>Test Council</Agency>
   <Method>MeasurementList</Method>
   <Success>False</Success>
   <Error>Site "Invalid Site Name" not found in database</Error>
-</Hilltop>
+</HilltopServer>

@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Hilltop xmlns="http://www.hilltop.co.nz">
+<HilltopServer xmlns="http://www.hilltop.co.nz">
   <Agency>Test Council</Agency>
   <Method>MeasurementList</Method>
   <Success>Success</Success>
   <Error></Error>
-  <MeasurementList>
-    <Measurement>
-      <MeasurementName>Flow</MeasurementName>
+  <DataSource Name="Test Site Alpha" Site="Test Site Alpha">
+    <NumItems>3</NumItems>
+    <TSType>TimeSeries</TSType>
+    <DataType>WL</DataType>
+    <Interpolation>None</Interpolation>
+    <ItemFormat>F</ItemFormat>
+    <From>2020-01-01T00:00:00</From>
+    <To>2023-12-31T23:59:59</To>
+    <Measurement Name="Flow">
       <Units>m3/s</Units>
     </Measurement>
-    <Measurement>
-      <MeasurementName>Level</MeasurementName>
+    <Measurement Name="Level">
       <Units>m</Units>
     </Measurement>
-    <Measurement>
-      <MeasurementName>Temperature</MeasurementName>
+    <Measurement Name="Temperature">
       <Units>°C</Units>
     </Measurement>
-  </MeasurementList>
-</Hilltop>
+  </DataSource>
+</HilltopServer>
