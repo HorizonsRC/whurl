@@ -3,7 +3,8 @@
 A Python client library for interacting with Hilltop Server APIs, developed by Horizons Regional Council as a dependency of [Hydrobot](https://github.com/HorizonsRC/hydrobot). HURL provides a clean, Pythonic interface for fetching environmental and scientific data from Hilltop servers.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
+[![Poetry](https://img.shields.io/badge/dependency%20management-Poetry-blue)](https://python-poetry.org/)
 [![Version](https://img.shields.io/badge/version-0.1.0-green)](https://github.com/HorizonsRC/hurl)
 
 ## Overview
@@ -39,7 +40,8 @@ The following features are planned for future releases:
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.11 or higher
+- [Poetry](https://python-poetry.org/) for dependency management
 - Internet connectivity to reach your Hilltop server
 
 ### Install from PyPI (Recommended)
@@ -48,7 +50,26 @@ The following features are planned for future releases:
 pip install hurl
 ```
 
-### Install from Source
+### Development Installation with Poetry
+
+For development or contributing to HURL, use Poetry for dependency management:
+
+```bash
+# Clone the repository
+git clone https://github.com/HorizonsRC/hurl.git
+cd hurl
+
+# Install Poetry if you haven't already
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Install dependencies and HURL in development mode
+poetry install
+
+# Activate the virtual environment
+poetry shell
+```
+
+### Legacy pip Installation from Source
 
 ```bash
 git clone https://github.com/HorizonsRC/hurl.git
@@ -58,7 +79,7 @@ pip install -e .
 
 ### Dependencies
 
-HURL requires the following packages:
+HURL requires the following packages (automatically managed by Poetry):
 - `httpx` - HTTP client for making requests
 - `pydantic` - Data validation and settings management
 - `lxml` - XML processing
@@ -66,6 +87,39 @@ HURL requires the following packages:
 - `python-dotenv` - Environment variable management
 - `isodate` - ISO date parsing
 - `xmltodict` - XML to dictionary conversion
+- `pyyaml` - YAML processing for configuration
+
+### Why Poetry?
+
+HURL uses [Poetry](https://python-poetry.org/) as the standard for dependency management and packaging for several important reasons:
+
+#### **Reproducible Builds**
+Poetry locks all dependencies (including transitive dependencies) to specific versions in `poetry.lock`, ensuring that all developers and CI/CD systems use exactly the same package versions.
+
+#### **Simplified Dependency Management**
+- **Add dependencies**: `poetry add package-name`
+- **Development dependencies**: `poetry add --group dev package-name`
+- **Remove dependencies**: `poetry remove package-name`
+- **Update dependencies**: `poetry update`
+
+#### **Isolated Virtual Environments**
+Poetry automatically creates and manages virtual environments, preventing dependency conflicts between projects.
+
+#### **Modern Python Packaging**
+Poetry uses the modern `pyproject.toml` standard (PEP 621) instead of legacy `setup.py` and `requirements.txt` files, providing better metadata management and build configuration.
+
+#### **Developer Experience**
+- `poetry shell` - Activate virtual environment
+- `poetry run command` - Run commands in the Poetry environment
+- `poetry show` - View installed packages and their dependencies
+- `poetry build` - Build distribution packages for PyPI
+
+#### **For Contributors**
+If you're contributing to HURL, Poetry ensures that:
+1. Your development environment exactly matches other contributors
+2. New dependencies are properly locked and tracked
+3. The build and test process is consistent across all environments
+4. Package installation and distribution follows modern Python standards
 
 ## Quick Start
 
@@ -449,7 +503,60 @@ HURL uses Pydantic for request validation and type safety. Common validation rul
 
 ## Development and Contributing
 
+HURL uses [Poetry](https://python-poetry.org/) for dependency management and packaging. This ensures reproducible builds and simplifies development workflows.
+
 ### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/HorizonsRC/hurl.git
+cd hurl
+
+# Install Poetry if you haven't already
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Install all dependencies (runtime + development)
+poetry install
+
+# Activate the virtual environment
+poetry shell
+
+# Run tests to verify setup
+poetry run python -m pytest tests/ -m 'not remote'
+```
+
+### Poetry Commands
+
+```bash
+# Install dependencies
+poetry install
+
+# Add a new dependency
+poetry add package-name
+
+# Add a development dependency
+poetry add --group dev package-name
+
+# Update dependencies
+poetry update
+
+# Run commands in the Poetry environment
+poetry run python script.py
+poetry run pytest
+
+# Activate virtual environment
+poetry shell
+
+# Show installed packages
+poetry show
+
+# Build package for distribution
+poetry build
+```
+
+### Legacy pip Development Setup
+
+If you prefer using pip directly:
 
 ```bash
 # Clone the repository
@@ -460,7 +567,7 @@ cd hurl
 pip install -e .
 
 # Install development dependencies
-pip install pytest pytest-mock
+pip install pytest pytest-mock pytest-httpx
 
 # Run tests
 python -m pytest tests/
@@ -469,6 +576,39 @@ python -m pytest tests/
 ### Running Tests
 
 HURL uses a comprehensive testing strategy that includes both local mocked tests and remote API validation using a fixture cache system.
+
+#### Environment Setup for Testing
+
+Some tests require environment variables to be set:
+
+```bash
+export HILLTOP_BASE_URL="https://data.council.govt.nz"
+export HILLTOP_HTS_ENDPOINT="foo.hts"
+```
+
+Or create a `.env` file in the project root:
+```env
+HILLTOP_BASE_URL=https://data.council.govt.nz
+HILLTOP_HTS_ENDPOINT=foo.hts
+```
+
+*Note: These are example values for testing - they do not represent a real working API endpoint.*
+
+#### Using Poetry (Recommended)
+
+```bash
+# Run all tests (Poetry will automatically use the correct environment)
+poetry run python -m pytest
+
+# Run specific test categories
+poetry run python -m pytest -m "not remote"  # Skip remote tests
+poetry run python -m pytest -m "not slow"    # Skip slow tests
+
+# Update fixture cache with latest API responses
+poetry run python -m pytest --update -m remote
+```
+
+#### Using pip/direct Python
 
 ```bash
 # Run all tests
@@ -493,6 +633,17 @@ HURL implements a sophisticated testing approach using cached API responses to e
 
 **Example Usage:**
 ```bash
+# Using Poetry (Recommended)
+# Update all cached fixtures from remote APIs
+poetry run python -m pytest --update -m "remote and update"
+
+# Run tests without making remote calls (uses cached fixtures)
+poetry run python -m pytest -m "not remote"
+
+# Validate cached responses against remote API (requires connectivity)
+poetry run python -m pytest -m remote
+
+# Using pip/direct Python
 # Update all cached fixtures from remote APIs
 python -m pytest --update -m "remote and update"
 
