@@ -58,10 +58,13 @@ class TestSyncVsAsyncPerformance:
                     results.append(response)
                 return results
                 
+        def run_async_test():
+            """Wrapper to run the async test."""
+            return asyncio.run(make_async_requests())
+                
         # Use pytest-benchmark's async support
         results = benchmark.pedantic(
-            asyncio.run, 
-            args=[make_async_requests()],
+            run_async_test,
             rounds=3,
             iterations=1
         )
@@ -165,9 +168,12 @@ class TestConcurrentRequests:
                 results = await asyncio.gather(*tasks)
                 return results
                 
+        def run_async_test():
+            """Wrapper to run the async test."""
+            return asyncio.run(make_async_concurrent_requests())
+                
         results = benchmark.pedantic(
-            asyncio.run,
-            args=[make_async_concurrent_requests()],
+            run_async_test,
             rounds=3,
             iterations=1
         )
