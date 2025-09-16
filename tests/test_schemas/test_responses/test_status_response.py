@@ -146,8 +146,8 @@ class TestResponseValidation:
         result = client.get_status()
 
         assert isinstance(result, StatusResponse)
-        # Use flexible assertions that work with both real and mocked data
-        assert result.agency in ["Horizons", "Test Council"]  # Accept both real and test data
+        # Unit tests should check specific mocked data values
+        assert result.agency == "Test Council"  # Expect specific mocked data value
         assert result.script_name is not None  # Just verify it exists
 
     @pytest.mark.unit

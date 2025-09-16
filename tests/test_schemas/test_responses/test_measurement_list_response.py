@@ -256,8 +256,8 @@ class TestMeasurementList:
 
         # Test the top level response object
         assert isinstance(measurement_list, MeasurementListResponse)
-        # Use flexible assertions that work with both real and mocked data
-        assert measurement_list.agency in ["Horizons", "Test Council"]
+        # Unit tests should check specific mocked data values  
+        assert measurement_list.agency == "Test Council"
 
         # Check both top-level measurements and data source measurements
         all_measurements = measurement_list.measurements
@@ -349,7 +349,8 @@ class TestMeasurementList:
 
         # Test the top level response object
         assert isinstance(measurement_list, MeasurementListResponse)
-        assert measurement_list.agency == "Horizons"
+        # Unit tests should check specific mocked data values
+        assert measurement_list.agency == "Test Council"
 
         # Test a specific data source
         water_level_ds = next(
@@ -419,7 +420,8 @@ class TestMeasurementList:
 
         # Test the top level response object
         assert isinstance(measurement_list, MeasurementListResponse)
-        assert measurement_list.agency == "Horizons"
+        # Unit tests should check specific mocked data values
+        assert measurement_list.agency == "Test Council"
         assert len(measurement_list.measurements) > 0
         sg_measurement = next(
             (m for m in measurement_list.measurements if m.name == "Groundwater"),

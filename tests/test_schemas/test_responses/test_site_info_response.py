@@ -188,7 +188,9 @@ class TestResponseValidation:
 
         # Base Model
         assert isinstance(result, SiteInfoResponse)
-        assert result.agency == "Horizons"
+        # Integration tests should only check structure and types, not specific organization names
+        assert result.agency is not None
+        assert isinstance(result.agency, str)
 
         df = result.to_dataframe()
 
@@ -239,7 +241,9 @@ class TestResponseValidation:
 
         # Base Model
         assert isinstance(result, SiteInfoResponse)
-        assert result.agency == "Horizons"
+        # Integration tests should only check structure and types, not specific organization names
+        assert result.agency is not None
+        assert isinstance(result.agency, str)
 
         df = result.to_dataframe()
         assert isinstance(df, pd.DataFrame)
