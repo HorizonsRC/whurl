@@ -3,82 +3,71 @@
 import pytest
 
 
-@pytest.fixture
-def basic_response_xml(request, httpx_mock, remote_client):
-    """Load test XML once per test session."""
-    from pathlib import Path
-    from urllib.parse import urlparse
+def create_cached_fixtures(filename: str, request_kwargs: dict = None):
+    """Factory to create cached fixtures."""
 
-    from hurl.schemas.requests.site_info import SiteInfoRequest
-    from pydantic import ValidationError
+    @pytest.fixture
+    def fixture_func(request, httpx_mock, remote_client):
+        """Load test XML once per test session."""
+        from pathlib import Path
+        from urllib.parse import urlparse
 
-    path = (
-        Path(__file__).parent.parent.parent
-        / "fixture_cache"
-        / "site_info"
-        / "response.xml"
-    )
+        from hurl.schemas.requests.site_info import SiteInfoRequest
 
-    if request.config.getoption("--update"):
-        # Switch off httpx mock so that remote request can go through.
-        httpx_mock._options.should_mock = (
-            lambda request: request.url.host != urlparse(remote_client.base_url).netloc
+        path = (
+            Path(__file__).parent.parent.parent
+            / "fixture_cache"
+            / "site_info"
+            / filename
         )
-
-        try:
-            remote_url = SiteInfoRequest(
+        if request.config.getoption("--update"):
+            # Switch off httpx mock so that cached request can go through.
+            httpx_mock._options.should_mock = (
+                lambda request: request.url.host
+                != urlparse(remote_client.base_url).netloc
+            )
+            cached_url = SiteInfoRequest(
                 base_url=remote_client.base_url,
                 hts_endpoint=remote_client.hts_endpoint,
-                site="Ngahere Park Climate Station",
+                **(request_kwargs or {}),
             ).gen_url()
-        except ValidationError as e:
-            pytest.fail(f"Failed to generate remote URL: {e}")
-        remote_xml = remote_client.session.get(remote_url).text
-
-        path.write_text(remote_xml, encoding="utf-8")
-
-    raw_xml = path.read_text(encoding="utf-8")
-
-    return raw_xml
+            cached_xml = remote_client.session.get(cached_url).text
+            path.write_text(cached_xml, encoding="utf-8")
+        raw_xml = path.read_text(encoding="utf-8")
+        return raw_xml
+    return fixture_func
 
 
-@pytest.fixture
-def collection_response_xml(request, httpx_mock, remote_client):
-    """Load test XML once per test session."""
-    from pathlib import Path
-    from urllib.parse import urlparse
+def create_mocked_fixtures(filename: str):
+    """Factory to create mocked fixtures."""
 
-    from hurl.schemas.requests.site_info import SiteInfoRequest
-    from pydantic import ValidationError
+    @pytest.fixture
+    def fixture_func():
+        """Load test XML once per test session."""
+        from pathlib import Path
 
-    path = (
-        Path(__file__).parent.parent.parent
-        / "fixture_cache"
-        / "site_info"
-        / "collection_response.xml"
-    )
-
-    if request.config.getoption("--update"):
-        # Switch off httpx mock so that remote request can go through.
-        httpx_mock._options.should_mock = (
-            lambda request: request.url.host != urlparse(remote_client.base_url).netloc
+        path = (
+            Path(__file__).parent.parent.parent
+            / "mocked_data"
+            / "site_info"
+            / filename
         )
+        raw_xml = path.read_text(encoding="utf-8")
+        return raw_xml
+    return fixture_func
 
-        try:
-            remote_url = SiteInfoRequest(
-                base_url=remote_client.base_url,
-                hts_endpoint=remote_client.hts_endpoint,
-                collection="AirTemperature",
-            ).gen_url()
-        except ValidationError as e:
-            pytest.fail(f"Failed to generate remote URL: {e}")
-        remote_xml = remote_client.session.get(remote_url).text
 
-        path.write_text(remote_xml, encoding="utf-8")
+# Create cached fixtures
+basic_response_xml_cached = create_cached_fixtures("response.xml", {
+    "site": "Ngahere Park Climate Station"
+})
+collection_response_xml_cached = create_cached_fixtures("collection_response.xml", {
+    "collection": "AirTemperature"
+})
 
-    raw_xml = path.read_text(encoding="utf-8")
-
-    return raw_xml
+# Create mocked fixtures
+basic_response_xml_mocked = create_mocked_fixtures("response.xml")
+collection_response_xml_mocked = create_mocked_fixtures("collection_response.xml")
 
 
 class TestRemoteFixtures:
@@ -88,7 +77,7 @@ class TestRemoteFixtures:
         self,
         remote_client,
         httpx_mock,
-        basic_response_xml,
+        basic_response_xml_cached,
     ):
         """Validate the XML response from Hilltop Server."""
         from urllib.parse import urlparse
@@ -114,7 +103,7 @@ class TestRemoteFixtures:
 
         # remove the tags
         remote_xml_cleaned = remove_tags(remote_xml, tags_to_remove)
-        basic_response_xml_cleaned = remove_tags(basic_response_xml, tags_to_remove)
+        basic_response_xml_cleaned = remove_tags(basic_response_xml_cached, tags_to_remove)
 
         assert remote_xml_cleaned == basic_response_xml_cleaned
 
@@ -122,7 +111,7 @@ class TestRemoteFixtures:
         self,
         remote_client,
         httpx_mock,
-        collection_response_xml,
+        collection_response_xml_cached,
     ):
         """Validate the XML response from Hilltop Server."""
         from urllib.parse import urlparse
@@ -148,14 +137,67 @@ class TestRemoteFixtures:
 
         # remove the tags
         remote_xml_cleaned = remove_tags(remote_xml, tags_to_remove)
-        collection_response_xml_cleaned = remove_tags(collection_response_xml, tags_to_remove)
+        collection_response_xml_cleaned = remove_tags(collection_response_xml_cached, tags_to_remove)
 
         assert remote_xml_cleaned == collection_response_xml_cleaned
 
 
 class TestResponseValidation:
-    def test_basic_response_xml(self, httpx_mock, basic_response_xml):
-        """Validate the XML response against the SiteInfoResponse schema."""
+    @pytest.mark.unit
+    def test_basic_response_xml_unit(self, httpx_mock, basic_response_xml_mocked):
+        """Validate the XML response against the SiteInfoResponse schema with mocked data."""
+
+        import pandas as pd
+
+        from hurl.client import HilltopClient
+        from hurl.schemas.requests.site_info import SiteInfoRequest
+        from hurl.schemas.responses.site_info import SiteInfoResponse
+
+        base_url = "http://example.com"
+        hts_endpoint = "foo.hts"
+
+        test_url = SiteInfoRequest(
+            base_url=base_url,
+            hts_endpoint=hts_endpoint,
+            site="Test Site Alpha",
+        ).gen_url()
+
+        httpx_mock.add_response(
+            url=test_url,
+            method="GET",
+            text=basic_response_xml_mocked,
+        )
+
+        with HilltopClient(
+            base_url=base_url,
+            hts_endpoint=hts_endpoint,
+        ) as client:
+            result = client.get_site_info(
+                site="Test Site Alpha",
+            )
+
+        # Base Model
+        assert isinstance(result, SiteInfoResponse)
+        assert result.agency == "Test Council"
+
+        df = result.to_dataframe()
+
+        assert isinstance(df, pd.DataFrame)
+
+        # SiteInfoResponse
+        site = result.site[0]
+
+        assert site.name == "Test Site Alpha"
+        assert isinstance(site.info, dict)
+
+        site_info = site.info
+
+        assert site_info["Altitude"] == str(444)
+        assert site_info["SecondSynonym"] == "WTF"
+
+    @pytest.mark.integration  
+    def test_basic_response_xml_integration(self, httpx_mock, basic_response_xml_cached):
+        """Validate the XML response against the SiteInfoResponse schema with cached data."""
 
         import pandas as pd
 
@@ -175,7 +217,7 @@ class TestResponseValidation:
         httpx_mock.add_response(
             url=test_url,
             method="GET",
-            text=basic_response_xml,
+            text=basic_response_xml_cached,
         )
 
         with HilltopClient(
@@ -205,8 +247,62 @@ class TestResponseValidation:
         assert site_info["Altitude"] == str(106)
         assert site_info["SecondSynonym"] == "NPK"
 
-    def test_collection_response_xml(self, httpx_mock, collection_response_xml):
-        """Validate the XML response against the SiteInfoResponse schema."""
+    @pytest.mark.unit
+    def test_collection_response_xml_unit(self, httpx_mock, collection_response_xml_mocked):
+        """Validate the XML response against the SiteInfoResponse schema with mocked data."""
+
+        import pandas as pd
+
+        from hurl.client import HilltopClient
+        from hurl.schemas.requests.site_info import SiteInfoRequest
+        from hurl.schemas.responses.site_info import SiteInfoResponse
+
+        base_url = "http://example.com"
+        hts_endpoint = "foo.hts"
+
+        test_url = SiteInfoRequest(
+            base_url=base_url,
+            hts_endpoint=hts_endpoint,
+            collection="Test Collection",
+        ).gen_url()
+
+        httpx_mock.add_response(
+            url=test_url,
+            method="GET",
+            text=collection_response_xml_mocked,
+        )
+
+        with HilltopClient(
+            base_url=base_url,
+            hts_endpoint=hts_endpoint,
+        ) as client:
+            result = client.get_site_info(
+                collection="Test Collection",
+            )
+
+        # Base Model
+        assert isinstance(result, SiteInfoResponse)
+        assert result.agency == "Test Council"
+
+        df = result.to_dataframe()
+        assert isinstance(df, pd.DataFrame)
+
+        assert len(result.site) > 0
+
+        # SiteInfoResponse
+        site = result.site[0]
+
+        assert site.name == "Test Site Alpha"
+        assert isinstance(site.info, dict)
+
+        site_info = site.info
+
+        assert site_info["Altitude"] == str(444)
+        assert site_info["SecondSynonym"] == "WTF"
+
+    @pytest.mark.integration
+    def test_collection_response_xml_integration(self, httpx_mock, collection_response_xml_cached):
+        """Validate the XML response against the SiteInfoResponse schema with cached data."""
 
         import pandas as pd
 
@@ -226,7 +322,7 @@ class TestResponseValidation:
         httpx_mock.add_response(
             url=test_url,
             method="GET",
-            text=collection_response_xml,
+            text=collection_response_xml_cached,
         )
 
         with HilltopClient(
