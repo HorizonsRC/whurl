@@ -6,6 +6,15 @@ import pytest
 from lxml import etree
 
 
+def pytest_configure(config):
+    """Configure pytest with custom markers."""
+    config.addinivalue_line("markers", "unit: mark test as a unit test")
+    config.addinivalue_line("markers", "integration: mark test as an integration test")
+    config.addinivalue_line("markers", "remote: mark test as requiring remote API access")
+    config.addinivalue_line("markers", "update: mark test as updating cached fixtures")
+    config.addinivalue_line("markers", "performance: mark test as a performance test")
+
+
 def pytest_addoption(parser):
     """Add command line options for pytest."""
     parser.addoption(
