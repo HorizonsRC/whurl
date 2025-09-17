@@ -32,5 +32,7 @@ build-backend = "poetry.core.masonry.api"
 markers = [
   "slow: marks tests as slow (deselect as '-m \"not slow\"')",
   "remote: marks tests as remote (deselect as '-m \"not remote\"')",
-  "update: updates the api response data cache (deselect as '-m \"not update\"')",
+  "unit: marks tests as unit tests (deselect as '-m \"not unit\"')",
+  "integration: marks tests as integration tests (deselect as '-m \"not integration\"')",
+  "performance: marks tests as performance tests (deselect as '-m \"not performance\"')",
 ]

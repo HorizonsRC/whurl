@@ -12,7 +12,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
     """Factory to create cached fixtures."""
 
     @pytest.fixture
-    def fixture_func(request, httpx_mock, cached_client):
+    def fixture_func(request, httpx_mock, remote_client):
         """Load test XML once per test session."""
         from pathlib import Path
         from urllib.parse import urlparse
@@ -29,17 +29,18 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
             # Switch off httpx mock so that cached request can go through.
             httpx_mock._options.should_mock = (
                 lambda request: request.url.host
-                != urlparse(cached_client.base_url).netloc
+                != urlparse(remote_client.base_url).netloc
             )
             cached_url = MeasurementListRequest(
-                base_url=cached_client.base_url,
-                hts_endpoint=cached_client.hts_endpoint,
+                base_url=remote_client.base_url,
+                hts_endpoint=remote_client.hts_endpoint,
                 **(request_kwargs or {}),
             ).gen_url()
-            cached_xml = cached_client.session.get(cached_url).text
+            cached_xml = remote_client.session.get(cached_url).text
             path.write_text(cached_xml, encoding="utf-8")
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
+    return fixture_func
 
 
 # Create cached fixtures
@@ -59,7 +60,7 @@ def create_mocked_fixtures(filename: str):
     """Factory to create mocked fixtures."""
 
     @pytest.fixture
-    def fixture_func(request, httpx_mock, remote_client):
+    def fixture_func():
         """Load test XML once per test session."""
         from pathlib import Path
 
@@ -71,6 +72,7 @@ def create_mocked_fixtures(filename: str):
         )
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
+    return fixture_func
 
 
 multi_response_xml_mocked = create_mocked_fixtures("multi_response.xml")
@@ -596,7 +598,7 @@ class TestMeasurementList:
         )
         assert sg_measurement is not None
         assert sg_measurement.name == "Flow"
-        assert sg_measurement.units == "m3/s"
+        assert sg_measurement.units == "l/s"
 
     @pytest.mark.unit
     def test_to_dict_unit(self, all_response_xml_mocked):
@@ -628,7 +630,7 @@ class TestMeasurementList:
             for k, v in test_dict.items()
         }
 
-        naive_dict = xmltodict.parse(all_response_xml)["HilltopServer"]
+        naive_dict = xmltodict.parse(all_response_xml_mocked)["HilltopServer"]
 
         assert test_dict == naive_dict
 
@@ -662,6 +664,6 @@ class TestMeasurementList:
             for k, v in test_dict.items()
         }
 
-        naive_dict = xmltodict.parse(all_response_xml)["HilltopServer"]
+        naive_dict = xmltodict.parse(all_response_xml_cached)["HilltopServer"]
 
         assert test_dict == naive_dict

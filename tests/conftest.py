@@ -11,17 +11,57 @@ def pytest_addoption(parser):
     parser.addoption(
         "--mode",
         action="store",
-        options=["unit", "integration", "performance"],
-        default="unit",
-        help="Select the type of tests to run (default: unit tests only)",
+        choices=["all", "offline", "unit", "integration", "performance"],
+        default="offline",
+        help="Select the type of tests to run (default: all tests)",
     )
 
     parser.addoption(
         "--update",
         action="store_true",  # True if present, False if not
         default=False,
-        help="Update the cached XML files with the latest data. Only used with --integration.",
+        help=(
+            "Update the cached XML files with the latest data. "
+            "Only used with --integration or --all."
+        ),
     )
+
+
+def pytest_collection_modifyitems(config, items):
+    """Modify test collection to handle performance test skipping."""
+    for item in items:
+        if config.getoption("--mode") == "offline":
+            if "remote" in item.keywords:
+                item.add_marker(
+                    pytest.mark.skip(reason="Skipping online tests in offline mode")
+                )
+        if config.getoption("--mode") == "unit":
+            if "integration" in item.keywords or "performance" in item.keywords:
+                item.add_marker(
+                    pytest.mark.skip(reason="Only running unit tests in unit mode")
+                )
+        if config.getoption("--mode") == "integration":
+            if "unit" in item.keywords or "performance" in item.keywords:
+                item.add_marker(
+                    pytest.mark.skip(
+                        reason="Only running integration tests in unit mode"
+                    )
+                )
+        if config.getoption("--mode") == "performance":
+            raise pytest.PytestConfigWarning(
+                "Performance tests are not yet implemented."
+            )
+
+        if config.getoption("--update"):
+            if config.getoption("--mode") not in ["all", "integration"]:
+                raise pytest.PytestConfigWarning(
+                    "--update can only be used with --mode=all or --mode=integration"
+                )
+            if config.getoption("--mode") == "offine":
+                raise pytest.PytestConfigWarning(
+                    "--update requires remote access, "
+                    "cannot be used with --mode=offline"
+                )
 
 
 def remove_tags(xml_str, tags_to_remove):
@@ -32,7 +72,7 @@ def remove_tags(xml_str, tags_to_remove):
             parent = element.getparent()
             if parent is not None:
                 parent.remove(element)
-    return etree.tostring(root, encoding='unicode')
+    return etree.tostring(root, encoding="unicode")
 
 
 @pytest.fixture(scope="session")
@@ -79,4 +119,5 @@ def mock_hilltop_client_factory(mocker):
             "session": mock_session,
             "response": mock_response,
         }
+
     return _factory
