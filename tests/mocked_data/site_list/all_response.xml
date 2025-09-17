@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<HilltopServer>
+  <Agency>Test Agency</Agency>
+  <Version>2404.1.2.60</Version>
+  <Site Name="Test Site Alpha">
+  </Site>
+  <Site Name="Test Site Beta">
+  </Site>
+  <Site Name="Test Site Gamma">
+  </Site>
+  <Site Name="Test Site Delta">
+  </Site>
+  <Site Name="Test Site Epsilon">
+  </Site>
+  <Site Name="Test Site Zeta">
+  </Site>
+</HilltopServer>

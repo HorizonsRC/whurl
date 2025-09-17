@@ -9,10 +9,18 @@ from lxml import etree
 def pytest_addoption(parser):
     """Add command line options for pytest."""
     parser.addoption(
+        "--mode",
+        action="store",
+        options=["unit", "integration", "performance"],
+        default="unit",
+        help="Select the type of tests to run (default: unit tests only)",
+    )
+
+    parser.addoption(
         "--update",
         action="store_true",  # True if present, False if not
         default=False,
-        help="Update the cached XML files with the latest data.",
+        help="Update the cached XML files with the latest data. Only used with --integration.",
     )
 
 

@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+<Hilltop>
+  <Agency>Test Council</Agency>
+  <Measurement SiteName="Test Site Alpha">
+    <DataSource Name="Water Level" NumItems="1">
+      <TSType>StdSeries</TSType>
+      <DataType>SimpleTimeSeries</DataType>
+      <Interpolation>Instant</Interpolation>
+      <ItemInfo ItemNumber="1">
+        <ItemName>Stage</ItemName>
+        <ItemFormat>F</ItemFormat>
+        <Units>mm</Units>
+        <Format>####</Format>
+      </ItemInfo>
+    </DataSource>
+    <Data DateFormat="Calendar" NumItems="1">
+      <E><T>2023-01-01T00:00:00</T><I1>584</I1></E>
+      <E><T>2023-01-01T00:05:00</T><I1>584</I1></E>
+      <E><T>2023-01-01T00:10:00</T><I1>584</I1></E>
+      <E><T>2023-01-01T00:15:00</T><I1>584</I1></E>
+      <E><T>2023-01-01T00:20:00</T><I1>584</I1></E>
+      <E><T>2023-01-01T00:25:00</T><I1>583</I1></E>
+      <E><T>2023-01-01T00:30:00</T><I1>582</I1></E>
+      <E><T>2023-01-01T00:35:00</T><I1>582</I1></E>
+      <E><T>2023-01-01T00:40:00</T><I1>582</I1></E>
+      <E><T>2023-01-01T00:45:00</T><I1>582</I1></E>
+      <E><T>2023-01-01T00:50:00</T><I1>582</I1></E>
+      <E><T>2023-01-01T00:55:00</T><I1>582</I1></E>
+      <E><T>2023-01-01T01:00:00</T><I1>582</I1></E>
+    </Data>
+  </Measurement>
+  <Measurement SiteName="Test Site Alpha">
+    <DataSource Name="Rainfall" NumItems="1">
+      <TSType>StdSeries</TSType>
+      <DataType>Rain6</DataType>
+      <Interpolation>Incremental</Interpolation>
+      <ItemInfo ItemNumber="1">
+        <ItemName>Rainfall</ItemName>
+        <ItemFormat>I</ItemFormat>
+        <Units>mm</Units>
+        <Format>####.#</Format>
+      </ItemInfo>
+    </DataSource>
+    <Data DateFormat="Calendar" NumItems="1">
+      <E><T>2025-09-14T08:52:22</T><I1>0</I1></E>
+      <E><T>2025-09-14T08:58:22</T><I1>0.2</I1></E>
+      <E><T>2025-09-14T09:00:00</T><I1>0</I1></E>
+      <E><T>2025-09-14T09:54:00</T><I1>0</I1></E>
+      <E><T>2025-09-14T10:00:00</T><I1>0</I1></E>
+      <E><T>2025-09-14T10:54:00</T><I1>0</I1></E>
+      <E><T>2025-09-14T11:00:00</T><I1>0</I1></E>
+      <E><T>2025-09-14T11:54:00</T><I1>0</I1></E>
+      <E><T>2025-09-14T12:00:00</T><I1>0</I1></E>
+      <E><T>2025-09-14T12:15:22</T><I1>0</I1></E>
+      <E><T>2025-09-14T12:21:22</T><I1>0.2</I1></E>
+      <E><T>2025-09-14T12:46:46</T><I1>0</I1></E>
+      <E><T>2025-09-14T12:52:46</T><I1>0.2</I1></E>
+      <E><T>2025-09-14T12:54:45</T><I1>0.2</I1></E>
+    </Data>
+  </Measurement>
+</Hilltop>

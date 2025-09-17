@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<HilltopServer>
+  <Agency>Test Council</Agency>
+  <DataSource Name="Flow" Site="Test Site 123">
+    <NumItems>1</NumItems>
+    <TSType>StdSeries</TSType>
+    <DataType>SimpleTimeSeries</DataType>
+    <Interpolation>Instant</Interpolation>
+    <ItemFormat>0</ItemFormat>
+    <From>2023-01-01T00:00:00</From>
+    <To>2025-09-16T08:15:00</To>
+    <Measurement Name="Flow">
+      <Item>1</Item>
+      <DefaultMeasurement />
+      <RequestAs>Flow</RequestAs>
+      <Units>l/s</Units>
+      <Format>#</Format>
+      <Ratset1>1</Ratset1>
+      <FirstRating>2021-02-24T00:00:00</FirstRating>
+      <LastRating>2025-02-14T00:00:00</LastRating>
+    </Measurement>
+    <Measurement Name="Stage">
+      <Item>1</Item>
+      <DefaultMeasurement />
+      <RequestAs>Stage</RequestAs>
+      <Units>mm</Units>
+      <Format>####</Format>
+    </Measurement>
+    <Measurement Name="Monthly Flow Deviation (monthly median)">
+      <Item>1</Item>
+      <RequestAs>Monthly Flow Deviation (monthly median)</RequestAs>
+      <Units>%</Units>
+      <Format>#.#</Format>
+      <MeasurementGroup>Virtual Measurements</MeasurementGroup>
+      <VM>1</VM>
+      <VMStart>2023-01-01T00:00:00</VMStart>
+      <VMFinish>2025-09-16T08:15:00</VMFinish>
+      <Ratset1>2</Ratset1>
+      <Ratset2>15</Ratset2>
+    </Measurement>
+  </DataSource>
+</HilltopServer>

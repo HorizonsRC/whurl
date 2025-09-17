@@ -1,0 +1,132 @@
+<?xml version="1.0" ?>
+<HilltopServer>
+  <Agency>Test Council</Agency>
+  <Site Name="Test Site Alpha">
+    <AirQNES>true</AirQNES>
+    <AirQSiteType>Residential</AirQSiteType>
+    <AirQuality>true</AirQuality>
+    <AirSiteCurrent>true</AirSiteCurrent>
+    <AirTown>Taiwarino</AirTown>
+    <Altitude>444</Altitude>
+    <Comment>Magic test site for test purposes.</Comment>
+    <ConsentCompliance>false</ConsentCompliance>
+    <DataLicense>GPL3</DataLicense>
+    <District>
+    </District>
+    <Easting>2750000</Easting>
+    <FirstSynonym>
+    </FirstSynonym>
+    <GISTag>
+    </GISTag>
+    <GWQuality>false</GWQuality>
+    <HIRDS>
+      <Interval ARI="1.58" Min10="5.2" Min20="7" Min30="8.39" Hour1="11.5" Hour2="15.7" Hour6="25.3" Hour12="33.5" Day1="43.3" Day2="54.2" Day3="60.7" Day4="65.3" Day5="68.6">
+      </Interval>
+      <Interval ARI="2" Min10="5.8" Min20="7.79" Min30="9.32" Hour1="12.7" Hour2="17.3" Hour6="27.8" Hour12="36.7" Day1="47.3" Day2="59" Day3="66" Day4="70.9" Day5="74.4">
+      </Interval>
+      <Interval ARI="5" Min10="8" Min20="10.7" Min30="12.7" Hour1="17.1" Hour2="23.1" Hour6="36.6" Hour12="47.9" Day1="61.1" Day2="75.6" Day3="84" Day4="89.8" Day5="94.1">
+      </Interval>
+      <Interval ARI="10" Min10="9.77" Min20="12.9" Min30="15.3" Hour1="20.6" Hour2="27.6" Hour6="43.3" Hour12="56.3" Day1="71.4" Day2="87.8" Day3="97.3" Day4="104" Day5="108">
+      </Interval>
+      <Interval ARI="20" Min10="11.7" Min20="15.4" Min30="18.2" Hour1="24.3" Hour2="32.4" Hour6="50.4" Hour12="65.2" Day1="82.2" Day2="100" Day3="111" Day4="118" Day5="123">
+      </Interval>
+      <Interval ARI="30" Min10="13" Min20="17" Min30="20" Hour1="26.6" Hour2="35.4" Hour6="54.8" Hour12="70.5" Day1="88.6" Day2="108" Day3="119" Day4="126" Day5="132">
+      </Interval>
+      <Interval ARI="40" Min10="13.9" Min20="18.2" Min30="21.4" Hour1="28.3" Hour2="37.6" Hour6="57.9" Hour12="74.4" Day1="93.3" Day2="113" Day3="125" Day4="132" Day5="138">
+      </Interval>
+      <Interval ARI="50" Min10="14.6" Min20="19.1" Min30="22.4" Hour1="29.7" Hour2="39.4" Hour6="60.4" Hour12="77.5" Day1="97" Day2="118" Day3="129" Day4="137" Day5="143">
+      </Interval>
+      <Interval ARI="60" Min10="15.2" Min20="19.9" Min30="23.3" Hour1="30.9" Hour2="40.8" Hour6="62.5" Hour12="80.1" Day1="100" Day2="121" Day3="133" Day4="141" Day5="147">
+      </Interval>
+      <Interval ARI="80" Min10="16.2" Min20="21.1" Min30="24.8" Hour1="32.7" Hour2="43.2" Hour6="65.9" Hour12="84.2" Day1="105" Day2="127" Day3="139" Day4="147" Day5="153">
+      </Interval>
+      <Interval ARI="100" Min10="17.1" Min20="22.1" Min30="26" Hour1="34.2" Hour2="45" Hour6="68.5" Hour12="87.4" Day1="109" Day2="131" Day3="144" Day4="152" Day5="158">
+      </Interval>
+      <Interval ARI="250" Min10="20.6" Min20="26.6" Min30="31" Hour1="40.5" Hour2="53" Hour6="79.7" Hour12="101" Day1="125" Day2="149" Day3="163" Day4="172" Day5="178">
+      </Interval>
+    </HIRDS>
+    <Inactive>0</Inactive>
+    <LWQuality>false</LWQuality>
+    <LawaSiteID>LAWA-000000</LawaSiteID>
+    <LawaSiteName>Sitey McSiteface</LawaSiteName>
+    <Macro>false</Macro>
+    <MetNumber>
+    </MetNumber>
+    <NZReach>4444444</NZReach>
+    <NZReachVersion>REC2.4</NZReachVersion>
+    <Northing>6160000</Northing>
+    <RecordingAuthority1>WTFRC</RecordingAuthority1>
+    <RecordingAuthority2>
+    </RecordingAuthority2>
+    <RiverNumber>
+    </RiverNumber>
+    <SecondSynonym>WTF</SecondSynonym>
+    <ShortName>
+    </ShortName>
+    <SiteID>44444</SiteID>
+  </Site>
+  <Site Name="Test Site Beta">
+    <AirQNES>true</AirQNES>
+    <AirQSiteType>Residential</AirQSiteType>
+    <AirQuality>true</AirQuality>
+    <AirSiteCurrent>true</AirSiteCurrent>
+    <AirTown>Taiwarino</AirTown>
+    <Altitude>444</Altitude>
+    <Comment>Magic test site for test purposes.</Comment>
+    <ConsentCompliance>false</ConsentCompliance>
+    <DataLicense>GPL3</DataLicense>
+    <District>
+    </District>
+    <Easting>2750000</Easting>
+    <FirstSynonym>
+    </FirstSynonym>
+    <GISTag>
+    </GISTag>
+    <GWQuality>false</GWQuality>
+    <HIRDS>
+    <Interval ARI="1.58" Min10="5.2" Min20="7" Min30="8.39" Hour1="11.5" Hour2="15.7" Hour6="25.3" Hour12="33.5" Day1="43.3" Day2="54.2" Day3="60.7" Day4="65.3" Day5="68.6">
+    </Interval>
+    <Interval ARI="2" Min10="5.8" Min20="7.79" Min30="9.32" Hour1="12.7" Hour2="17.3" Hour6="27.8" Hour12="36.7" Day1="47.3" Day2="59" Day3="66" Day4="70.9" Day5="74.4">
+    </Interval>
+    <Interval ARI="5" Min10="8" Min20="10.7" Min30="12.7" Hour1="17.1" Hour2="23.1" Hour6="36.6" Hour12="47.9" Day1="61.1" Day2="75.6" Day3="84" Day4="89.8" Day5="94.1">
+    </Interval>
+    <Interval ARI="10" Min10="9.77" Min20="12.9" Min30="15.3" Hour1="20.6" Hour2="27.6" Hour6="43.3" Hour12="56.3" Day1="71.4" Day2="87.8" Day3="97.3" Day4="104" Day5="108">
+    </Interval>
+    <Interval ARI="20" Min10="11.7" Min20="15.4" Min30="18.2" Hour1="24.3" Hour2="32.4" Hour6="50.4" Hour12="65.2" Day1="82.2" Day2="100" Day3="111" Day4="118" Day5="123">
+    </Interval>
+    <Interval ARI="30" Min10="13" Min20="17" Min30="20" Hour1="26.6" Hour2="35.4" Hour6="54.8" Hour12="70.5" Day1="88.6" Day2="108" Day3="119" Day4="126" Day5="132">
+    </Interval>
+    <Interval ARI="40" Min10="13.9" Min20="18.2" Min30="21.4" Hour1="28.3" Hour2="37.6" Hour6="57.9" Hour12="74.4" Day1="93.3" Day2="113" Day3="125" Day4="132" Day5="138">
+    </Interval>
+    <Interval ARI="50" Min10="14.6" Min20="19.1" Min30="22.4" Hour1="29.7" Hour2="39.4" Hour6="60.4" Hour12="77.5" Day1="97" Day2="118" Day3="129" Day4="137" Day5="143">
+    </Interval>
+    <Interval ARI="60" Min10="15.2" Min20="19.9" Min30="23.3" Hour1="30.9" Hour2="40.8" Hour6="62.5" Hour12="80.1" Day1="100" Day2="121" Day3="133" Day4="141" Day5="147">
+    </Interval>
+    <Interval ARI="80" Min10="16.2" Min20="21.1" Min30="24.8" Hour1="32.7" Hour2="43.2" Hour6="65.9" Hour12="84.2" Day1="105" Day2="127" Day3="139" Day4="147" Day5="153">
+    </Interval>
+    <Interval ARI="100" Min10="17.1" Min20="22.1" Min30="26" Hour1="34.2" Hour2="45" Hour6="68.5" Hour12="87.4" Day1="109" Day2="131" Day3="144" Day4="152" Day5="158">
+    </Interval>
+    <Interval ARI="250" Min10="20.6" Min20="26.6" Min30="31" Hour1="40.5" Hour2="53" Hour6="79.7" Hour12="101" Day1="125" Day2="149" Day3="163" Day4="172" Day5="178">
+    </Interval>
+    </HIRDS>
+    <Inactive>0</Inactive>
+    <LWQuality>false</LWQuality>
+    <LawaSiteID>LAWA-000000</LawaSiteID>
+    <LawaSiteName>Sitey McSiteface</LawaSiteName>
+    <Macro>false</Macro>
+    <MetNumber>
+    </MetNumber>
+    <NZReach>4444444</NZReach>
+    <NZReachVersion>REC2.4</NZReachVersion>
+    <Northing>6160000</Northing>
+    <RecordingAuthority1>WTFRC</RecordingAuthority1>
+    <RecordingAuthority2>
+    </RecordingAuthority2>
+    <RiverNumber>
+    </RiverNumber>
+    <SecondSynonym>WTF</SecondSynonym>
+    <ShortName>
+    </ShortName>
+    <SiteID>44444</SiteID>
+  </Site>
+</HilltopServer>
