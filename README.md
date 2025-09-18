@@ -660,6 +660,30 @@ This strategy ensures that:
 3. Tests remain reliable even when remote APIs are unavailable
 4. Response schema validation stays current with actual API behavior
 
+#### Performance Testing
+
+HURL includes comprehensive performance tests to validate httpx performance features. See [Performance Testing Documentation](docs/PERFORMANCE_TESTING.md) for detailed information.
+
+```bash
+# Run performance tests against local FastAPI test server
+python -m pytest tests/performance/ --performance-local
+
+# Run specific performance test categories
+python -m pytest tests/performance/test_connection_features.py --performance-local
+python -m pytest tests/performance/test_concurrency_features.py --performance-local
+
+# Performance tests are opt-in only and never run by default
+python -m pytest tests/performance/  # These will be skipped without --performance-local
+```
+
+Performance tests validate:
+- Connection keep-alive vs new connections  
+- Connection pooling configurations
+- HTTP/1.1 vs HTTP/2 protocol performance
+- Sync vs async client performance
+- Concurrency scaling behavior
+- Timeout and retry configuration effects
+
 ### Code Style
 
 This project uses:
