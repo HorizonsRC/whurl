@@ -5,6 +5,17 @@ description = "Python API wrapper for Hilltop Server"
 authors = [
     {name = "nicmostert",email = "nicolas.mostert@horizons.govt.nz"}
 ]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Python Modules"
+]
 license = "GPL-3.0-or-later"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -20,7 +31,8 @@ dependencies = [
     "isodate (>=0.7.2,<0.8.0)",
     "xmltodict (>=1.0.0,<2.0.0)",
     "certifi (>=2025.8.3,<2026.0.0)",
-    "pyyaml (>=6.0.2,<7.0.0)"
+    "pyyaml (>=6.0.2,<7.0.0)",
+    "numpy (>=1.26.4,<2.0.0)"
 ]
 
 
