@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Hilltop>
-  <Agency>Test Agency</Agency>
+  <Agency>Test Council</Agency>
   <Measurement SiteName="Test Site Alpha">
     <DataSource Name="Water Level" NumItems="1">
       <TSType>StdSeries</TSType>
@@ -49,8 +49,8 @@
       <E><T>2023-01-01T14:40:00</T><I1>570</I1></E>
       <E><T>2023-01-01T14:45:00</T><I1>571</I1></E>
       <E><T>2023-01-01T14:50:00</T><I1>571</I1></E>
-      <E><T>2023-01-01T14:55:00</T><I1>570</I1></E>
-      <E><T>2023-01-01T15:00:00</T><I1>570</I1></E>
+      <!-- ... -->
+      <E><T>2023-01-03T14:00:00</T><I1>570</I1></E>
     </Data>
   </Measurement>
 </Hilltop>

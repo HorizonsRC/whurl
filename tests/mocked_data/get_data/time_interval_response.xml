@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Hilltop>
-  <Agency>Test Agency</Agency>
+  <Agency>Test Council</Agency>
   <Measurement SiteName="Test Site Alpha">
     <DataSource Name="Water Level" NumItems="1">
       <TSType>StdSeries</TSType>

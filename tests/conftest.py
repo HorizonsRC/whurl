@@ -3,7 +3,21 @@
 from pathlib import Path
 
 import pytest
+from dotenv import load_dotenv
 from lxml import etree
+
+load_dotenv()
+
+
+def pytest_configure(config):
+    """Configure pytest with custom markers."""
+    config.addinivalue_line("markers", "unit: mark test as a unit test")
+    config.addinivalue_line("markers", "integration: mark test as an integration test")
+    config.addinivalue_line(
+        "markers", "remote: mark test as requiring remote API access"
+    )
+    config.addinivalue_line("markers", "update: mark test as updating cached fixtures")
+    config.addinivalue_line("markers", "performance: mark test as a performance test")
 
 
 def pytest_addoption(parser):
@@ -29,6 +43,26 @@ def pytest_addoption(parser):
 
 def pytest_collection_modifyitems(config, items):
     """Modify test collection to handle performance test skipping."""
+    import os
+
+    # Check for required environment variables when running integration tests
+    if config.getoption("--mode") in ["integration", "all"] or config.getoption(
+        "--update"
+    ):
+        required_env_vars = [
+            "TEST_SITE",
+            "TEST_MEASUREMENT",
+            "TEST_AGENCY",
+            "TEST_COLLECTION",
+        ]
+        missing_vars = [var for var in required_env_vars if not os.getenv(var)]
+        if missing_vars:
+            raise pytest.PytestConfigWarning(
+                "Integration tests require environment variables: "
+                f"{', '.join(missing_vars)}. "
+                "Please set these in a .env file or environment."
+            )
+
     for item in items:
         if config.getoption("--mode") == "offline":
             if "remote" in item.keywords:
