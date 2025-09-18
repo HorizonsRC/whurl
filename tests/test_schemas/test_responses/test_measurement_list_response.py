@@ -40,6 +40,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
             path.write_text(cached_xml, encoding="utf-8")
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
+
     return fixture_func
 
 
@@ -72,6 +73,7 @@ def create_mocked_fixtures(filename: str):
         )
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
+
     return fixture_func
 
 
@@ -412,7 +414,12 @@ class TestMeasurementList:
 
         # Test a specific measurement
         stage_measurement = next(
-            (m for m in flow_ds.measurements if m.name == os.getenv("TEST_MEASUREMENT")), None
+            (
+                m
+                for m in flow_ds.measurements
+                if m.name == "Stage"
+            ),
+            None,
         )
         assert isinstance(
             stage_measurement, MeasurementListResponse.DataSource.Measurement

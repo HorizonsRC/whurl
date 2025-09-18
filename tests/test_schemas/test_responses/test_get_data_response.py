@@ -254,6 +254,7 @@ class TestRemoteFixtures:
         from urllib.parse import urlparse
 
         from hurl.schemas.requests import GetDataRequest
+        from tests.conftest import remove_tags
 
         # Get the remote URL
         remote_url = GetDataRequest(
@@ -272,8 +273,14 @@ class TestRemoteFixtures:
         # Get the remote XML
         remote_xml = remote_client.session.get(remote_url).text
 
+        # remove the time tags (will change often)
+        remote_xml_cleaned = remove_tags(remote_xml, ["T", "E"])
+        time_interval_response_xml_cleaned = remove_tags(
+            time_interval_response_xml_cached, ["T", "E"]
+        )
+
         # Compare the local and remote XML
-        assert time_interval_response_xml_cached == remote_xml
+        assert time_interval_response_xml_cleaned == remote_xml_cleaned
 
     @pytest.mark.remote
     @pytest.mark.update
@@ -285,6 +292,7 @@ class TestRemoteFixtures:
         from urllib.parse import urlparse
 
         from hurl.schemas.requests import GetDataRequest
+        from tests.conftest import remove_tags
 
         # Get the remote URL
         remote_url = GetDataRequest(
@@ -304,8 +312,14 @@ class TestRemoteFixtures:
         # Get the remote XML
         remote_xml = remote_client.session.get(remote_url).text
 
+        # remove the time tags (will change often)
+        remote_xml_cleaned = remove_tags(remote_xml, ["T", "E"])
+        time_interval_complex_response_xml_cleaned = remove_tags(
+            time_interval_complex_response_xml_cached, ["T", "E"]
+        )
+
         # Compare the local and remote XML
-        assert time_interval_complex_response_xml_cached == remote_xml
+        assert time_interval_complex_response_xml_cleaned == remote_xml_cleaned
 
     @pytest.mark.remote
     @pytest.mark.update

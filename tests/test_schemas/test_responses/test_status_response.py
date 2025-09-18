@@ -5,6 +5,10 @@ import os
 import pytest
 import pytest_httpx
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 def create_cached_fixtures(filename: str, request_kwargs: dict = None):
     """Factory to create cached fixtures."""

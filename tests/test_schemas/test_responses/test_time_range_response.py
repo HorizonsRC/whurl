@@ -3,6 +3,9 @@
 import os
 
 import pytest
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def create_cached_fixtures(filename: str, request_kwargs: dict = None):
@@ -37,6 +40,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
             path.write_text(cached_xml, encoding="utf-8")
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
+
     return fixture_func
 
 
@@ -56,14 +60,15 @@ def create_mocked_fixtures(filename: str):
         )
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
+
     return fixture_func
 
 
 # Create cached fixtures
-basic_response_xml_cached = create_cached_fixtures("response.xml", {
-    "site": os.getenv("TEST_SITE"),
-    "measurement": os.getenv("TEST_MEASUREMENT")
-})
+basic_response_xml_cached = create_cached_fixtures(
+    "response.xml",
+    {"site": os.getenv("TEST_SITE"), "measurement": os.getenv("TEST_MEASUREMENT")},
+)
 
 # Create mocked fixtures
 basic_response_xml_mocked = create_mocked_fixtures("response.xml")
@@ -152,7 +157,9 @@ class TestTimeRangeResponse:
         assert isinstance(response.from_time, datetime)
 
     @pytest.mark.integration
-    def test_time_range_response_integration(self, httpx_mock, basic_response_xml_cached):
+    def test_time_range_response_integration(
+        self, httpx_mock, basic_response_xml_cached
+    ):
         """Test the TimeRange Response Schema with cached data."""
 
         from datetime import datetime

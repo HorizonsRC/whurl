@@ -1,4 +1,10 @@
 import pytest
+import os
+
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def create_cached_fixtures(filename: str, request_kwargs: dict = None):

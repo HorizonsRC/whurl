@@ -1,6 +1,11 @@
 """Tests for the CollectionListResponse schema."""
 
+import os
+
 import pytest
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def create_cached_fixtures(filename: str, request_kwargs: dict = None):
@@ -35,6 +40,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
             path.write_text(cached_xml, encoding="utf-8")
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
+
     return fixture_func
 
 
@@ -54,6 +60,7 @@ def create_mocked_fixtures(filename: str):
         )
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
+
     return fixture_func
 
 
@@ -101,7 +108,8 @@ class TestResponseValidation:
 
         from hurl.client import HilltopClient
         from hurl.schemas.requests.collection_list import CollectionListRequest
-        from hurl.schemas.responses.collection_list import CollectionListResponse
+        from hurl.schemas.responses.collection_list import \
+            CollectionListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -148,12 +156,15 @@ class TestResponseValidation:
                 assert isinstance(item.filename, str | None)
 
     @pytest.mark.integration
-    def test_basic_response_xml_integration(self, httpx_mock, basic_response_xml_cached):
+    def test_basic_response_xml_integration(
+        self, httpx_mock, basic_response_xml_cached
+    ):
         """Validate the response XML against the CollectionListResponse schema with cached data."""
 
         from hurl.client import HilltopClient
         from hurl.schemas.requests.collection_list import CollectionListRequest
-        from hurl.schemas.responses.collection_list import CollectionListResponse
+        from hurl.schemas.responses.collection_list import \
+            CollectionListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"

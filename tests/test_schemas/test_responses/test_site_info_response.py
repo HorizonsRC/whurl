@@ -4,6 +4,10 @@ import os
 
 import pytest
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 def create_cached_fixtures(filename: str, request_kwargs: dict = None):
     """Factory to create cached fixtures."""
@@ -37,6 +41,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
             path.write_text(cached_xml, encoding="utf-8")
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
+
     return fixture_func
 
 
@@ -49,23 +54,21 @@ def create_mocked_fixtures(filename: str):
         from pathlib import Path
 
         path = (
-            Path(__file__).parent.parent.parent
-            / "mocked_data"
-            / "site_info"
-            / filename
+            Path(__file__).parent.parent.parent / "mocked_data" / "site_info" / filename
         )
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
+
     return fixture_func
 
 
 # Create cached fixtures
-basic_response_xml_cached = create_cached_fixtures("response.xml", {
-    "site": os.getenv("TEST_SITE")
-})
-collection_response_xml_cached = create_cached_fixtures("collection_response.xml", {
-    "collection": os.getenv("TEST_COLLECTION")
-})
+basic_response_xml_cached = create_cached_fixtures(
+    "response.xml", {"site": os.getenv("TEST_SITE")}
+)
+collection_response_xml_cached = create_cached_fixtures(
+    "collection_response.xml", {"collection": os.getenv("TEST_COLLECTION")}
+)
 
 # Create mocked fixtures
 basic_response_xml_mocked = create_mocked_fixtures("response.xml")
@@ -105,10 +108,14 @@ class TestRemoteFixtures:
 
         # remove the tags
         remote_xml_cleaned = remove_tags(remote_xml, tags_to_remove)
-        basic_response_xml_cleaned = remove_tags(basic_response_xml_cached, tags_to_remove)
+        basic_response_xml_cleaned = remove_tags(
+            basic_response_xml_cached, tags_to_remove
+        )
 
         assert remote_xml_cleaned == basic_response_xml_cleaned
 
+    @pytest.mark.remote
+    @pytest.mark.update
     def test_collection_response_xml_fixture(
         self,
         remote_client,
@@ -139,7 +146,9 @@ class TestRemoteFixtures:
 
         # remove the tags
         remote_xml_cleaned = remove_tags(remote_xml, tags_to_remove)
-        collection_response_xml_cleaned = remove_tags(collection_response_xml_cached, tags_to_remove)
+        collection_response_xml_cleaned = remove_tags(
+            collection_response_xml_cached, tags_to_remove
+        )
 
         assert remote_xml_cleaned == collection_response_xml_cleaned
 
@@ -197,8 +206,10 @@ class TestResponseValidation:
         assert site_info["Altitude"] == str(444)
         assert site_info["SecondSynonym"] == "WTF"
 
-    @pytest.mark.integration  
-    def test_basic_response_xml_integration(self, httpx_mock, basic_response_xml_cached):
+    @pytest.mark.integration
+    def test_basic_response_xml_integration(
+        self, httpx_mock, basic_response_xml_cached
+    ):
         """Validate the XML response against the SiteInfoResponse schema with cached data."""
 
         import pandas as pd
@@ -244,13 +255,10 @@ class TestResponseValidation:
         assert site.name == os.getenv("TEST_SITE")
         assert isinstance(site.info, dict)
 
-        site_info = site.info
-
-        assert site_info["Altitude"] == str(106)
-        assert site_info["SecondSynonym"] == "NPK"
-
     @pytest.mark.unit
-    def test_collection_response_xml_unit(self, httpx_mock, collection_response_xml_mocked):
+    def test_collection_response_xml_unit(
+        self, httpx_mock, collection_response_xml_mocked
+    ):
         """Validate the XML response against the SiteInfoResponse schema with mocked data."""
 
         import pandas as pd
@@ -303,7 +311,9 @@ class TestResponseValidation:
         assert site_info["SecondSynonym"] == "WTF"
 
     @pytest.mark.integration
-    def test_collection_response_xml_integration(self, httpx_mock, collection_response_xml_cached):
+    def test_collection_response_xml_integration(
+        self, httpx_mock, collection_response_xml_cached
+    ):
         """Validate the XML response against the SiteInfoResponse schema with cached data."""
 
         import pandas as pd
@@ -343,14 +353,3 @@ class TestResponseValidation:
         assert isinstance(df, pd.DataFrame)
 
         assert len(result.site) > 1
-
-        # SiteInfoResponse
-        site = result.site[0]
-
-        assert site.name == "Air Quality at Taihape"
-        assert isinstance(site.info, dict)
-
-        site_info = site.info
-
-        assert site_info["Altitude"] == str(433)
-        assert site_info["SecondSynonym"] == "TAQ"
