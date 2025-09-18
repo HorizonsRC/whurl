@@ -1,5 +1,9 @@
 """Shared fixtures for testing."""
 
+import asyncio
+import os
+import threading
+import time
 from pathlib import Path
 
 import pytest
@@ -78,13 +82,16 @@ def pytest_collection_modifyitems(config, items):
             if "unit" in item.keywords or "performance" in item.keywords:
                 item.add_marker(
                     pytest.mark.skip(
-                        reason="Only running integration tests in unit mode"
+                        reason="Only running integration tests in integration mode"
                     )
                 )
         if config.getoption("--mode") == "performance":
-            raise pytest.PytestConfigWarning(
-                "Performance tests are not yet implemented."
-            )
+            if "integration" in item.keywords or "unit" in item.keywords:
+                item.add_marker(
+                    pytest.mark.skip(
+                        reason="Only running performance tests in performance mode"
+                    )
+                )
 
         if config.getoption("--update"):
             if config.getoption("--mode") not in ["all", "integration"]:
@@ -155,3 +162,102 @@ def mock_hilltop_client_factory(mocker):
         }
 
     return _factory
+
+
+@pytest.fixture(scope="session")
+def local_test_server():
+    """Start a local FastAPI test server for performance testing."""
+    import threading
+    import time
+
+    import httpx
+    import uvicorn
+
+    from tests.performance.local_server import create_test_server
+
+    # Configuration from environment variables
+    host = "127.0.0.1"
+    port = int(os.getenv("TEST_SERVER_PORT", "8001"))  # Use 8001 to avoid conflicts
+    delay = float(
+        os.getenv("TEST_SERVER_DELAY", "0.01")
+    )  # Small default delay for testing
+    error_rate = float(os.getenv("TEST_SERVER_ERROR_RATE", "0.0"))
+
+    server = create_test_server(
+        host=host, port=port, delay=delay, error_rate=error_rate
+    )
+
+    # Start server in a separate thread
+    server_thread = threading.Thread(
+        target=server.run, kwargs={"access_log": False}, daemon=True
+    )
+    server_thread.start()
+
+    # Wait for server to start
+    server_url = f"http://{host}:{port}"
+    max_retries = 50  # Increase retries
+    for i in range(max_retries):
+        try:
+            response = httpx.get(f"{server_url}/health", timeout=2.0)
+            if response.status_code == 200:
+                break
+        except (httpx.RequestError, httpx.TimeoutException):
+            pass
+        time.sleep(0.1)
+    else:
+        pytest.fail(f"Local test server failed to start after {max_retries * 0.1}s")
+
+    yield {
+        "base_url": server_url,
+        "hts_endpoint": "foo.hts",
+        "host": host,
+        "port": port,
+        "delay": delay,
+        "error_rate": error_rate,
+    }
+
+    # Server cleanup happens automatically when thread ends
+
+
+@pytest.fixture(scope="session")
+def performance_remote_client():
+    """Create a remote client for performance testing."""
+    from hurl.client import HilltopClient
+
+    # Check if remote testing is enabled and environment is configured
+    remote_base_url = os.getenv("HILLTOP_PERFORMANCE_BASE_URL")
+    remote_hts_endpoint = os.getenv("HILLTOP_PERFORMANCE_HTS_ENDPOINT")
+
+    if not remote_base_url or not remote_hts_endpoint:
+        pytest.skip(
+            "Remote performance testing requires HILLTOP_PERFORMANCE_BASE_URL "
+            "and HILLTOP_PERFORMANCE_HTS_ENDPOINT environment variables"
+        )
+
+    client = HilltopClient(
+        base_url=remote_base_url,
+        hts_endpoint=remote_hts_endpoint,
+        timeout=30,  # Longer timeout for performance tests
+    )
+
+    try:
+        yield client
+    finally:
+        client.close()
+
+
+@pytest.fixture
+def performance_local_client(local_test_server):
+    """Create a client configured for local performance testing."""
+    from hurl.client import HilltopClient
+
+    client = HilltopClient(
+        base_url=local_test_server["base_url"],
+        hts_endpoint=local_test_server["hts_endpoint"],
+        timeout=30,
+    )
+
+    try:
+        yield client
+    finally:
+        client.close()

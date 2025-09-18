@@ -85,6 +85,7 @@ units_response_xml_mocked = create_mocked_fixtures("units_response.xml")
 
 class VerifyCachedFixtures:
     @pytest.mark.remote
+    @pytest.mark.integration
     def test_multi_response_xml_cache(
         self,
         remote_client,
@@ -125,6 +126,7 @@ class VerifyCachedFixtures:
         assert remote_xml_cleaned == multi_response_xml_cleaned
 
     @pytest.mark.remote
+    @pytest.mark.integration
     def test_all_response_xml_fixture(
         self,
         remote_client,
@@ -153,6 +155,7 @@ class VerifyCachedFixtures:
         assert remote_xml == cached_xml
 
     @pytest.mark.remote
+    @pytest.mark.integration
     def test_error_response_xml_fixture(
         self,
         remote_client,
@@ -182,6 +185,7 @@ class VerifyCachedFixtures:
         assert remote_xml == cached_xml
 
     @pytest.mark.remote
+    @pytest.mark.integration
     def test_units_response_xml_fixture(
         self,
         remote_client,

@@ -4,7 +4,6 @@ import os
 
 import pytest
 import pytest_httpx
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,10 +21,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
         from hurl.schemas.requests import StatusRequest
 
         path = (
-            Path(__file__).parent.parent.parent
-            / "fixture_cache"
-            / "status"
-            / filename
+            Path(__file__).parent.parent.parent / "fixture_cache" / "status" / filename
         )
         if request.config.getoption("--update"):
             # Switch off httpx mock so that cached request can go through.
@@ -42,6 +38,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
             path.write_text(cached_xml, encoding="utf-8")
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
+
     return fixture_func
 
 
@@ -53,14 +50,10 @@ def create_mocked_fixtures(filename: str):
         """Load test XML once per test session."""
         from pathlib import Path
 
-        path = (
-            Path(__file__).parent.parent.parent
-            / "mocked_data"
-            / "status"
-            / filename
-        )
+        path = Path(__file__).parent.parent.parent / "mocked_data" / "status" / filename
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
+
     return fixture_func
 
 
@@ -73,8 +66,10 @@ status_response_xml_mocked = create_mocked_fixtures("response.xml")
 
 class TestRemoteFixtures:
     @pytest.mark.remote
-    @pytest.mark.update
-    def test_response_xml_fixture(self, httpx_mock, remote_client, status_response_xml_cached):
+    @pytest.mark.integration
+    def test_response_xml_fixture(
+        self, httpx_mock, remote_client, status_response_xml_cached
+    ):
         """Validate the status response XML fixture."""
         from urllib.parse import urlparse
 

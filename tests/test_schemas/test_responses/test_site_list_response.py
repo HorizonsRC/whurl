@@ -70,7 +70,7 @@ all_response_xml_mocked = create_mocked_fixtures("all_response.xml")
 
 class TestRemoteFixtures:
     @pytest.mark.remote
-    @pytest.mark.update
+    @pytest.mark.integration
     def test_all_response_xml_fixture(
         self, remote_client, httpx_mock, all_response_xml_cached
     ):

@@ -127,7 +127,7 @@ date_only_response_xml_mocked = create_mocked_fixtures("date_only_response.xml")
 
 class TestRemoteFixtures:
     @pytest.mark.remote
-    @pytest.mark.update
+    @pytest.mark.integration
     def test_basic_response_xml_fixture(
         self, remote_client, httpx_mock, basic_response_xml_cached
     ):
@@ -164,7 +164,7 @@ class TestRemoteFixtures:
         assert basic_response_xml_cleaned == remote_xml_cleaned
 
     @pytest.mark.remote
-    @pytest.mark.update
+    @pytest.mark.integration
     def test_one_point_response_xml_fixture(
         self, remote_client, httpx_mock, one_point_response_xml_cached
     ):
@@ -201,7 +201,7 @@ class TestRemoteFixtures:
         assert one_point_response_xml_cleaned == remote_xml_cleaned
 
     @pytest.mark.remote
-    @pytest.mark.update
+    @pytest.mark.integration
     def test_collection_response_xml_fixture(
         self, remote_client, httpx_mock, collection_response_xml_cached
     ):
@@ -245,7 +245,7 @@ class TestRemoteFixtures:
         assert collection_response_xml_cleaned == remote_xml_cleaned
 
     @pytest.mark.remote
-    @pytest.mark.update
+    @pytest.mark.integration
     def test_time_interval_response_xml_fixture(
         self, remote_client, httpx_mock, time_interval_response_xml_cached
     ):
@@ -283,7 +283,7 @@ class TestRemoteFixtures:
         assert time_interval_response_xml_cleaned == remote_xml_cleaned
 
     @pytest.mark.remote
-    @pytest.mark.update
+    @pytest.mark.integration
     def test_time_interval_complex_response_xml_fixture(
         self, remote_client, httpx_mock, time_interval_complex_response_xml_cached
     ):
@@ -322,7 +322,7 @@ class TestRemoteFixtures:
         assert time_interval_complex_response_xml_cleaned == remote_xml_cleaned
 
     @pytest.mark.remote
-    @pytest.mark.update
+    @pytest.mark.integration
     def test_date_only_response_xml_fixture(
         self, remote_client, httpx_mock, date_only_response_xml_cached
     ):

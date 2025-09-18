@@ -77,7 +77,7 @@ collection_response_xml_mocked = create_mocked_fixtures("collection_response.xml
 
 class TestRemoteFixtures:
     @pytest.mark.remote
-    @pytest.mark.update
+    @pytest.mark.integration
     def test_basic_response_xml_fixture(
         self,
         remote_client,
@@ -115,7 +115,7 @@ class TestRemoteFixtures:
         assert remote_xml_cleaned == basic_response_xml_cleaned
 
     @pytest.mark.remote
-    @pytest.mark.update
+    @pytest.mark.integration
     def test_collection_response_xml_fixture(
         self,
         remote_client,
