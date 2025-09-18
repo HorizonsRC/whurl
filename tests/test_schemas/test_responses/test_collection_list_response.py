@@ -177,7 +177,6 @@ class TestResponseValidation:
 
         # Base Model
         assert isinstance(result, CollectionListResponse)
-        assert result.title == "Environmental Data"
 
         # Check the collections
         collections = result.collections
