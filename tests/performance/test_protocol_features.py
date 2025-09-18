@@ -18,7 +18,7 @@ from hurl.client import HilltopClient
 class TestHTTPProtocolPerformance:
     """Test HTTP protocol performance characteristics."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_http1_sequential_requests(self, benchmark, local_test_server):
         """Test HTTP/1.1 sequential request performance."""
 
@@ -47,7 +47,7 @@ class TestHTTPProtocolPerformance:
             # Verify we're using HTTP/1.1
             assert result.http_version == "HTTP/1.1"
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_http2_sequential_requests(self, benchmark, local_test_server):
         """Test HTTP/2 sequential request performance."""
 
@@ -75,7 +75,7 @@ class TestHTTPProtocolPerformance:
             assert result.status_code == 200
             # Note: Local FastAPI server may not support HTTP/2, so we don't assert version
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_protocol_comparison(self, local_test_server):
         """Compare HTTP/1.1 vs HTTP/2 performance characteristics."""
 
@@ -133,7 +133,7 @@ class TestHTTPProtocolPerformance:
 class TestConcurrentProtocolRequests:
     """Test concurrent request performance with different protocols."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     async def test_concurrent_http1_requests(self, local_test_server):
         """Test concurrent HTTP/1.1 requests."""
 
@@ -166,7 +166,7 @@ class TestConcurrentProtocolRequests:
             print(f"Concurrent HTTP/1.1 time: {concurrent_time:.4f}s")
             print(f"Concurrent requests per second: {10/concurrent_time:.2f}")
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     async def test_concurrent_http2_requests(self, local_test_server):
         """Test concurrent HTTP/2 requests."""
 
@@ -203,7 +203,7 @@ class TestConcurrentProtocolRequests:
 class TestProtocolConfiguration:
     """Test protocol configuration in HilltopClient."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_hilltop_client_default_protocol(self, local_test_server):
         """Test HilltopClient's default protocol configuration."""
 
@@ -218,9 +218,13 @@ class TestProtocolConfiguration:
 
             # Check the underlying session configuration
             # HilltopClient uses httpx.Client which defaults to HTTP/1.1 unless http2=True
-            assert hasattr(client.session, "limits")
 
-    @pytest.mark.performance_local
+            # NIC: Not sure what copilot is trying to assert here.
+            # This is not an attribute.
+
+            # assert hasattr(client.session, "limits")
+
+    @pytest.mark.performance
     def test_protocol_fallback_behavior(self, local_test_server):
         """Test protocol fallback behavior."""
 
@@ -235,4 +239,3 @@ class TestProtocolConfiguration:
             )
             assert response.status_code == 200
             # Should work regardless of what protocol the server actually supports
-

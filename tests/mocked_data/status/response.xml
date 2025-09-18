@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<HilltopServer>
+  <Agency>Test Council</Agency>
+  <Version>2404.1.2.60</Version>
+  <ScriptName>/foo.hts</ScriptName>
+  <DefaultFile>c:\Hilltop\DataFile.hts</DefaultFile>
+  <RelayURL></RelayURL>
+  <ProcessID>420</ProcessID>
+  <WorkingSet>69.69</WorkingSet>
+  <DataFile>
+    <Filename>c:\Hilltop\DataFile.hts</Filename>
+    <UsageCount>0</UsageCount>
+    <OpenFor>12344566</OpenFor>
+    <FullRefresh>1234556</FullRefresh>
+    <SoftRefresh>1234345</SoftRefresh>
+  </DataFile>
+  <DataFile>
+    <Filename>c:\Hilltop\DataFileTwo.dsn</Filename>
+    <UsageCount>1</UsageCount>
+    <OpenFor>12344566</OpenFor>
+    <FullRefresh>1234556</FullRefresh>
+    <SoftRefresh>1234345</SoftRefresh>
+  </DataFile>
+</HilltopServer>

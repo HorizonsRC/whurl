@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<HilltopServer>
+  <Agency>Test Council</Agency>
+  <Site>Test Site Alpha</Site>
+  <Measurement>Stage</Measurement>
+  <From>2023-01-01T00:00:00+12:00</From>
+  <To>2025-09-16T08:15:00+12:00</To>
+  <Units>mm</Units>
+</HilltopServer>

@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<HilltopServer>
+  <Agency>Test Council</Agency>
+  <Measurement Name="Flow">
+    <Units>m3/s</Units>
+  </Measurement>
+  <Measurement Name="Stage">
+    <Units>m</Units>
+  </Measurement>
+</HilltopServer>

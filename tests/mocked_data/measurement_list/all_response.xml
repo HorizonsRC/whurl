@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<HilltopServer>
+  <Agency>Test Council</Agency>
+  <Measurement Name="Groundwater" />
+  <Measurement Name="Water Temperature" />
+  <Measurement Name="Voltage" />
+  <Measurement Name="pH" />
+  <Measurement Name="Stage" />
+  <Measurement Name="Atmospheric Pressure" />
+  <Measurement Name="Flow" />
+</HilltopServer>

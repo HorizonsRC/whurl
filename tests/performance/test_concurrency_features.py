@@ -19,7 +19,7 @@ from hurl.client import HilltopClient
 class TestSyncVsAsyncPerformance:
     """Compare synchronous vs asynchronous client performance."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_sync_sequential_requests(self, benchmark, local_test_server):
         """Test synchronous sequential request performance."""
 
@@ -43,7 +43,7 @@ class TestSyncVsAsyncPerformance:
         for result in results:
             assert result.status_code == 200
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_async_sequential_requests(self, benchmark, local_test_server):
         """Test asynchronous sequential request performance."""
 
@@ -72,7 +72,7 @@ class TestSyncVsAsyncPerformance:
         for result in results:
             assert result.status_code == 200
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_sync_vs_async_comparison(self, local_test_server):
         """Compare sync vs async performance for the same workload."""
 
@@ -123,7 +123,7 @@ class TestSyncVsAsyncPerformance:
 class TestConcurrentRequests:
     """Test concurrent request performance."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_sync_concurrent_with_threads(self, benchmark, local_test_server):
         """Test sync client with thread-based concurrency."""
 
@@ -151,7 +151,7 @@ class TestConcurrentRequests:
         for result in results:
             assert result.status_code == 200
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_async_concurrent_requests(self, benchmark, local_test_server):
         """Test async client with asyncio concurrency."""
 
@@ -182,7 +182,7 @@ class TestConcurrentRequests:
         for result in results:
             assert result.status_code == 200
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_concurrency_scaling(self, local_test_server):
         """Test how performance scales with concurrency level."""
 
@@ -234,7 +234,7 @@ class TestConcurrentRequests:
 class TestAsyncContextManagement:
     """Test async context manager performance."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     async def test_async_context_manager_reuse(self, local_test_server):
         """Test reusing async client context manager."""
 
@@ -287,7 +287,7 @@ class TestAsyncContextManagement:
 class TestHilltopClientConcurrency:
     """Test HilltopClient in concurrent scenarios."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_hilltop_client_thread_safety(self, local_test_server):
         """Test HilltopClient thread safety (though it's not designed for it)."""
 
@@ -319,7 +319,7 @@ class TestHilltopClientConcurrency:
             for result in thread_results:
                 assert hasattr(result, "request")
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_multiple_hilltop_clients(self, local_test_server):
         """Test performance with multiple HilltopClient instances."""
 

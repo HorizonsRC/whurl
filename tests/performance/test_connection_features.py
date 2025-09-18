@@ -19,7 +19,7 @@ from hurl.client import HilltopClient
 class TestConnectionKeepAlive:
     """Test connection keep-alive functionality."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_sequential_requests_with_keep_alive(
         self, benchmark, performance_local_client
     ):
@@ -41,7 +41,7 @@ class TestConnectionKeepAlive:
         for result in results:
             assert hasattr(result, "request")
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_sequential_requests_without_keep_alive(self, benchmark, local_test_server):
         """Test performance of sequential requests without keep-alive."""
 
@@ -67,7 +67,7 @@ class TestConnectionKeepAlive:
         for result in results:
             assert hasattr(result, "request")
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_keep_alive_vs_new_connections_comparison(self, local_test_server):
         """Compare keep-alive vs new connections performance."""
 
@@ -110,7 +110,7 @@ class TestConnectionKeepAlive:
 class TestConnectionPooling:
     """Test connection pooling features."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_pooled_vs_non_pooled_requests(self, local_test_server):
         """Compare pooled vs non-pooled connection performance."""
 
@@ -158,7 +158,7 @@ class TestConnectionPooling:
         assert pooled_time > 0
         assert non_pooled_time > 0
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_connection_pool_limits(self, local_test_server):
         """Test behavior with different connection pool limits."""
 
@@ -209,7 +209,7 @@ class TestConnectionPooling:
 class TestConnectionConfiguration:
     """Test different httpx connection configurations."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_hilltop_client_connection_config(self, local_test_server):
         """Test HilltopClient's default connection configuration."""
 
@@ -236,7 +236,7 @@ class TestConnectionConfiguration:
             print(f"Base URL: {client.base_url}")
             print(f"HTS Endpoint: {client.hts_endpoint}")
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_custom_connection_configuration(self, local_test_server):
         """Test custom httpx connection configurations."""
 
@@ -257,5 +257,4 @@ class TestConnectionConfiguration:
                     f"/{local_test_server['hts_endpoint']}?Service=Hilltop&Request=Status"
                 )
                 assert response.status_code == 200
-                assert "Test" in response.text  # Basic XML validation
-
+                assert "Test Council" in response.text  # Basic XML validation

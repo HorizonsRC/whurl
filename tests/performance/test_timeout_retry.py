@@ -19,7 +19,7 @@ from hurl.client import HilltopClient
 class TestTimeoutConfiguration:
     """Test different timeout configuration effects."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_short_timeout_performance(self, benchmark, local_test_server):
         """Test performance with short timeout values."""
 
@@ -53,7 +53,7 @@ class TestTimeoutConfiguration:
         print(f"Successful requests: {len(successful)}")
         print(f"Timeout requests: {len(timeouts)}")
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_long_timeout_performance(self, benchmark, local_test_server):
         """Test performance with long timeout values."""
 
@@ -78,7 +78,7 @@ class TestTimeoutConfiguration:
         for result in results:
             assert result.status_code == 200
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_timeout_granularity(self, local_test_server):
         """Test different timeout granularity settings."""
 
@@ -135,7 +135,7 @@ class TestTimeoutConfiguration:
 class TestRetryBehavior:
     """Test retry behavior and its performance impact."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_no_retry_performance(self, benchmark, local_test_server):
         """Test performance without retry logic."""
 
@@ -158,7 +158,7 @@ class TestRetryBehavior:
         for result in results:
             assert result.status_code == 200
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_manual_retry_performance(self, benchmark, local_test_server):
         """Test performance with manual retry logic."""
 
@@ -195,7 +195,7 @@ class TestRetryBehavior:
         print(f"Successful with retry: {len(successful)}")
         print(f"Failed after retries: {len(failed)}")
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_retry_vs_no_retry_comparison(self, local_test_server):
         """Compare performance with and without retry logic."""
 
@@ -252,7 +252,7 @@ class TestRetryBehavior:
 class TestErrorHandlingPerformance:
     """Test error handling and recovery performance."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_connection_error_handling(self, local_test_server):
         """Test performance when handling connection errors."""
 
@@ -279,7 +279,7 @@ class TestErrorHandlingPerformance:
         # Should have encountered connection errors
         assert error_count > 0
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_mixed_success_failure_performance(self, local_test_server):
         """Test performance with mixed successful and failed requests."""
 
@@ -325,7 +325,7 @@ class TestErrorHandlingPerformance:
 class TestHilltopClientTimeoutBehavior:
     """Test HilltopClient timeout behavior."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_hilltop_client_default_timeout(self, local_test_server):
         """Test HilltopClient with default timeout configuration."""
 
@@ -347,7 +347,7 @@ class TestHilltopClientTimeoutBehavior:
 
         print(f"Default timeout (60s) time: {default_timeout_time:.4f}s")
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_hilltop_client_custom_timeout(self, local_test_server):
         """Test HilltopClient with custom timeout configuration."""
 
@@ -374,7 +374,7 @@ class TestHilltopClientTimeoutBehavior:
         # (the actual network operations are the same)
         assert custom_timeout_time > 0
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     def test_hilltop_client_timeout_configuration(self, local_test_server):
         """Test that HilltopClient correctly configures httpx timeout."""
 
@@ -386,7 +386,10 @@ class TestHilltopClientTimeoutBehavior:
         ) as client:
             # Verify the timeout is correctly configured in the underlying session
             assert client.timeout == timeout_value
-            assert client.session.timeout.timeout == timeout_value
+            assert client.session.timeout.connect == timeout_value
+            assert client.session.timeout.read == timeout_value
+            assert client.session.timeout.write == timeout_value
+            assert client.session.timeout.pool == timeout_value
 
             # Make a request to ensure it works
             result = client.get_status()
@@ -396,7 +399,7 @@ class TestHilltopClientTimeoutBehavior:
 class TestAsyncTimeoutBehavior:
     """Test async client timeout behavior."""
 
-    @pytest.mark.performance_local
+    @pytest.mark.performance
     async def test_async_client_timeout_performance(self, local_test_server):
         """Test async client timeout performance."""
 
@@ -424,4 +427,3 @@ class TestAsyncTimeoutBehavior:
 
             async_time = end_time - start_time
             print(f"Async timeout {timeout}s time: {async_time:.4f}s")
-

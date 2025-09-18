@@ -23,7 +23,7 @@ class LocalTestServer:
         self,
         host: str = "127.0.0.1",
         port: int = 8000,
-        fixture_cache_path: Optional[Path] = None,
+        mocked_data_path: Optional[Path] = None,
         default_delay: float = 0.0,
         error_rate: float = 0.0,
     ):
@@ -33,7 +33,7 @@ class LocalTestServer:
         ----
             host: Host to bind to (default: 127.0.0.1)
             port: Port to bind to (default: 8000)
-            fixture_cache_path: Path to fixture cache directory
+            mocked_data_path: Path to fixture cache directory
             default_delay: Default artificial delay in seconds
             error_rate: Rate of errors to simulate (0.0-1.0)
         """
@@ -43,10 +43,10 @@ class LocalTestServer:
         self.error_rate = error_rate
 
         # Set fixture cache path
-        if fixture_cache_path is None:
-            self.fixture_cache_path = Path(__file__).parent.parent / "fixture_cache"
+        if mocked_data_path is None:
+            self.mocked_data_path = Path(__file__).parent.parent / "mocked_data"
         else:
-            self.fixture_cache_path = fixture_cache_path
+            self.mocked_data_path = mocked_data_path
 
         self.app = FastAPI(
             title="HURL Performance Test Server",
@@ -124,7 +124,7 @@ class LocalTestServer:
                 fixture_file = "status/response.xml"
 
             # Load fixture content
-            fixture_path = self.fixture_cache_path / fixture_file
+            fixture_path = self.mocked_data_path / fixture_file
             if not fixture_path.exists():
                 # Create a minimal default response if fixture doesn't exist
                 default_xml = f"""<?xml version="1.0" encoding="utf-8"?>
@@ -201,4 +201,3 @@ if __name__ == "__main__":
     print(f"Starting HURL Performance Test Server on http://127.0.0.1:{port}")
     print(f"Configuration: delay={delay}s, error_rate={error_rate}")
     server.run()
-
