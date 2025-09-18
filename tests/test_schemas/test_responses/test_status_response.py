@@ -173,7 +173,7 @@ class TestResponseValidation:
         result = client.get_status()
 
         assert isinstance(result, StatusResponse)
-        assert result.agency == "Horizons"
+        assert result.agency == os.getenv("TEST_AGENCY")
         assert result.script_name == os.getenv("HILLTOP_HTS_ENDPOINT")
 
     @pytest.mark.unit

@@ -412,7 +412,7 @@ class TestMeasurementList:
 
         # Test a specific measurement
         stage_measurement = next(
-            (m for m in flow_ds.measurements if m.name == "Stage"), None
+            (m for m in flow_ds.measurements if m.name == os.getenv("TEST_MEASUREMENT")), None
         )
         assert isinstance(
             stage_measurement, MeasurementListResponse.DataSource.Measurement

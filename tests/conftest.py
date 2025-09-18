@@ -38,6 +38,18 @@ def pytest_addoption(parser):
 
 def pytest_collection_modifyitems(config, items):
     """Modify test collection to handle performance test skipping."""
+    import os
+    
+    # Check for required environment variables when running integration tests
+    if config.getoption("--mode") in ["integration", "all"] or config.getoption("--update"):
+        required_env_vars = ["TEST_SITE", "TEST_MEASUREMENT", "TEST_AGENCY", "TEST_COLLECTION"]
+        missing_vars = [var for var in required_env_vars if not os.getenv(var)]
+        if missing_vars:
+            raise pytest.PytestConfigWarning(
+                f"Integration tests require environment variables: {', '.join(missing_vars)}. "
+                "Please set these in a .env file or environment."
+            )
+    
     for item in items:
         if config.getoption("--mode") == "offline":
             if "remote" in item.keywords:

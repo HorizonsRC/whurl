@@ -1,5 +1,7 @@
 """Test the TimeRange Response Schema."""
 
+import os
+
 import pytest
 
 
@@ -59,8 +61,8 @@ def create_mocked_fixtures(filename: str):
 
 # Create cached fixtures
 basic_response_xml_cached = create_cached_fixtures("response.xml", {
-    "site": "Manawatu at Teachers College",
-    "measurement": "Stage"
+    "site": os.getenv("TEST_SITE"),
+    "measurement": os.getenv("TEST_MEASUREMENT")
 })
 
 # Create mocked fixtures
@@ -86,8 +88,8 @@ class TestRemoteFixtures:
         remote_url = TimeRangeRequest(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
         ).gen_url()
         print(remote_url)
         # Switch off httpx mock so that remote request can go through.
@@ -165,8 +167,8 @@ class TestTimeRangeResponse:
         test_url = TimeRangeRequest(
             base_url=base_url,
             hts_endpoint=hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
         ).gen_url()
 
         httpx_mock.add_response(
@@ -180,8 +182,8 @@ class TestTimeRangeResponse:
             hts_endpoint=hts_endpoint,
         ) as client:
             response = client.get_time_range(
-                site="Manawatu at Teachers College",
-                measurement="Stage",
+                site=os.getenv("TEST_SITE"),
+                measurement=os.getenv("TEST_MEASUREMENT"),
             )
 
         assert isinstance(response, TimeRangeResponse)

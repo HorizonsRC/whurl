@@ -1,5 +1,7 @@
 """Test file for SiteInfo Response Schema."""
 
+import os
+
 import pytest
 
 
@@ -59,10 +61,10 @@ def create_mocked_fixtures(filename: str):
 
 # Create cached fixtures
 basic_response_xml_cached = create_cached_fixtures("response.xml", {
-    "site": "Ngahere Park Climate Station"
+    "site": os.getenv("TEST_SITE")
 })
 collection_response_xml_cached = create_cached_fixtures("collection_response.xml", {
-    "collection": "AirTemperature"
+    "collection": os.getenv("TEST_COLLECTION")
 })
 
 # Create mocked fixtures
@@ -89,7 +91,7 @@ class TestRemoteFixtures:
         remote_url = SiteInfoRequest(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            site="Ngahere Park Climate Station",
+            site=os.getenv("TEST_SITE"),
         ).gen_url()
 
         # Switch off httpx mock so that remote request can go through.
@@ -123,7 +125,7 @@ class TestRemoteFixtures:
         remote_url = SiteInfoRequest(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            collection="AirTemperature",
+            collection=os.getenv("TEST_COLLECTION"),
         ).gen_url()
 
         # Switch off httpx mock so that remote request can go through.
@@ -211,7 +213,7 @@ class TestResponseValidation:
         test_url = SiteInfoRequest(
             base_url=base_url,
             hts_endpoint=hts_endpoint,
-            site="Ngahere Park Climate Station",
+            site=os.getenv("TEST_SITE"),
         ).gen_url()
 
         httpx_mock.add_response(
@@ -225,12 +227,12 @@ class TestResponseValidation:
             hts_endpoint=hts_endpoint,
         ) as client:
             result = client.get_site_info(
-                site="Ngahere Park Climate Station",
+                site=os.getenv("TEST_SITE"),
             )
 
         # Base Model
         assert isinstance(result, SiteInfoResponse)
-        assert result.agency == "Horizons"
+        assert result.agency == os.getenv("TEST_AGENCY")
 
         df = result.to_dataframe()
 
@@ -239,7 +241,7 @@ class TestResponseValidation:
         # SiteInfoResponse
         site = result.site[0]
 
-        assert site.name == "Ngahere Park Climate Station"
+        assert site.name == os.getenv("TEST_SITE")
         assert isinstance(site.info, dict)
 
         site_info = site.info
@@ -316,7 +318,7 @@ class TestResponseValidation:
         test_url = SiteInfoRequest(
             base_url=base_url,
             hts_endpoint=hts_endpoint,
-            collection="AirTemperature",
+            collection=os.getenv("TEST_COLLECTION"),
         ).gen_url()
 
         httpx_mock.add_response(
@@ -330,12 +332,12 @@ class TestResponseValidation:
             hts_endpoint=hts_endpoint,
         ) as client:
             result = client.get_site_info(
-                collection="AirTemperature",
+                collection=os.getenv("TEST_COLLECTION"),
             )
 
         # Base Model
         assert isinstance(result, SiteInfoResponse)
-        assert result.agency == "Horizons"
+        assert result.agency == os.getenv("TEST_AGENCY")
 
         df = result.to_dataframe()
         assert isinstance(df, pd.DataFrame)

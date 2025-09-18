@@ -157,13 +157,13 @@ class TestResponseValidation:
             result = client.get_site_list()
 
         assert isinstance(result, SiteListResponse)
-        assert result.agency == "Horizons"
+        assert result.agency == os.getenv("TEST_AGENCY")
 
         assert len(result.site_list) > 0
 
         # Check if Manawatu at Teachers College is in the list
         assert any(
-            site.name == "Manawatu at Teachers College" for site in result.site_list
+            site.name == os.getenv("TEST_SITE") for site in result.site_list
         )
 
     @pytest.mark.unit

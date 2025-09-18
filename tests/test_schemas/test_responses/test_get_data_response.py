@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 
@@ -57,8 +59,8 @@ def create_mocked_fixtures(filename: str):
 
 # Create cached fixtures
 basic_response_xml_cached = create_cached_fixtures("basic_response.xml", {
-    "site": "Manawatu at Teachers College",
-    "measurement": "Stage",
+    "site": os.getenv("TEST_SITE"),
+    "measurement": os.getenv("TEST_MEASUREMENT"),
     "from_datetime": "2023-01-01T00:00:00",
     "to_datetime": "2023-02-01T00:00:00"
 })
@@ -95,8 +97,8 @@ def basic_response_xml(request, httpx_mock, remote_client):
         remote_url = GetDataRequest(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
             from_datetime="2023-01-01T00:00:00",
             to_datetime="2023-02-01T00:00:00",
         ).gen_url()
@@ -177,8 +179,8 @@ def one_point_response_xml(request, httpx_mock, remote_client):
         remote_url = GetDataRequest(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
         ).gen_url()
         remote_xml = remote_client.session.get(remote_url).text
 
@@ -214,8 +216,8 @@ def time_interval_response_xml(request, httpx_mock, remote_client):
         remote_url = GetDataRequest(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
             time_interval="2023-01-01T12:00:00/2023-01-02T12:00:00",
         ).gen_url()
         remote_xml = remote_client.session.get(remote_url).text
@@ -252,8 +254,8 @@ def time_interval_complex_response_xml(request, httpx_mock, remote_client):
         remote_url = GetDataRequest(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
             time_interval="2023-01-01T12:00:00/P2DT2H",  # 2 days
             alignment="3h",
         ).gen_url()
@@ -291,8 +293,8 @@ def date_only_response_xml(request, httpx_mock, remote_client):
         remote_url = GetDataRequest(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
             time_interval="2023-01-01T12:00:00/P2DT2H",  # 2 days
             date_only="Yes",
         ).gen_url()
@@ -322,8 +324,8 @@ class TestRemoteFixtures:
         remote_url = GetDataRequest(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
             from_datetime="2023-01-01T00:00:00",
             to_datetime="2023-02-01T00:00:00",
         ).gen_url()
@@ -359,8 +361,8 @@ class TestRemoteFixtures:
         remote_url = GetDataRequest(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
         ).gen_url()
 
         # Switch off httpx mock so that remote request can go through.
@@ -436,8 +438,8 @@ class TestRemoteFixtures:
         remote_url = GetDataRequest(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
             time_interval="2023-01-01T12:00:00/2023-01-02T12:00:00",
         ).gen_url()
 
@@ -467,8 +469,8 @@ class TestRemoteFixtures:
         remote_url = GetDataRequest(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
             time_interval="2023-01-01T12:00:00/P2DT2H",  # 2 days, 2 hours
             alignment="3h",  # Align to 3 hour intervals
         ).gen_url()
@@ -499,8 +501,8 @@ class TestRemoteFixtures:
         remote_url = GetDataRequest(
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
             time_interval="2023-01-01T12:00:00/P2DT2H",  # 2 days, 2 hours
             date_only="Yes",
         ).gen_url()
@@ -583,8 +585,8 @@ class TestResponseValidation:
         test_url = GetDataRequest(
             base_url=base_url,
             hts_endpoint=hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
             from_datetime="2023-01-01T00:00:00",
             to_datetime="2023-01-02T00:00:00",
         ).gen_url()
@@ -603,21 +605,21 @@ class TestResponseValidation:
         ) as client:
 
             result = client.get_data(
-                site="Manawatu at Teachers College",
-                measurement="Stage",
+                site=os.getenv("TEST_SITE"),
+                measurement=os.getenv("TEST_MEASUREMENT"),
                 from_datetime="2023-01-01T00:00:00",
                 to_datetime="2023-01-02T00:00:00",
             )
 
         # Base Model
         assert isinstance(result, GetDataResponse)
-        assert result.agency == "Horizons"
+        assert result.agency == os.getenv("TEST_AGENCY")
 
         # Measurement
         assert len(result.measurement) == 1
         measurement = result.measurement[0]
         assert isinstance(measurement, GetDataResponse.Measurement)
-        assert measurement.site_name == "Manawatu at Teachers College"
+        assert measurement.site_name == os.getenv("TEST_SITE")
 
         # Data Source
         data_source = measurement.data_source
@@ -634,7 +636,7 @@ class TestResponseValidation:
         item_info = data_source.item_info[0]
         assert isinstance(item_info, GetDataResponse.Measurement.DataSource.ItemInfo)
         assert item_info.item_number == 1
-        assert item_info.item_name == "Stage"
+        assert item_info.item_name == os.getenv("TEST_MEASUREMENT")
         assert item_info.item_format == "F"
         assert item_info.units == "mm"
         assert item_info.format == "####"
@@ -648,7 +650,7 @@ class TestResponseValidation:
         assert isinstance(data.timeseries, pd.DataFrame)
         assert len(data.timeseries) > 0
         assert data.timeseries.index.name == "DateTime"
-        assert "Stage" in data.timeseries.columns
+        assert os.getenv("TEST_MEASUREMENT") in data.timeseries.columns
         assert data.timeseries.index.dtype == "datetime64[ns]"
 
     def test_collection_response_xml(self, httpx_mock, collection_response_xml):
@@ -694,7 +696,7 @@ class TestResponseValidation:
 
         # Test the top level response object
         assert isinstance(result, GetDataResponse)
-        assert result.agency == "Horizons"
+        assert result.agency == os.getenv("TEST_AGENCY")
 
         assert len(result.measurement) > 0
         assert isinstance(result.measurement, list)
@@ -762,8 +764,8 @@ class TestResponseValidation:
         test_url = GetDataRequest(
             base_url=base_url,
             hts_endpoint=hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
         ).gen_url()
 
         # Here we tell httpx_mock to expect a GET request to the test_url, and
@@ -780,23 +782,23 @@ class TestResponseValidation:
         ) as client:
 
             result = client.get_data(
-                site="Manawatu at Teachers College",
-                measurement="Stage",
+                site=os.getenv("TEST_SITE"),
+                measurement=os.getenv("TEST_MEASUREMENT"),
             )
 
         # Test the top level response object
         assert isinstance(result, GetDataResponse)
-        assert result.agency == "Horizons"
+        assert result.agency == os.getenv("TEST_AGENCY")
 
         assert len(result.measurement) > 0
         assert isinstance(result.measurement, list)
 
-        # Find the measurement with the site_name "Manawatu at Teachers College"
+        # Find the measurement with the site_name os.getenv("TEST_SITE")
         measurement = next(
             (
                 m
                 for m in result.measurement
-                if m.site_name == "Manawatu at Teachers College"
+                if m.site_name == os.getenv("TEST_SITE")
             ),
             None,
         )
@@ -819,7 +821,7 @@ class TestResponseValidation:
         item_info = data_source.item_info[0]
         assert isinstance(item_info, GetDataResponse.Measurement.DataSource.ItemInfo)
         assert item_info.item_number == 1
-        assert item_info.item_name == "Stage"
+        assert item_info.item_name == os.getenv("TEST_MEASUREMENT")
         assert item_info.item_format == "F"
         assert item_info.divisor is None
         assert item_info.units == "mm"
@@ -835,7 +837,7 @@ class TestResponseValidation:
 
         # Test the timeseries DataFrame
         assert data.timeseries.index.name == "DateTime"
-        assert "Stage" in data.timeseries.columns
+        assert os.getenv("TEST_MEASUREMENT") in data.timeseries.columns
         assert data.timeseries.index.dtype == "datetime64[ns]"
 
     def test_time_interval_response_xml(self, httpx_mock, time_interval_response_xml):
@@ -856,8 +858,8 @@ class TestResponseValidation:
         test_url = GetDataRequest(
             base_url=base_url,
             hts_endpoint=hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
             time_interval=time_interval,
         ).gen_url()
 
@@ -875,24 +877,24 @@ class TestResponseValidation:
         ) as client:
 
             result = client.get_data(
-                site="Manawatu at Teachers College",
-                measurement="Stage",
+                site=os.getenv("TEST_SITE"),
+                measurement=os.getenv("TEST_MEASUREMENT"),
                 time_interval=time_interval,
             )
 
         # Test the top level response object
         assert isinstance(result, GetDataResponse)
-        assert result.agency == "Horizons"
+        assert result.agency == os.getenv("TEST_AGENCY")
 
         assert len(result.measurement) > 0
         assert isinstance(result.measurement, list)
 
-        # Find the measurement with the site_name "Manawatu at Teachers College"
+        # Find the measurement with the site_name os.getenv("TEST_SITE")
         measurement = next(
             (
                 m
                 for m in result.measurement
-                if m.site_name == "Manawatu at Teachers College"
+                if m.site_name == os.getenv("TEST_SITE")
             ),
             None,
         )
@@ -915,7 +917,7 @@ class TestResponseValidation:
         item_info = data_source.item_info[0]
         assert isinstance(item_info, GetDataResponse.Measurement.DataSource.ItemInfo)
         assert item_info.item_number == 1
-        assert item_info.item_name == "Stage"
+        assert item_info.item_name == os.getenv("TEST_MEASUREMENT")
         assert item_info.item_format == "F"
         assert item_info.divisor is None
         assert item_info.units == "mm"
@@ -931,7 +933,7 @@ class TestResponseValidation:
 
         # Test the timeseries DataFrame
         assert data.timeseries.index.name == "DateTime"
-        assert "Stage" in data.timeseries.columns
+        assert os.getenv("TEST_MEASUREMENT") in data.timeseries.columns
         assert data.timeseries.index.dtype == "datetime64[ns]"
 
     def test_time_interval_complex_response_xml(
@@ -955,8 +957,8 @@ class TestResponseValidation:
         test_url = GetDataRequest(
             base_url=base_url,
             hts_endpoint=hts_endpoint,
-            site="Manawatu at Teachers College",
-            measurement="Stage",
+            site=os.getenv("TEST_SITE"),
+            measurement=os.getenv("TEST_MEASUREMENT"),
             time_interval=time_interval,
             alignment=alignment,
         ).gen_url()
@@ -975,25 +977,25 @@ class TestResponseValidation:
         ) as client:
 
             result = client.get_data(
-                site="Manawatu at Teachers College",
-                measurement="Stage",
+                site=os.getenv("TEST_SITE"),
+                measurement=os.getenv("TEST_MEASUREMENT"),
                 time_interval=time_interval,
                 alignment=alignment,
             )
 
         # Test the top level response object
         assert isinstance(result, GetDataResponse)
-        assert result.agency == "Horizons"
+        assert result.agency == os.getenv("TEST_AGENCY")
 
         assert len(result.measurement) > 0
         assert isinstance(result.measurement, list)
 
-        # Find the measurement with the site_name "Manawatu at Teachers College"
+        # Find the measurement with the site_name os.getenv("TEST_SITE")
         measurement = next(
             (
                 m
                 for m in result.measurement
-                if m.site_name == "Manawatu at Teachers College"
+                if m.site_name == os.getenv("TEST_SITE")
             ),
             None,
         )
@@ -1016,7 +1018,7 @@ class TestResponseValidation:
         item_info = data_source.item_info[0]
         assert isinstance(item_info, GetDataResponse.Measurement.DataSource.ItemInfo)
         assert item_info.item_number == 1
-        assert item_info.item_name == "Stage"
+        assert item_info.item_name == os.getenv("TEST_MEASUREMENT")
         assert item_info.item_format == "F"
         assert item_info.divisor is None
         assert item_info.units == "mm"
@@ -1032,7 +1034,7 @@ class TestResponseValidation:
 
         # Test the timeseries DataFrame
         assert data.timeseries.index.name == "DateTime"
-        assert "Stage" in data.timeseries.columns
+        assert os.getenv("TEST_MEASUREMENT") in data.timeseries.columns
         assert data.timeseries.index.dtype == "datetime64[ns]"
 
         # Check that the timeseries starts at the expected time
