@@ -51,15 +51,15 @@ python -m pytest tests/ --mode=unit
 **Working Test Commands** (these work reliably):
 ```bash
 # Poetry (Recommended)
-poetry run python -m pytest tests/ --mode=unit     # Unit tests only (offline, fast)
-poetry run python -m pytest tests/ --mode=offline  # All offline tests (may fail if fixtures missing)
+poetry run python -m pytest tests/ --mode=offline   # All offline tests (default, works reliably)
+poetry run python -m pytest tests/ --mode=unit      # Unit tests only (fastest)
 
 # pip/direct Python (Fallback)
-python -m pytest tests/ --mode=unit                # Unit tests only (offline, fast)
-python -m pytest tests/ --mode=offline             # All offline tests (may fail if fixtures missing)
+python -m pytest tests/ --mode=offline              # All offline tests (default, works reliably)  
+python -m pytest tests/ --mode=unit                 # Unit tests only (fastest)
 ```
 
-**IMPORTANT**: Always use `--mode=unit` for reliable offline testing. Integration tests require cached fixture files that may not be present in a fresh repository.
+**IMPORTANT**: Default to `--mode=offline` for comprehensive testing. Integration tests fail gracefully when fixture cache is empty, and performance tests run with local mock server.
 
 ### Environment Setup for Client Testing
 
@@ -114,7 +114,7 @@ print(f'Timeout: {client.timeout}')
 ### 3. Core Test Suite Validation
 ```bash
 # This should always pass in <3 seconds
-poetry run python -m pytest tests/ --mode=unit --quiet
+poetry run python -m pytest tests/ --mode=offline --quiet
 ```
 
 ### 4. Complete Library Validation Scenario

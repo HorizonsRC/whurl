@@ -1,8 +1,8 @@
-# WHURL v1.0.0 - First PyPI Release Checklist
+# WHURL v0.1.0 - Alpha PyPI Release Checklist
 
 ## Overview
 
-This issue tracks all remaining tasks required before releasing WHURL v1.0.0 to PyPI under the package name "Whurl". This will be the first stable release providing a production-ready Python client for Hilltop Server APIs.
+This issue tracks all remaining tasks required before releasing WHURL v0.1.0 to PyPI under the package name "Whurl". This will be the first alpha release providing a Python client library for Hilltop Server APIs, designed as a dependency for other environmental data projects.
 
 ## Pre-Release Requirements
 
@@ -12,7 +12,7 @@ This issue tracks all remaining tasks required before releasing WHURL v1.0.0 to 
 - [x] XML response parsing to Python objects
 - [x] Error handling with custom exception hierarchy
 - [x] Environment variable configuration support
-- [ ] Complete API endpoint coverage (see [API Coverage](#api-coverage) below)
+- [ ] Complete remaining API endpoint coverage (see [Future Features](#future-planned-features-post-alpha) below)
 - [ ] Comprehensive input validation and edge case handling
 - [ ] SSL certificate verification (currently disabled for testing)
 
@@ -21,7 +21,7 @@ This issue tracks all remaining tasks required before releasing WHURL v1.0.0 to 
 - [x] Integration test framework with fixture cache system
 - [x] Performance test suite for HTTP client optimization
 - [x] Comprehensive testing strategy documentation
-- [ ] **CRITICAL**: Populate fixture cache with real API responses
+- [x] **RESOLVED**: Fixture cache intentionally empty for security (contains real server responses)
 - [ ] 90%+ code coverage for all core modules
 - [ ] Performance benchmarks and regression testing
 - [ ] Documentation examples that work end-to-end
@@ -32,11 +32,11 @@ This issue tracks all remaining tasks required before releasing WHURL v1.0.0 to 
 - [x] Testing strategy documentation
 - [x] Performance testing documentation  
 - [x] Comprehensive copilot instructions
-- [ ] API reference documentation (complete with all endpoints)
+- [ ] API reference documentation (complete with all implemented endpoints)
 - [ ] Developer contribution guidelines
 - [ ] Changelog preparation
-- [ ] Migration guide from any existing tools
-- [ ] Production deployment guide
+- [ ] Package dependency usage guide (for integration into other projects)
+- [ ] Environment configuration guide for dependencies
 
 ### 🔧 Project Configuration
 - [x] Poetry configuration with proper dependencies
@@ -61,7 +61,7 @@ Current implementation status for Hilltop Server endpoints:
 - [x] Time range requests (`/timerange`)
 - [x] Collection list requests (`/collectionlist`)
 
-#### ❌ Missing Critical Endpoints
+#### 🔮 Future Planned Features (Post-Alpha)
 - [ ] WFS (Web Feature Service) integration
 - [ ] SOS (Sensor Observation Service) calls
 - [ ] Kisters KiWIS API integration
@@ -96,29 +96,35 @@ Current implementation status for Hilltop Server endpoints:
 - [ ] Caching strategy for repeated requests
 - [ ] Pagination handling for large result sets
 
-## Release Blockers
+## Alpha Release Notes
 
-### Critical Issues That Must Be Resolved
+This 0.1.0 alpha release focuses on core functionality for use as a dependency in other environmental data projects. The following design decisions were made for this alpha:
 
-1. **Missing Fixture Cache Data**: Integration tests fail because `tests/fixture_cache/` directories are empty
-   - **Impact**: Cannot validate XML parsing against real API responses
-   - **Solution**: Populate cache with responses from live Hilltop servers
+### ✅ Alpha Release Scope
+- **Target Users**: Fellow developers and environmental data teams
+- **Primary Use Case**: Library dependency for other projects
+- **Fixture Cache**: Intentionally empty for security (real server responses may contain sensitive data)
+- **API Coverage**: Current endpoints sufficient for initial use cases
+- **Testing**: Comprehensive offline testing with graceful handling of missing fixtures
+
+### 🚀 Alpha Release Blockers (Minimal)
+
+**Critical Issues for Alpha Release:**
+
+1. **SSL Verification Configuration**: Current client disables SSL verification for testing
+   - **Impact**: Should be configurable for library users
+   - **Solution**: Make SSL verification configurable with clear documentation
    - **Owner**: @nicmostert
 
-2. **SSL Verification Disabled**: Current client disables SSL verification
-   - **Impact**: Security risk in production environments
-   - **Solution**: Enable SSL verification with proper certificate handling
+2. **Package Dependency Documentation**: Missing guidance for integration into other projects
+   - **Impact**: Users may not understand how to use as dependency
+   - **Solution**: Create dependency usage guide with environment configuration examples
    - **Owner**: @nicmostert
 
-3. **Incomplete API Coverage**: Missing several endpoint types
-   - **Impact**: Limited functionality compared to full Hilltop API
-   - **Solution**: Implement remaining endpoints or document limitations
-   - **Owner**: @nicmostert
-
-4. **Production Configuration**: No guidance for production deployment
-   - **Impact**: Users may deploy with insecure configurations
-   - **Solution**: Create production deployment guide
-   - **Owner**: @nicmostert
+**Non-Critical for Alpha (Future Enhancements):**
+- Fixture cache population (handled by individual developers using `--update`)
+- Additional API endpoints (planned for future releases)
+- Production deployment guides (not applicable for library dependencies)
 
 ## Testing Strategy
 
@@ -232,55 +238,47 @@ poetry run python -m pytest tests/ --mode=integration --update
 - **PyPI deployment**: Well-established process with test environment
 - **Version management**: Standard semantic versioning approach
 
-## Timeline
+## Alpha Release Timeline
 
-### Phase 1: Core Preparation (2-3 weeks)
-- Populate fixture cache
-- Fix SSL verification 
-- Complete API coverage gaps
-- Achieve coverage targets
-
-### Phase 2: Documentation & Testing (1-2 weeks)
-- Complete documentation review
-- End-to-end testing validation
-- Performance benchmark establishment
-- Security review
-
-### Phase 3: Release Preparation (1 week)
+### Phase 1: Alpha Preparation (1 week)
+- SSL verification configuration and documentation
+- Package dependency usage guide
+- Final testing validation
 - PyPI package preparation
-- Release automation setup
-- Final testing and validation
-- Release notes preparation
 
-### Phase 4: Release & Post-Release (1 week)
-- PyPI deployment
+### Phase 2: Alpha Release (1 week) 
+- PyPI deployment of v0.1.0
 - Documentation updates
-- Community announcement
-- Initial support and feedback response
+- Team testing and feedback collection
+- Issue tracking and initial support
+
+### Phase 3: Post-Alpha Iteration (ongoing)
+- Address alpha feedback
+- Plan future endpoint additions
+- Prepare for beta release
 
 ## Dependencies
 
 ### External Dependencies
-- Access to live Hilltop servers for fixture population
 - PyPI account setup and permissions
-- Documentation hosting (GitHub Pages or similar)
+- Documentation hosting (GitHub Pages or similar) 
 - CI/CD pipeline configuration
 
 ### Internal Dependencies
 - Code review and approval processes
 - Testing infrastructure readiness
 - Release approval workflow
-- Communication channels for announcements
+- Team testing and feedback channels
 
 ---
 
-**Target Release Date**: TBD (after all critical issues resolved)
+**Target Release Date**: TBD (after alpha blockers resolved)
 
 **Release Coordinator**: @nicmostert
 
 **Reviewers**: TBD
 
-**Issue Labels**: `release`, `v1.0.0`, `critical`, `documentation`, `testing`
+**Issue Labels**: `release`, `v0.1.0`, `alpha`, `documentation`, `testing`
 
 ---
 

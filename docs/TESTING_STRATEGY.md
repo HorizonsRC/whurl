@@ -120,10 +120,10 @@ poetry run python -m pytest tests/ -m remote
 
 **Includes**:
 - All unit tests (using mocked data)
-- Integration tests (using cached fixtures, may fail if files missing)
-- Performance tests are skipped
+- Integration tests (using cached fixtures, fail gracefully if files missing)
+- Performance tests run with local mock server
 
-**Best For**: General development, CI/CD
+**Best For**: General development, CI/CD, coding agents
 
 ### Test Organization
 
@@ -243,16 +243,30 @@ poetry run python -m pytest --update --mode=integration
 ### Tests Fail Due to Missing Fixtures
 **Error**: `FileNotFoundError: [Errno 2] No such file or directory: '.../tests/fixture_cache/.../*.xml'`
 
-**Solution**: Run unit tests only, or update fixtures from remote API:
-```bash
-poetry run python -m pytest tests/ --mode=unit
-```
+**Expected Behavior**: Integration tests should fail gracefully when fixture cache is empty (for security reasons, real server responses are not committed to repository).
+
+**Solutions**: 
+1. Use offline mode which handles missing fixtures gracefully:
+   ```bash
+   poetry run python -m pytest tests/ --mode=offline
+   ```
+2. For developers who need integration testing, populate fixtures locally:
+   ```bash
+   # Set real API endpoints and update cache (developers only)
+   export HILLTOP_BASE_URL="https://real-server.com"
+   export HILLTOP_HTS_ENDPOINT="real.hts"
+   poetry run python -m pytest --update --mode=integration
+   ```
 
 ### Performance Tests Don't Run
 **Issue**: Performance tests are skipped
 
-**Solution**: Performance tests require explicit flags:
+**Solution**: In offline mode, performance tests should run automatically with local mock server. If they don't run, check that `--mode=offline` is specified:
 ```bash
+# Performance tests run automatically in offline mode
+poetry run python -m pytest tests/ --mode=offline
+
+# Or run performance tests explicitly
 poetry run python -m pytest tests/performance/ --performance-local
 ```
 
