@@ -13,6 +13,21 @@ Run these commands in sequence to set up the development environment:
 # Navigate to repository root
 cd /home/runner/work/whurl/whurl
 
+# Install Poetry (if not available) - takes ~30 seconds
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Install all dependencies (runtime + development) - takes ~60 seconds. NEVER CANCEL.
+poetry install
+
+# Activate the virtual environment
+poetry shell
+
+# Run core tests - takes <3 seconds
+poetry run python -m pytest tests/ --mode=unit
+```
+
+**Fallback pip installation (if Poetry not available):**
+```bash
 # Install project in development mode - takes ~60 seconds. NEVER CANCEL.
 pip install -e .
 
@@ -22,24 +37,29 @@ pip install pytest pytest-mock pytest-httpx
 # Install all required runtime dependencies - takes ~90 seconds. NEVER CANCEL.
 pip install httpx pydantic lxml pandas python-dotenv isodate xmltodict certifi
 
-# Run core tests - takes <1 second
-python -m pytest tests/ -m 'not remote'
+# Run core tests - takes <3 seconds
+python -m pytest tests/ --mode=unit
 ```
 
 **CRITICAL TIMING**: 
-- Complete setup takes ~3 minutes total
-- Individual test runs take <1 second
-- NEVER CANCEL any pip install commands - dependency resolution can take time
+- Complete setup takes ~2 minutes with Poetry, ~3 minutes with pip
+- Individual test runs take <3 seconds
+- NEVER CANCEL any install commands - dependency resolution can take time
 
 ### Running Tests
 
 **Working Test Commands** (these work reliably):
 ```bash
-# Run tests excluding remote API calls - <1 second
-python -m pytest tests/ -m "not remote"
+# Poetry (Recommended)
+poetry run python -m pytest tests/ --mode=unit     # Unit tests only (offline, fast)
+poetry run python -m pytest tests/ --mode=offline  # All offline tests (may fail if fixtures missing)
+
+# pip/direct Python (Fallback)
+python -m pytest tests/ --mode=unit                # Unit tests only (offline, fast)
+python -m pytest tests/ --mode=offline             # All offline tests (may fail if fixtures missing)
 ```
 
-**IMPORTANT**: Full test suite requires configuration of and connection to remote API. Always run tests with -m "not remote".
+**IMPORTANT**: Always use `--mode=unit` for reliable offline testing. Integration tests require cached fixture files that may not be present in a fresh repository.
 
 ### Environment Setup for Client Testing
 
@@ -63,13 +83,17 @@ HILLTOP_HTS_ENDPOINT=foo.hts
 
 ### 1. Basic Import Validation
 ```bash
+# Poetry (Recommended)
+poetry run python -c "from whurl.client import HilltopClient; print('Import successful!')"
+
+# pip/direct Python (Fallback)
 python -c "from whurl.client import HilltopClient; print('Import successful!')"
 ```
 
 ### 2. Client Configuration Validation
 ```bash
 # Without environment variables (should fail with clear error)
-python -c "
+poetry run python -c "
 from whurl.client import HilltopClient
 try:
     client = HilltopClient()
@@ -78,7 +102,7 @@ except Exception as e:
 "
 
 # With environment variables (should succeed)
-HILLTOP_BASE_URL="https://data.council.govt.nz" HILLTOP_HTS_ENDPOINT="foo.hts" python -c "
+HILLTOP_BASE_URL="https://data.council.govt.nz" HILLTOP_HTS_ENDPOINT="foo.hts" poetry run python -c "
 from whurl.client import HilltopClient
 client = HilltopClient()
 print(f'Client created: {client.base_url}')
@@ -90,14 +114,14 @@ print(f'Timeout: {client.timeout}')
 ### 3. Core Test Suite Validation
 ```bash
 # This should always pass in <3 seconds
-python -m pytest tests/ -m 'not remote' --quiet
+poetry run python -m pytest tests/ --mode=unit --quiet
 ```
 
 ### 4. Complete Library Validation Scenario
 **ALWAYS run this complete validation after making changes:**
 
 ```bash
-HILLTOP_BASE_URL="https://data.council.govt.nz" HILLTOP_HTS_ENDPOINT="foo.hts" python -c "
+HILLTOP_BASE_URL="https://data.council.govt.nz" HILLTOP_HTS_ENDPOINT="foo.hts" poetry run python -c "
 # Complete validation scenario
 from whurl.client import HilltopClient
 
@@ -172,26 +196,39 @@ print('✓ Library is fully functional and ready for development')
 - **Environment variables**: Always test both with and without `HILLTOP_BASE_URL`
 
 ### Dependencies Reference
-**Runtime**: httpx, pydantic, lxml, pandas, python-dotenv, isodate, xmltodict, certifi
-**Development**: pytest, pytest-mock, pytest-httpx
+**Runtime**: httpx, pydantic, lxml, pandas, python-dotenv, isodate, xmltodict, certifi, pyyaml, fastapi, uvicorn
+**Development**: pytest, pytest-mock, pytest-httpx, pytest-benchmark, pytest-asyncio, pytest-cov
 
 ## Testing Strategy & Fixture Cache
 
 WHURL uses a sophisticated testing approach:
 
-- **Fixture Cache**: Pre-recorded XML responses stored in `tests/fixture_cache/`
-- **Remote Validation**: Tests marked `@pytest.mark.remote` can validate against live APIs
-- **Update Mechanism**: `--update` flag refreshes cached responses
-- **Mocking**: Uses `pytest-httpx` for HTTP request mocking
+- **Unit Tests**: Fast, isolated tests using mocked data from `tests/mocked_data/`
+- **Integration Tests**: Tests that use cached fixtures from `tests/fixture_cache/` 
+- **Performance Tests**: HTTP performance validation using `tests/performance/`
+- **Remote Tests**: Tests that validate against live APIs (marked `@pytest.mark.remote`)
+
+**Test Modes:**
+```bash
+# Poetry (Recommended)
+poetry run python -m pytest tests/ --mode=unit          # Unit tests only (always offline)
+poetry run python -m pytest tests/ --mode=offline       # All offline tests (may fail if fixtures missing)
+poetry run python -m pytest tests/ --mode=integration   # Integration tests only
+poetry run python -m pytest tests/ --mode=performance   # Performance tests only
+
+# pip/direct Python (Fallback)
+python -m pytest tests/ --mode=unit                     # Unit tests only (always offline)
+python -m pytest tests/ --mode=offline                  # All offline tests (may fail if fixtures missing)
+```
 
 **Remote testing** (requires network connectivity):
 ```bash
-# Set environment variables first
-export HILLTOP_BASE_URL="https://data.council.govt.nz"
-export HILLTOP_HTS_ENDPOINT="foo.hts"
+# Set environment variables for real endpoints first
+export HILLTOP_BASE_URL="https://real-hilltop-server.com"
+export HILLTOP_HTS_ENDPOINT="real.hts"
 
 # Update cached fixtures from remote APIs (may take 10-30 seconds)
-python -m pytest --update -m "remote and update" --maxfail=1
+poetry run python -m pytest --update --mode=integration
 ```
 
 ## Critical Warnings
@@ -200,8 +237,9 @@ python -m pytest --update -m "remote and update" --maxfail=1
 - **Client instantiation requires** environment variables or will fail with: "Base URL must be provided or set in environment variables"
 
 ### Performance Expectations
-- **Setup**: ~3 minutes total (pip installs can be slow, NEVER CANCEL)
-- **Core tests**: <1 second consistently
+- **Setup**: ~2 minutes with Poetry, ~3 minutes with pip
+- **Unit tests**: <3 seconds consistently
+- **Integration tests**: 10-30 seconds (if fixture files present)
 - **Remote tests**: 10-30 seconds (if network accessible)
 
 ## Application Type & Usage
@@ -226,11 +264,13 @@ with HilltopClient() as client:
 ## When Things Go Wrong
 
 ### Import Errors
-- Run: `poetry install` and install all dependencies listed above
+- Run: `poetry install` or install all dependencies listed above
 - Check: Python path and virtual environment
 
 ### Test Failures
+- Run unit tests only: `poetry run python -m pytest tests/ --mode=unit`
 - Clean cache: `find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true`
+- For integration test failures: Check if fixture cache files exist in `tests/fixture_cache/`
 
 ### Client Configuration Errors  
 - Set `HILLTOP_BASE_URL` and `HILLTOP_HTS_ENDPOINT` environment variables
@@ -238,5 +278,5 @@ with HilltopClient() as client:
 
 ### Network/Remote Test Issues
 - Remote tests require internet connectivity
-- Use cached fixtures for offline development
+- Use unit tests for offline development: `--mode=unit`
 - Skip remote tests: `-m "not remote"`

@@ -575,7 +575,20 @@ python -m pytest tests/
 
 ### Running Tests
 
-WHURL uses a comprehensive testing strategy that includes both local mocked tests and remote API validation using a fixture cache system.
+WHURL uses a comprehensive testing strategy that includes both local mocked tests and remote API validation using a fixture cache system. For detailed information about testing categories, modes, and troubleshooting, see the [Testing Strategy Documentation](docs/TESTING_STRATEGY.md).
+
+#### Quick Start - Testing
+
+```bash
+# Poetry (Recommended) - Fast unit tests for daily development
+poetry run python -m pytest tests/ --mode=unit
+
+# Legacy pip - Fast unit tests for daily development  
+python -m pytest tests/ --mode=unit
+
+# All offline tests (may fail if cached fixtures missing)
+poetry run python -m pytest tests/ --mode=offline
+```
 
 #### Environment Setup for Testing
 
@@ -594,95 +607,43 @@ HILLTOP_HTS_ENDPOINT=foo.hts
 
 *Note: These are example values for testing - they do not represent a real working API endpoint.*
 
-#### Using Poetry (Recommended)
+#### Test Categories
 
+**Unit Tests** (fastest, always offline):
 ```bash
-# Run all tests (Poetry will automatically use the correct environment)
-poetry run python -m pytest
+# Poetry (Recommended)
+poetry run python -m pytest tests/ --mode=unit
 
-# Run specific test categories
-poetry run python -m pytest -m "not remote"  # Skip remote tests
-poetry run python -m pytest -m "not slow"    # Skip slow tests
-
-# Update fixture cache with latest API responses
-poetry run python -m pytest --update -m remote
+# pip/direct Python
+python -m pytest tests/ --mode=unit
 ```
 
-#### Using pip/direct Python
-
+**Integration Tests** (use cached API fixtures):
 ```bash
-# Run all tests
-python -m pytest
+# Poetry (Recommended)
+poetry run python -m pytest tests/ --mode=integration
 
-# Run specific test categories
-python -m pytest -m "not remote"  # Skip remote tests
-python -m pytest -m "not slow"    # Skip slow tests
-
-# Update fixture cache with latest API responses
-python -m pytest --update -m remote
+# pip/direct Python  
+python -m pytest tests/ --mode=integration
 ```
 
-#### Testing Strategy & Fixture Cache
-
-WHURL implements a sophisticated testing approach using cached API responses to ensure tests remain consistent and fast while still validating against real API behavior:
-
-- **Fixture Cache**: Pre-recorded XML responses from actual Hilltop servers are stored in `tests/fixture_cache/`
-- **Remote Validation**: Tests marked with `@pytest.mark.remote` can validate cached responses against live API endpoints
-- **Update Mechanism**: The `--update` option makes remote calls to refresh cached responses, ensuring tests track API changes accurately
-- **Selective Mocking**: The `httpx_mock` system allows bypassing mocks for specific domains during cache updates
-
-**Example Usage:**
+**Performance Tests** (HTTP client validation):
 ```bash
-# Using Poetry (Recommended)
-# Update all cached fixtures from remote APIs
-poetry run python -m pytest --update -m "remote and update"
-
-# Run tests without making remote calls (uses cached fixtures)
-poetry run python -m pytest -m "not remote"
-
-# Validate cached responses against remote API (requires connectivity)
-poetry run python -m pytest -m remote
-
-# Using pip/direct Python
-# Update all cached fixtures from remote APIs
-python -m pytest --update -m "remote and update"
-
-# Run tests without making remote calls (uses cached fixtures)
-python -m pytest -m "not remote"
-
-# Validate cached responses against remote API (requires connectivity)
-python -m pytest -m remote
+# Performance tests require explicit flags
+poetry run python -m pytest tests/performance/ --performance-local
 ```
 
-This strategy ensures that:
-1. Tests run quickly in CI/CD environments using cached responses
-2. API changes are detected when `--update` is run periodically
-3. Tests remain reliable even when remote APIs are unavailable
-4. Response schema validation stays current with actual API behavior
-
-#### Performance Testing
-
-WHURL includes comprehensive performance tests to validate httpx performance features. See [Performance Testing Documentation](docs/PERFORMANCE_TESTING.md) for detailed information.
-
+**Remote Tests** (live API validation):
 ```bash
-# Run performance tests against local FastAPI test server
-python -m pytest tests/performance/ --performance-local
+# Set real API endpoints first
+export HILLTOP_BASE_URL="https://real-server.com"
+export HILLTOP_HTS_ENDPOINT="real.hts"
 
-# Run specific performance test categories
-python -m pytest tests/performance/test_connection_features.py --performance-local
-python -m pytest tests/performance/test_concurrency_features.py --performance-local
-
-# Performance tests are opt-in only and never run by default
-python -m pytest tests/performance/  # These will be skipped without --performance-local
+# Update cached fixtures from remote APIs
+poetry run python -m pytest --update --mode=integration
 ```
 
-Performance tests validate:
-- Connection keep-alive vs new connections  
-- Connection pooling configurations
-- HTTP/1.1 vs HTTP/2 protocol performance
-- Sync vs async client performance
-- Concurrency scaling behavior
-- Timeout and retry configuration effects
+For complete testing documentation including troubleshooting, fixture cache management, and performance testing details, see the [Testing Strategy Documentation](docs/TESTING_STRATEGY.md).
 
 ### Code Style
 
