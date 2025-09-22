@@ -57,4 +57,4 @@ markers = [
   "integration: marks tests as integration tests (deselect as '-m \"not integration\"')",
   "performance: marks tests as performance tests (deselect as '-m \"not performance\"')",
 ]
-addopts = "--cov=hurl --cov-report=term-missing"
+addopts = "--cov=whurl --cov-report=term-missing"

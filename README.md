@@ -1,6 +1,6 @@
 # WHURL - Which Hydro URL
 
-A Python client library for interacting with Hilltop Server APIs, developed by Horizons Regional Council as a dependency of [Hydrobot](https://github.com/HorizonsRC/hydrobot). HURL provides a clean, Pythonic interface for fetching environmental and scientific data from Hilltop servers.
+A Python client library for interacting with Hilltop Server APIs, developed by Horizons Regional Council as a dependency of [Hydrobot](https://github.com/HorizonsRC/hydrobot). WHURL provides a clean, Pythonic interface for fetching environmental and scientific data from Hilltop servers.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
@@ -831,5 +831,5 @@ Developed by Horizons Regional Council for environmental data management and ana
 ---
 
 **Version**: 0.1.0  
-**Python Compatibility**: 3.8+  
+**Python Compatibility**: 3.11+  
 **License**: GPL-3.0
