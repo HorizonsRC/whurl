@@ -4,8 +4,8 @@ import pytest
 @pytest.mark.unit
 def test_validate_hilltop_interval_notation():
     """Test validate_hilltop_interval_notation function."""
-    from hurl.exceptions import HilltopRequestError
-    from hurl.utils import validate_hilltop_interval_notation
+    from whurl.exceptions import HilltopRequestError
+    from whurl.utils import validate_hilltop_interval_notation
 
     # Valid cases
     assert validate_hilltop_interval_notation("10 seconds") == "10 seconds"

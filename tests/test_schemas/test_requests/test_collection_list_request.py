@@ -5,7 +5,7 @@ class TestParameterValidation:
     def test_CollectionListRequest(self):
         from urllib.parse import quote, urlencode
 
-        from hurl.schemas.requests import CollectionListRequest
+        from whurl.schemas.requests import CollectionListRequest
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -28,8 +28,8 @@ class TestParameterValidation:
 
     def test_invalid_request(self):
         """Test invalid request."""
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import CollectionListRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import CollectionListRequest
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"

@@ -5,9 +5,9 @@ import yaml
 from typing import ClassVar, Set
 from pydantic import BaseModel, Field
 
-from hurl.schemas.mixins import ModelReprMixin
-from hurl.schemas.responses.get_data import GetDataResponse
-from hurl.schemas.requests.get_data import GetDataRequest
+from whurl.schemas.mixins import ModelReprMixin
+from whurl.schemas.responses.get_data import GetDataResponse
+from whurl.schemas.requests.get_data import GetDataRequest
 
 
 class TestModelReprMixin:

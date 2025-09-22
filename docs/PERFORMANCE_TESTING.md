@@ -1,10 +1,10 @@
-# Performance Testing for HURL
+# Performance Testing for WHURL
 
-This document describes the performance testing infrastructure implemented for HURL to test httpx performance features.
+This document describes the performance testing infrastructure implemented for WHURL to test httpx performance features.
 
 ## Overview
 
-HURL now includes comprehensive performance tests that demonstrate and validate the performance impact of various httpx features including:
+WHURL now includes comprehensive performance tests that demonstrate and validate the performance impact of various httpx features including:
 
 - Connection keep-alive vs new connections
 - Connection pooling configurations  

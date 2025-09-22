@@ -13,7 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 import httpx
 import pytest
 
-from hurl.client import HilltopClient
+from whurl.client import HilltopClient
 
 
 class TestSyncVsAsyncPerformance:

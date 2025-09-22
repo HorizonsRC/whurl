@@ -1,7 +1,7 @@
 [project]
-name = "hurl"
+name = "whurl"
 version = "0.1.0"
-description = "Python API wrapper for Hilltop Server"
+description = "Which Hydro URL? - Python API wrapper for Hilltop Server"
 authors = [
     {name = "nicmostert",email = "nicolas.mostert@horizons.govt.nz"}
 ]

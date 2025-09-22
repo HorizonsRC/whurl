@@ -18,7 +18,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
         from pathlib import Path
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests.site_info import SiteInfoRequest
+        from whurl.schemas.requests.site_info import SiteInfoRequest
 
         path = (
             Path(__file__).parent.parent.parent
@@ -87,7 +87,7 @@ class TestRemoteFixtures:
         """Validate the XML response from Hilltop Server."""
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests.site_info import SiteInfoRequest
+        from whurl.schemas.requests.site_info import SiteInfoRequest
         from tests.conftest import remove_tags
 
         # Generate the remote URL
@@ -125,7 +125,7 @@ class TestRemoteFixtures:
         """Validate the XML response from Hilltop Server."""
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests.site_info import SiteInfoRequest
+        from whurl.schemas.requests.site_info import SiteInfoRequest
         from tests.conftest import remove_tags
 
         # Generate the remote URL
@@ -160,9 +160,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests.site_info import SiteInfoRequest
-        from hurl.schemas.responses.site_info import SiteInfoResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests.site_info import SiteInfoRequest
+        from whurl.schemas.responses.site_info import SiteInfoResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -214,9 +214,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests.site_info import SiteInfoRequest
-        from hurl.schemas.responses.site_info import SiteInfoResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests.site_info import SiteInfoRequest
+        from whurl.schemas.responses.site_info import SiteInfoResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -263,9 +263,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests.site_info import SiteInfoRequest
-        from hurl.schemas.responses.site_info import SiteInfoResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests.site_info import SiteInfoRequest
+        from whurl.schemas.responses.site_info import SiteInfoResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -318,9 +318,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests.site_info import SiteInfoRequest
-        from hurl.schemas.responses.site_info import SiteInfoResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests.site_info import SiteInfoRequest
+        from whurl.schemas.responses.site_info import SiteInfoResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"

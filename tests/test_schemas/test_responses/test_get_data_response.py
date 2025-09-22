@@ -16,7 +16,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
         from pathlib import Path
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.schemas.requests import GetDataRequest
 
         path = (
             Path(__file__).parent.parent.parent
@@ -135,7 +135,7 @@ class TestRemoteFixtures:
 
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.schemas.requests import GetDataRequest
         from tests.conftest import remove_tags
 
         # Get the remote URL
@@ -172,7 +172,7 @@ class TestRemoteFixtures:
 
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.schemas.requests import GetDataRequest
         from tests.conftest import remove_tags
 
         # Get the remote URL
@@ -211,7 +211,7 @@ class TestRemoteFixtures:
 
         import pandas as pd
 
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.schemas.requests import GetDataRequest
         from tests.conftest import remove_tags
 
         # 12 hours ago from now
@@ -253,7 +253,7 @@ class TestRemoteFixtures:
 
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.schemas.requests import GetDataRequest
         from tests.conftest import remove_tags
 
         # Get the remote URL
@@ -291,7 +291,7 @@ class TestRemoteFixtures:
 
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.schemas.requests import GetDataRequest
         from tests.conftest import remove_tags
 
         # Get the remote URL
@@ -330,7 +330,7 @@ class TestRemoteFixtures:
 
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.schemas.requests import GetDataRequest
 
         # Get the remote URL
         remote_url = GetDataRequest(
@@ -362,9 +362,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import GetDataRequest
-        from hurl.schemas.responses import GetDataResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import GetDataRequest
+        from whurl.schemas.responses import GetDataResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -451,9 +451,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import GetDataRequest
-        from hurl.schemas.responses import GetDataResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import GetDataRequest
+        from whurl.schemas.responses import GetDataResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -528,9 +528,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import GetDataRequest
-        from hurl.schemas.responses import GetDataResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import GetDataRequest
+        from whurl.schemas.responses import GetDataResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -622,9 +622,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import GetDataRequest
-        from hurl.schemas.responses import GetDataResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import GetDataRequest
+        from whurl.schemas.responses import GetDataResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -704,9 +704,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import GetDataRequest
-        from hurl.schemas.responses import GetDataResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import GetDataRequest
+        from whurl.schemas.responses import GetDataResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -795,9 +795,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import GetDataRequest
-        from hurl.schemas.responses import GetDataResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import GetDataRequest
+        from whurl.schemas.responses import GetDataResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -873,9 +873,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import GetDataRequest
-        from hurl.schemas.responses import GetDataResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import GetDataRequest
+        from whurl.schemas.responses import GetDataResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -968,9 +968,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import GetDataRequest
-        from hurl.schemas.responses import GetDataResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import GetDataRequest
+        from whurl.schemas.responses import GetDataResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -1050,9 +1050,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import GetDataRequest
-        from hurl.schemas.responses import GetDataResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import GetDataRequest
+        from whurl.schemas.responses import GetDataResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -1157,9 +1157,9 @@ class TestResponseValidation:
 
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import GetDataRequest
-        from hurl.schemas.responses import GetDataResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import GetDataRequest
+        from whurl.schemas.responses import GetDataResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"

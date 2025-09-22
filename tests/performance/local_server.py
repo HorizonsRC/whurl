@@ -49,7 +49,7 @@ class LocalTestServer:
             self.mocked_data_path = mocked_data_path
 
         self.app = FastAPI(
-            title="HURL Performance Test Server",
+            title="WHURL Performance Test Server",
             description="Local test server for httpx performance testing",
             version="1.0.0",
         )

@@ -1,8 +1,0 @@
-base_url: "flood.horizons.govt.nz"
-measurements:
-  - "Stage [Water Level]"
-  - "Flow [Flow]"
-  - "Rainfall [Rainfall]"
-  - "Rainfall [SCADA Rainfall]"
-  - "30.44 Days Maxima"
-  - "RL Section"

@@ -13,7 +13,7 @@ from unittest.mock import patch
 import httpx
 import pytest
 
-from hurl.client import HilltopClient
+from whurl.client import HilltopClient
 
 
 class TestConnectionKeepAlive:

@@ -1,1 +1,1 @@
-"""Performance testing module for HURL httpx features."""
+"""Performance testing module for WHURL httpx features."""

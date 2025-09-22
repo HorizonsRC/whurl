@@ -5,7 +5,7 @@ class TestParameterValidation:
     def test_MeasurementListRequest(self):
         from urllib.parse import quote, urlencode
 
-        from hurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.requests import MeasurementListRequest
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -33,8 +33,8 @@ class TestParameterValidation:
         """Test invalid request."""
         from urllib.parse import quote, urlencode
 
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import MeasurementListRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import MeasurementListRequest
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -53,8 +53,8 @@ class TestParameterValidation:
         """Test invalid units."""
         from urllib.parse import quote, urlencode
 
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import MeasurementListRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import MeasurementListRequest
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -72,8 +72,8 @@ class TestParameterValidation:
         """Test invalid target."""
         from urllib.parse import quote, urlencode
 
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import MeasurementListRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import MeasurementListRequest
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"

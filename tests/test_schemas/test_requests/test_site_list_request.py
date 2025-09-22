@@ -5,7 +5,7 @@ class TestParameterValidation:
     def test_SiteListRequest(self):
         from urllib.parse import quote, urlencode
 
-        from hurl.schemas.requests import SiteListRequest
+        from whurl.schemas.requests import SiteListRequest
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -45,8 +45,8 @@ class TestParameterValidation:
 
     def test_invalid_location(self):
         """Test invalid location field raises HilltopRequestError."""
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import SiteListRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import SiteListRequest
 
         with pytest.raises(HilltopRequestError):
             test_url = SiteListRequest(
@@ -57,8 +57,8 @@ class TestParameterValidation:
 
     def test_invalid_bounding_box(self):
         """Test invalid bounding box raises HilltopRequestError."""
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import SiteListRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import SiteListRequest
 
         # Only three coords
         with pytest.raises(HilltopRequestError):
@@ -101,8 +101,8 @@ class TestParameterValidation:
 
     def test_invalid_target(self):
         """Test invalid target raises HilltopRequestError."""
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import SiteListRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import SiteListRequest
 
         with pytest.raises(HilltopRequestError):
             test_url = SiteListRequest(
@@ -113,8 +113,8 @@ class TestParameterValidation:
 
     def test_invalid_syn_level(self):
         """Test invalid syn_level raises HilltopRequestError."""
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import SiteListRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import SiteListRequest
 
         # Test invalid syn_level
         with pytest.raises(HilltopRequestError):
@@ -151,8 +151,8 @@ class TestParameterValidation:
 
     def test_invalid_fill_cols(self):
         """Test invalid fill_cols raises HilltopRequestError."""
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import SiteListRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import SiteListRequest
 
         # Test invalid fill_cols
         with pytest.raises(HilltopRequestError):

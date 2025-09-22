@@ -16,7 +16,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
         from pathlib import Path
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import SiteListRequest
+        from whurl.schemas.requests import SiteListRequest
 
         path = (
             Path(__file__).parent.parent.parent
@@ -77,7 +77,7 @@ class TestRemoteFixtures:
         """Test the all_response_xml fixture."""
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import SiteListRequest
+        from whurl.schemas.requests import SiteListRequest
 
         # Generate the remote URL
         remote_url = SiteListRequest(
@@ -102,9 +102,9 @@ class TestResponseValidation:
     def test_all_response_xml_unit(self, httpx_mock, all_response_xml_mocked):
         """Test all_response_xml parsing with mocked data."""
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import SiteListRequest
-        from hurl.schemas.responses import SiteListResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import SiteListRequest
+        from whurl.schemas.responses import SiteListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -139,9 +139,9 @@ class TestResponseValidation:
     def test_all_response_xml_integration(self, httpx_mock, all_response_xml_cached):
         """Test all_response_xml parsing with cached data."""
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import SiteListRequest
-        from hurl.schemas.responses import SiteListResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import SiteListRequest
+        from whurl.schemas.responses import SiteListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -177,7 +177,7 @@ class TestResponseValidation:
         """Test to_dict method with mocked data."""
         import xmltodict
 
-        from hurl.schemas.responses import SiteListResponse
+        from whurl.schemas.responses import SiteListResponse
 
         site_list = SiteListResponse.from_xml(all_response_xml_mocked)
         # Convert to dictionary
@@ -212,7 +212,7 @@ class TestResponseValidation:
         """Test to_dict method with cached data."""
         import xmltodict
 
-        from hurl.schemas.responses import SiteListResponse
+        from whurl.schemas.responses import SiteListResponse
 
         site_list = SiteListResponse.from_xml(all_response_xml_cached)
         # Convert to dictionary

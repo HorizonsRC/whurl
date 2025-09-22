@@ -119,7 +119,7 @@ def remove_tags(xml_str, tags_to_remove):
 @pytest.fixture(scope="session")
 def remote_client():
     """Create a remote client for testing."""
-    from hurl.client import HilltopClient
+    from whurl.client import HilltopClient
 
     client = HilltopClient()
 
@@ -153,7 +153,7 @@ def mock_hilltop_client_factory(mocker):
         mock_client.session = mock_session
 
         # Patch the real client
-        mocker.patch("hurl.client.HilltopClient", return_value=mock_client)
+        mocker.patch("whurl.client.HilltopClient", return_value=mock_client)
 
         return {
             "client": mock_client,
@@ -222,7 +222,7 @@ def local_test_server():
 @pytest.fixture(scope="session")
 def performance_remote_client():
     """Create a remote client for performance testing."""
-    from hurl.client import HilltopClient
+    from whurl.client import HilltopClient
 
     # Check if remote testing is enabled and environment is configured
     remote_base_url = os.getenv("HILLTOP_PERFORMANCE_BASE_URL")
@@ -249,7 +249,7 @@ def performance_remote_client():
 @pytest.fixture
 def performance_local_client(local_test_server):
     """Create a client configured for local performance testing."""
-    from hurl.client import HilltopClient
+    from whurl.client import HilltopClient
 
     client = HilltopClient(
         base_url=local_test_server["base_url"],

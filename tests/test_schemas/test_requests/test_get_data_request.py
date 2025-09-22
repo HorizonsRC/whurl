@@ -5,7 +5,7 @@ class TestParameterValidation:
     def test_GetDataRequest(self):
         from urllib.parse import quote, urlencode
 
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.schemas.requests import GetDataRequest
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -63,8 +63,8 @@ class TestParameterValidation:
 
     def test_invalid_request(self):
         """Test invalid request."""
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import GetDataRequest
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -79,8 +79,8 @@ class TestParameterValidation:
 
     def test_datetime_validation(self):
         """Test datetime validation."""
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import GetDataRequest
 
         # Valid Everything
         GetDataRequest(
@@ -184,8 +184,8 @@ class TestParameterValidation:
 
     def test_time_interval_validation_failures(self):
         """Test datetime validation."""
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import GetDataRequest
 
         test_intervals = [
             # Invalid time format in <start>/<end>
@@ -243,7 +243,7 @@ class TestParameterValidation:
     def test_time_interval_validation_success(self):
         from urllib.parse import quote, urlencode
 
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.schemas.requests import GetDataRequest
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -329,8 +329,8 @@ class TestParameterValidation:
 
     def test_alignment(self):
         """Test alignment."""
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import GetDataRequest
 
         test_alignments = [
             "00:00",
@@ -372,8 +372,8 @@ class TestParameterValidation:
 
     def test_method(self):
         """Test Method."""
-        from hurl.exceptions import HilltopRequestError
-        from hurl.schemas.requests import GetDataRequest
+        from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import GetDataRequest
 
         # Valid methods
         valid_methods = [

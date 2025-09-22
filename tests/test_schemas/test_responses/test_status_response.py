@@ -18,7 +18,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
         from pathlib import Path
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import StatusRequest
+        from whurl.schemas.requests import StatusRequest
 
         path = (
             Path(__file__).parent.parent.parent / "fixture_cache" / "status" / filename
@@ -73,7 +73,7 @@ class TestRemoteFixtures:
         """Validate the status response XML fixture."""
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import StatusRequest
+        from whurl.schemas.requests import StatusRequest
         from tests.conftest import remove_tags
 
         cached_xml = status_response_xml_cached
@@ -113,9 +113,9 @@ class TestResponseValidation:
     def test_status_response_unit(self, httpx_mock, status_response_xml_mocked):
         """Test the StatusResponse model with mocked data."""
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import StatusRequest
-        from hurl.schemas.responses import StatusResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import StatusRequest
+        from whurl.schemas.responses import StatusResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -146,9 +146,9 @@ class TestResponseValidation:
     def test_status_response_integration(self, httpx_mock, status_response_xml_cached):
         """Test the StatusResponse model with cached data."""
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import StatusRequest
-        from hurl.schemas.responses import StatusResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import StatusRequest
+        from whurl.schemas.responses import StatusResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -180,7 +180,7 @@ class TestResponseValidation:
         """Test to_dict method with mocked data."""
         import xmltodict
 
-        from hurl.schemas.responses import StatusResponse
+        from whurl.schemas.responses import StatusResponse
 
         site_list = StatusResponse.from_xml(status_response_xml_mocked)
 
@@ -222,7 +222,7 @@ class TestResponseValidation:
         """Test to_dict method with cached data."""
         import xmltodict
 
-        from hurl.schemas.responses import StatusResponse
+        from whurl.schemas.responses import StatusResponse
 
         site_list = StatusResponse.from_xml(status_response_xml_cached)
 

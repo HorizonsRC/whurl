@@ -1,4 +1,4 @@
-"""Top-level package for HURL."""
+"""Top-level package for WHURL."""
 
 from .client import HilltopClient, AsyncHilltopClient
 

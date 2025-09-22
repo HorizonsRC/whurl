@@ -17,7 +17,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
         from pathlib import Path
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests.collection_list import CollectionListRequest
+        from whurl.schemas.requests.collection_list import CollectionListRequest
 
         path = (
             Path(__file__).parent.parent.parent
@@ -83,7 +83,7 @@ class TestRemoteFixtures:
         """Test that the basic response XML fixture is loaded correctly."""
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests.collection_list import CollectionListRequest
+        from whurl.schemas.requests.collection_list import CollectionListRequest
 
         # Generate the URL for the remote request.
         remote_url = CollectionListRequest(
@@ -106,9 +106,9 @@ class TestResponseValidation:
     def test_basic_response_xml_unit(self, httpx_mock, basic_response_xml_mocked):
         """Validate the response XML against the CollectionListResponse schema with mocked data."""
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests.collection_list import CollectionListRequest
-        from hurl.schemas.responses.collection_list import \
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests.collection_list import CollectionListRequest
+        from whurl.schemas.responses.collection_list import \
             CollectionListResponse
 
         base_url = "http://example.com"
@@ -161,9 +161,9 @@ class TestResponseValidation:
     ):
         """Validate the response XML against the CollectionListResponse schema with cached data."""
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests.collection_list import CollectionListRequest
-        from hurl.schemas.responses.collection_list import \
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests.collection_list import CollectionListRequest
+        from whurl.schemas.responses.collection_list import \
             CollectionListResponse
 
         base_url = "http://example.com"

@@ -1,15 +1,15 @@
-# HURL - Hydro URL Generator
+# WHURL - Which Hydro URL
 
 A Python client library for interacting with Hilltop Server APIs, developed by Horizons Regional Council as a dependency of [Hydrobot](https://github.com/HorizonsRC/hydrobot). HURL provides a clean, Pythonic interface for fetching environmental and scientific data from Hilltop servers.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
 [![Poetry](https://img.shields.io/badge/dependency%20management-Poetry-blue)](https://python-poetry.org/)
-[![Version](https://img.shields.io/badge/version-0.1.0-green)](https://github.com/HorizonsRC/hurl)
+[![Version](https://img.shields.io/badge/version-0.1.0-green)](https://github.com/HorizonsRC/whurl)
 
 ## Overview
 
-HURL (Hydro URL Generator) is designed to simplify interactions with Hilltop Server, a platform commonly used for storing and managing environmental data such as water levels, flow rates, rainfall measurements, and other scientific observations. The library handles URL generation, request validation, XML parsing, and provides structured Python objects for easy data manipulation.
+WHURL (Which Hydro URL) is designed to simplify interactions with Hilltop Server, a platform commonly used for storing and managing environmental data such as water levels, flow rates, rainfall measurements, and other scientific observations. The library handles URL generation, request validation, XML parsing, and provides structured Python objects for easy data manipulation.
 
 > **⚠️ Work in Progress**: This library is currently under active development. While core functionality is stable and tested, not all Hilltop API endpoints are supported yet. See the [Planned Features](#planned-features) section for upcoming enhancements.
 
@@ -47,22 +47,22 @@ The following features are planned for future releases:
 ### Install from PyPI (Recommended)
 
 ```bash
-pip install hurl
+pip install whurl
 ```
 
 ### Development Installation with Poetry
 
-For development or contributing to HURL, use Poetry for dependency management:
+For development or contributing to WHURL, use Poetry for dependency management:
 
 ```bash
 # Clone the repository
-git clone https://github.com/HorizonsRC/hurl.git
-cd hurl
+git clone https://github.com/HorizonsRC/whurl.git
+cd whurl
 
 # Install Poetry if you haven't already
 curl -sSL https://install.python-poetry.org | python3 -
 
-# Install dependencies and HURL in development mode
+# Install dependencies and WHURL in development mode
 poetry install
 
 # Activate the virtual environment
@@ -72,14 +72,14 @@ poetry shell
 ### Legacy pip Installation from Source
 
 ```bash
-git clone https://github.com/HorizonsRC/hurl.git
-cd hurl
+git clone https://github.com/HorizonsRC/whurl.git
+cd whurl
 pip install -e .
 ```
 
 ### Dependencies
 
-HURL requires the following packages (automatically managed by Poetry):
+WHURL requires the following packages (automatically managed by Poetry):
 - `httpx` - HTTP client for making requests
 - `pydantic` - Data validation and settings management
 - `lxml` - XML processing
@@ -91,7 +91,7 @@ HURL requires the following packages (automatically managed by Poetry):
 
 ### Why Poetry?
 
-HURL uses [Poetry](https://python-poetry.org/) as the standard for dependency management and packaging for several important reasons:
+WHURL uses [Poetry](https://python-poetry.org/) as the standard for dependency management and packaging for several important reasons:
 
 #### **Reproducible Builds**
 Poetry locks all dependencies (including transitive dependencies) to specific versions in `poetry.lock`, ensuring that all developers and CI/CD systems use exactly the same package versions.
@@ -115,7 +115,7 @@ Poetry uses the modern `pyproject.toml` standard (PEP 621) instead of legacy `se
 - `poetry build` - Build distribution packages for PyPI
 
 #### **For Contributors**
-If you're contributing to HURL, Poetry ensures that:
+If you're contributing to WHURL, Poetry ensures that:
 1. Your development environment exactly matches other contributors
 2. New dependencies are properly locked and tracked
 3. The build and test process is consistent across all environments
@@ -126,7 +126,7 @@ If you're contributing to HURL, Poetry ensures that:
 ### Basic Setup
 
 ```python
-from hurl.client import HilltopClient
+from whurl.client import HilltopClient
 
 # Option 1: Direct configuration
 client = HilltopClient(
@@ -148,7 +148,7 @@ with client:
 
 ### Environment Variables
 
-HURL supports configuration via environment variables:
+WHURL supports configuration via environment variables:
 
 ```bash
 export HILLTOP_BASE_URL="https://your-hilltop-server.com"
@@ -164,7 +164,7 @@ HILLTOP_HTS_ENDPOINT=data.hts
 ### Simple Example
 
 ```python
-from hurl.client import HilltopClient
+from whurl.client import HilltopClient
 
 with HilltopClient() as client:
     # Get server status
@@ -354,7 +354,7 @@ for collection in collections.collections:
 ### Environmental Data Monitoring
 
 ```python
-from hurl.client import HilltopClient
+from whurl.client import HilltopClient
 import pandas as pd
 
 with HilltopClient() as client:
@@ -425,11 +425,11 @@ with HilltopClient() as client:
 
 ## Error Handling
 
-HURL provides comprehensive error handling through custom exceptions:
+WHURL provides comprehensive error handling through custom exceptions:
 
 ```python
-from hurl.client import HilltopClient
-from hurl.exceptions import (
+from whurl.client import HilltopClient
+from whurl.exceptions import (
     HilltopError, 
     HilltopConfigError, 
     HilltopRequestError,
@@ -464,7 +464,7 @@ except HilltopError as e:
 
 ### Exception Hierarchy
 
-- `HilltopError` - Base exception for all HURL errors
+- `HilltopError` - Base exception for all WHURL errors
   - `HilltopConfigError` - Configuration issues (missing URLs, credentials)
   - `HilltopRequestError` - Request validation errors (invalid parameters)
   - `HilltopResponseError` - HTTP and server response errors
@@ -472,7 +472,7 @@ except HilltopError as e:
 
 ## Validation and Data Types
 
-HURL uses Pydantic for request validation and type safety. Common validation rules:
+WHURL uses Pydantic for request validation and type safety. Common validation rules:
 
 ### Time Intervals
 ```python
@@ -503,14 +503,14 @@ HURL uses Pydantic for request validation and type safety. Common validation rul
 
 ## Development and Contributing
 
-HURL uses [Poetry](https://python-poetry.org/) for dependency management and packaging. This ensures reproducible builds and simplifies development workflows.
+WHURL uses [Poetry](https://python-poetry.org/) for dependency management and packaging. This ensures reproducible builds and simplifies development workflows.
 
 ### Development Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/HorizonsRC/hurl.git
-cd hurl
+git clone https://github.com/HorizonsRC/whurl.git
+cd whurl
 
 # Install Poetry if you haven't already
 curl -sSL https://install.python-poetry.org | python3 -
@@ -560,8 +560,8 @@ If you prefer using pip directly:
 
 ```bash
 # Clone the repository
-git clone https://github.com/HorizonsRC/hurl.git
-cd hurl
+git clone https://github.com/HorizonsRC/whurl.git
+cd whurl
 
 # Install in development mode
 pip install -e .
@@ -575,7 +575,7 @@ python -m pytest tests/
 
 ### Running Tests
 
-HURL uses a comprehensive testing strategy that includes both local mocked tests and remote API validation using a fixture cache system.
+WHURL uses a comprehensive testing strategy that includes both local mocked tests and remote API validation using a fixture cache system.
 
 #### Environment Setup for Testing
 
@@ -624,7 +624,7 @@ python -m pytest --update -m remote
 
 #### Testing Strategy & Fixture Cache
 
-HURL implements a sophisticated testing approach using cached API responses to ensure tests remain consistent and fast while still validating against real API behavior:
+WHURL implements a sophisticated testing approach using cached API responses to ensure tests remain consistent and fast while still validating against real API behavior:
 
 - **Fixture Cache**: Pre-recorded XML responses from actual Hilltop servers are stored in `tests/fixture_cache/`
 - **Remote Validation**: Tests marked with `@pytest.mark.remote` can validate cached responses against live API endpoints
@@ -662,7 +662,7 @@ This strategy ensures that:
 
 #### Performance Testing
 
-HURL includes comprehensive performance tests to validate httpx performance features. See [Performance Testing Documentation](docs/PERFORMANCE_TESTING.md) for detailed information.
+WHURL includes comprehensive performance tests to validate httpx performance features. See [Performance Testing Documentation](docs/PERFORMANCE_TESTING.md) for detailed information.
 
 ```bash
 # Run performance tests against local FastAPI test server
@@ -694,14 +694,14 @@ This project uses:
 
 ## Model String Representations
 
-All Pydantic models in HURL use a custom YAML-style string representation that provides clean, readable output for debugging and logging.
+All Pydantic models in WHURL use a custom YAML-style string representation that provides clean, readable output for debugging and logging.
 
 ### YAML-Style Output
 
 All models inherit from `ModelReprMixin`, which provides pretty-printed output:
 
 ```python
-from hurl.client import HilltopClient
+from whurl.client import HilltopClient
 
 with HilltopClient() as client:
     # Get data request shows clean YAML output
@@ -751,7 +751,7 @@ For specific use cases where you need to show None/null values, define `repr_inc
 ```python
 from typing import ClassVar, Set
 from pydantic import BaseModel
-from hurl.schemas.mixins import ModelReprMixin
+from whurl.schemas.mixins import ModelReprMixin
 
 class CustomModel(ModelReprMixin, BaseModel):
     repr_include_unset: ClassVar[Set[str]] = {"important_field"}
@@ -822,7 +822,7 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 - **Author**: Nic Mostert
 - **Email**: nicolas.mostert@horizons.govt.nz
 - **Organization**: Horizons Regional Council
-- **Repository**: https://github.com/HorizonsRC/hurl
+- **Repository**: https://github.com/HorizonsRC/whurl
 
 ## Acknowledgments
 

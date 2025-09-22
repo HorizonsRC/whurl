@@ -17,7 +17,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
         from pathlib import Path
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests.time_range import TimeRangeRequest
+        from whurl.schemas.requests.time_range import TimeRangeRequest
 
         path = (
             Path(__file__).parent.parent.parent
@@ -86,7 +86,7 @@ class TestRemoteFixtures:
         """Test that the basic response XML fixture is loaded correctly."""
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests.time_range import TimeRangeRequest
+        from whurl.schemas.requests.time_range import TimeRangeRequest
         from tests.conftest import remove_tags
 
         # Generate the URL for the remote request.
@@ -122,9 +122,9 @@ class TestTimeRangeResponse:
 
         from datetime import datetime
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests.time_range import TimeRangeRequest
-        from hurl.schemas.responses.time_range import TimeRangeResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests.time_range import TimeRangeRequest
+        from whurl.schemas.responses.time_range import TimeRangeResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -164,9 +164,9 @@ class TestTimeRangeResponse:
 
         from datetime import datetime
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests.time_range import TimeRangeRequest
-        from hurl.schemas.responses.time_range import TimeRangeResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests.time_range import TimeRangeRequest
+        from whurl.schemas.responses.time_range import TimeRangeResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"

@@ -17,7 +17,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
         from pathlib import Path
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.requests import MeasurementListRequest
 
         path = (
             Path(__file__).parent.parent.parent
@@ -95,7 +95,7 @@ class VerifyCachedFixtures:
         """Validate the XML response from Hilltop Server."""
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.requests import MeasurementListRequest
         from tests.conftest import remove_tags
 
         # Generate the remote URL
@@ -136,7 +136,7 @@ class VerifyCachedFixtures:
         """Validate the XML response from Hilltop Server."""
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.requests import MeasurementListRequest
 
         cached_xml = all_response_xml_cached
 
@@ -165,7 +165,7 @@ class VerifyCachedFixtures:
         """Validate the XML Error response from Hilltop Server."""
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.requests import MeasurementListRequest
 
         cached_xml = error_response_xml_cached
 
@@ -195,7 +195,7 @@ class VerifyCachedFixtures:
         """Validate the XML units response from Hilltop Server."""
         from urllib.parse import urlparse
 
-        from hurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.requests import MeasurementListRequest
 
         cached_xml = units_response_xml_cached
 
@@ -220,9 +220,9 @@ class TestMeasurementList:
     def test_all_response_xml_unit(self, httpx_mock, all_response_xml_mocked):
         """Test that the XML can be parsed into a MeasurementListResponse object."""
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import MeasurementListRequest
-        from hurl.schemas.responses import MeasurementListResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.responses import MeasurementListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -264,9 +264,9 @@ class TestMeasurementList:
     def test_all_response_xml_integration(self, httpx_mock, all_response_xml_cached):
         """Test that the XML can be parsed into a MeasurementListResponse object."""
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import MeasurementListRequest
-        from hurl.schemas.responses import MeasurementListResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.responses import MeasurementListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -312,10 +312,10 @@ class TestMeasurementList:
     def test_error_from_xml_unit(self, httpx_mock, error_response_xml_mocked):
         """Test that the XML can be parsed into a MeasurementListResponse object."""
 
-        from hurl.client import HilltopClient
-        from hurl.exceptions import HilltopResponseError
-        from hurl.schemas.requests import MeasurementListRequest
-        from hurl.schemas.responses import MeasurementListResponse
+        from whurl.client import HilltopClient
+        from whurl.exceptions import HilltopResponseError
+        from whurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.responses import MeasurementListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -343,10 +343,10 @@ class TestMeasurementList:
     def test_error_from_xml_integration(self, httpx_mock, error_response_xml_cached):
         """Test that the XML can be parsed into a MeasurementListResponse object."""
 
-        from hurl.client import HilltopClient
-        from hurl.exceptions import HilltopResponseError
-        from hurl.schemas.requests import MeasurementListRequest
-        from hurl.schemas.responses import MeasurementListResponse
+        from whurl.client import HilltopClient
+        from whurl.exceptions import HilltopResponseError
+        from whurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.responses import MeasurementListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -375,9 +375,9 @@ class TestMeasurementList:
         """Test multiple measurement response."""
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import MeasurementListRequest
-        from hurl.schemas.responses import MeasurementListResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.responses import MeasurementListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -456,9 +456,9 @@ class TestMeasurementList:
         """Test multiple measurement response."""
         import pandas as pd
 
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import MeasurementListRequest
-        from hurl.schemas.responses import MeasurementListResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.responses import MeasurementListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -522,9 +522,9 @@ class TestMeasurementList:
     @pytest.mark.unit
     def test_units_response_xml_unit(self, httpx_mock, units_response_xml_mocked):
         """Test that the XML can be parsed into a MeasurementListResponse object."""
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import MeasurementListRequest
-        from hurl.schemas.responses import MeasurementListResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.responses import MeasurementListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -569,9 +569,9 @@ class TestMeasurementList:
         self, httpx_mock, units_response_xml_cached
     ):
         """Test that the XML can be parsed into a MeasurementListResponse object."""
-        from hurl.client import HilltopClient
-        from hurl.schemas.requests import MeasurementListRequest
-        from hurl.schemas.responses import MeasurementListResponse
+        from whurl.client import HilltopClient
+        from whurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.responses import MeasurementListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -616,7 +616,7 @@ class TestMeasurementList:
         """Test to_dict method."""
         import xmltodict
 
-        from hurl.schemas.responses import MeasurementListResponse
+        from whurl.schemas.responses import MeasurementListResponse
 
         site_list = MeasurementListResponse.from_xml(str(all_response_xml_mocked))
         # Convert to dictionary
@@ -650,7 +650,7 @@ class TestMeasurementList:
         """Test to_dict method."""
         import xmltodict
 
-        from hurl.schemas.responses import MeasurementListResponse
+        from whurl.schemas.responses import MeasurementListResponse
 
         site_list = MeasurementListResponse.from_xml(str(all_response_xml_cached))
         # Convert to dictionary
