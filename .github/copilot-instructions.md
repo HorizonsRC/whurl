@@ -1,6 +1,6 @@
-# HURL - Hydro URL Generator
+# WHURL - Hydro URL Generator
 
-HURL is a Python client library for interacting with Hilltop Server APIs, providing a clean interface for fetching environmental and scientific data from Hilltop servers.
+WHURL is a Python client library for interacting with Hilltop Server APIs, providing a clean interface for fetching environmental and scientific data from Hilltop servers.
 
 **Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.**
 
@@ -11,7 +11,7 @@ Run these commands in sequence to set up the development environment:
 
 ```bash
 # Navigate to repository root
-cd /home/runner/work/hurl/hurl
+cd /home/runner/work/whurl/whurl
 
 # Install project in development mode - takes ~60 seconds. NEVER CANCEL.
 pip install -e .
@@ -63,14 +63,14 @@ HILLTOP_HTS_ENDPOINT=foo.hts
 
 ### 1. Basic Import Validation
 ```bash
-python -c "from hurl.client import HilltopClient; print('Import successful!')"
+python -c "from whurl.client import HilltopClient; print('Import successful!')"
 ```
 
 ### 2. Client Configuration Validation
 ```bash
 # Without environment variables (should fail with clear error)
 python -c "
-from hurl.client import HilltopClient
+from whurl.client import HilltopClient
 try:
     client = HilltopClient()
 except Exception as e:
@@ -79,7 +79,7 @@ except Exception as e:
 
 # With environment variables (should succeed)
 HILLTOP_BASE_URL="https://data.council.govt.nz" HILLTOP_HTS_ENDPOINT="foo.hts" python -c "
-from hurl.client import HilltopClient
+from whurl.client import HilltopClient
 client = HilltopClient()
 print(f'Client created: {client.base_url}')
 print(f'Endpoint: {client.hts_endpoint}')
@@ -99,9 +99,9 @@ python -m pytest tests/ -m 'not remote' --quiet
 ```bash
 HILLTOP_BASE_URL="https://data.council.govt.nz" HILLTOP_HTS_ENDPOINT="foo.hts" python -c "
 # Complete validation scenario
-from hurl.client import HilltopClient
+from whurl.client import HilltopClient
 
-print('=== Complete HURL Library Validation ===')
+print('=== Complete WHURL Library Validation ===')
 
 # Test 1: Client creation and configuration
 print('1. Testing client creation...')
@@ -119,9 +119,9 @@ with HilltopClient() as ctx_client:
 
 # Test 3: Import all key components
 print('3. Testing imports...')
-from hurl.exceptions import HilltopError, HilltopConfigError
-from hurl.schemas.requests import StatusRequest
-from hurl.utils import validate_hilltop_interval_notation
+from whurl.exceptions import HilltopError, HilltopConfigError
+from whurl.schemas.requests import StatusRequest
+from whurl.utils import validate_hilltop_interval_notation
 print('   ✓ All key imports successful')
 
 # Test 4: Request validation
@@ -147,8 +147,8 @@ print('✓ Library is fully functional and ready for development')
 
 ### Repository Structure
 ```
-/home/runner/work/hurl/hurl/           # Repository root
-├── hurl/                              # Main Python package  
+/home/runner/work/whurl/whurl/           # Repository root
+├── whurl/                              # Main Python package  
 │   ├── client.py                      # Main HilltopClient class
 │   ├── exceptions.py                  # Custom exceptions
 │   ├── schemas/                       # Request/Response schemas
@@ -165,8 +165,8 @@ print('✓ Library is fully functional and ready for development')
 ```
 
 ### Key Files to Check After Changes
-- **`hurl/client.py`**: Main client implementation
-- **`hurl/schemas/`**: When changing API request/response handling
+- **`whurl/client.py`**: Main client implementation
+- **`whurl/schemas/`**: When changing API request/response handling
 - **`tests/test_schemas/`**: When adding new request/response types
 - **`__init__.py` files: When adding new request/response types
 - **Environment variables**: Always test both with and without `HILLTOP_BASE_URL`
@@ -177,7 +177,7 @@ print('✓ Library is fully functional and ready for development')
 
 ## Testing Strategy & Fixture Cache
 
-HURL uses a sophisticated testing approach:
+WHURL uses a sophisticated testing approach:
 
 - **Fixture Cache**: Pre-recorded XML responses stored in `tests/fixture_cache/`
 - **Remote Validation**: Tests marked `@pytest.mark.remote` can validate against live APIs
@@ -214,7 +214,7 @@ This is a **client library**, not an application with a UI. It provides:
 
 **Example Usage Pattern**:
 ```python
-from hurl.client import HilltopClient
+from whurl.client import HilltopClient
 
 # Always use environment variables for configuration
 with HilltopClient() as client:
@@ -226,7 +226,7 @@ with HilltopClient() as client:
 ## When Things Go Wrong
 
 ### Import Errors
-- Run: `pip install -e .` and install all dependencies listed above
+- Run: `poetry install` and install all dependencies listed above
 - Check: Python path and virtual environment
 
 ### Test Failures
