@@ -1,8 +1,8 @@
-"""HURL utils module."""
+"""WHURL utils module."""
 
 import re
 
-from hurl.exceptions import HilltopRequestError
+from whurl.exceptions import HilltopRequestError
 
 
 def validate_hilltop_interval_notation(value: str) -> str:

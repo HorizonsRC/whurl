@@ -82,7 +82,7 @@ class LocalTestServer:
         @self.app.get("/health")
         async def health_check():
             """Health check endpoint."""
-            return {"status": "healthy", "server": "hurl-performance-test"}
+            return {"status": "healthy", "server": "whurl-performance-test"}
 
         @self.app.get("/foo.hts")
         async def hilltop_endpoint(service: str = None, request: str = None):
@@ -198,6 +198,6 @@ if __name__ == "__main__":
     port = int(os.getenv("TEST_SERVER_PORT", "8000"))
 
     server = create_test_server(delay=delay, error_rate=error_rate, port=port)
-    print(f"Starting HURL Performance Test Server on http://127.0.0.1:{port}")
+    print(f"Starting WHURL Performance Test Server on http://127.0.0.1:{port}")
     print(f"Configuration: delay={delay}s, error_rate={error_rate}")
     server.run()

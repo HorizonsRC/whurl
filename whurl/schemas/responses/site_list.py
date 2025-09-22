@@ -6,9 +6,9 @@ import pandas as pd
 import xmltodict
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from hurl.exceptions import HilltopParseError, HilltopResponseError
-from hurl.schemas.mixins import ModelReprMixin
-from hurl.schemas.requests import SiteListRequest
+from whurl.exceptions import HilltopParseError, HilltopResponseError
+from whurl.schemas.mixins import ModelReprMixin
+from whurl.schemas.requests import SiteListRequest
 
 
 class SiteListResponse(ModelReprMixin, BaseModel):

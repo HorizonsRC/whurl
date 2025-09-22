@@ -7,10 +7,10 @@ import pandas as pd
 from isodate import ISO8601Error, parse_datetime, parse_duration
 from pydantic import Field, ValidationError, field_validator, model_validator
 
-from hurl.exceptions import HilltopRequestError
-from hurl.schemas.requests.base import BaseHilltopRequest
-from hurl.schemas.mixins import ModelReprMixin
-from hurl.utils import validate_hilltop_interval_notation
+from whurl.exceptions import HilltopRequestError
+from whurl.schemas.requests.base import BaseHilltopRequest
+from whurl.schemas.mixins import ModelReprMixin
+from whurl.utils import validate_hilltop_interval_notation
 
 
 class GetDataRequest(BaseHilltopRequest):

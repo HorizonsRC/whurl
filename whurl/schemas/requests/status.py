@@ -2,8 +2,8 @@
 
 from pydantic import Field, field_validator
 
-from hurl.schemas.mixins import ModelReprMixin
-from hurl.schemas.requests.base import BaseHilltopRequest
+from whurl.schemas.mixins import ModelReprMixin
+from whurl.schemas.requests.base import BaseHilltopRequest
 
 
 class StatusRequest(BaseHilltopRequest):

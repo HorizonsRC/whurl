@@ -5,9 +5,9 @@ from __future__ import annotations
 import xmltodict
 from pydantic import BaseModel, Field, field_validator
 
-from hurl.exceptions import HilltopParseError
-from hurl.schemas.mixins import ModelReprMixin
-from hurl.schemas.requests import StatusRequest
+from whurl.exceptions import HilltopParseError
+from whurl.schemas.mixins import ModelReprMixin
+from whurl.schemas.requests import StatusRequest
 
 
 class StatusResponse(ModelReprMixin, BaseModel):

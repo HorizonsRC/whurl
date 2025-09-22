@@ -6,9 +6,9 @@ import httpx
 import xmltodict
 from pydantic import BaseModel, Field, field_validator
 
-from hurl.exceptions import HilltopResponseError, HilltopParseError
-from hurl.schemas.mixins import ModelReprMixin
-from hurl.schemas.requests import TimeRangeRequest
+from whurl.exceptions import HilltopResponseError, HilltopParseError
+from whurl.schemas.mixins import ModelReprMixin
+from whurl.schemas.requests import TimeRangeRequest
 
 
 class TimeRangeResponse(ModelReprMixin, BaseModel):

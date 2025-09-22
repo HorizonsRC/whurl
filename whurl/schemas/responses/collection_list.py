@@ -4,8 +4,8 @@ import xmltodict
 
 from pydantic import BaseModel, Field, field_validator
 
-from hurl.schemas.mixins import ModelReprMixin
-from hurl.schemas.requests import CollectionListRequest
+from whurl.schemas.mixins import ModelReprMixin
+from whurl.schemas.requests import CollectionListRequest
 
 
 class CollectionListResponse(ModelReprMixin, BaseModel):

@@ -8,12 +8,12 @@ from xml.parsers.expat import ExpatError
 
 from pydantic import BaseModel, Field, model_validator
 
-from hurl.exceptions import HilltopParseError, HilltopResponseError
+from whurl.exceptions import HilltopParseError, HilltopResponseError
 
-from hurl.schemas.mixins import ModelReprMixin
-from hurl.schemas.requests import SiteInfoRequest
+from whurl.schemas.mixins import ModelReprMixin
+from whurl.schemas.requests import SiteInfoRequest
 
-from hurl.utils import sanitise_xml_attributes
+from whurl.utils import sanitise_xml_attributes
 
 
 class SiteInfoResponse(ModelReprMixin, BaseModel):

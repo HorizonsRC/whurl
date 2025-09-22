@@ -5,8 +5,8 @@ from urllib.parse import urlparse, urlencode, quote
 
 from pydantic import BaseModel, Field, field_validator
 
-from hurl.exceptions import HilltopRequestError
-from hurl.schemas.mixins import ModelReprMixin
+from whurl.exceptions import HilltopRequestError
+from whurl.schemas.mixins import ModelReprMixin
 
 
 class BaseHilltopRequest(ModelReprMixin, BaseModel):

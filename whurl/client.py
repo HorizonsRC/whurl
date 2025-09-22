@@ -10,13 +10,13 @@ import certifi
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-from hurl.exceptions import (HilltopConfigError, HilltopParseError,
+from whurl.exceptions import (HilltopConfigError, HilltopParseError,
                              HilltopResponseError)
-from hurl.schemas.requests import (CollectionListRequest, GetDataRequest,
+from whurl.schemas.requests import (CollectionListRequest, GetDataRequest,
                                    MeasurementListRequest, SiteInfoRequest,
                                    SiteListRequest, StatusRequest,
                                    TimeRangeRequest)
-from hurl.schemas.responses import (CollectionListResponse, GetDataResponse,
+from whurl.schemas.responses import (CollectionListResponse, GetDataResponse,
                                     MeasurementListResponse, SiteInfoResponse,
                                     SiteListResponse, StatusResponse,
                                     TimeRangeResponse)

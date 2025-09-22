@@ -9,13 +9,13 @@ import pandas as pd
 import xmltodict
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from hurl.exceptions import (
+from whurl.exceptions import (
     HilltopParseError,
     HilltopRequestError,
     HilltopResponseError,
 )
-from hurl.schemas.mixins import ModelReprMixin
-from hurl.schemas.requests import MeasurementListRequest
+from whurl.schemas.mixins import ModelReprMixin
+from whurl.schemas.requests import MeasurementListRequest
 
 
 class MeasurementListResponse(ModelReprMixin, BaseModel):
