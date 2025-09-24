@@ -20,6 +20,8 @@ class SiteListResponse(ModelReprMixin, BaseModel):
         name: str = Field(alias="@Name")
         easting: float | None = Field(alias="Easting", default=None)
         northing: float | None = Field(alias="Northing", default=None)
+        latitude: float | None = Field(alias="Latitude", default=None)
+        longitude: float | None = Field(alias="Longitude", default=None)
 
         def to_dict(self):
             """Convert the model to a dictionary."""
@@ -27,7 +29,7 @@ class SiteListResponse(ModelReprMixin, BaseModel):
 
     agency: str = Field(alias="Agency", default=None)
     version: str | None = Field(alias="Version", default=None)
-    projection: str | None = Field(alias="Projection", default=None)
+    crc: str | None = Field(alias="CRC", default=None)
     site_list: list[Site] = Field(alias="Site", default_factory=list)
     error: str = Field(alias="Error", default=None)
     request: SiteListRequest | None = Field(default=None, exclude=True)
@@ -42,15 +44,6 @@ class SiteListResponse(ModelReprMixin, BaseModel):
             )
         return self
 
-    @field_validator("site_list", mode="before")
-    def validate_site_list(cls, value) -> list[dict[str, any]]:
-        """Ensure site_list is a list of HilltopSite objects."""
-        if value is None:
-            return []
-        if isinstance(value, dict):
-            return [value]
-        return value  # Already a list
-
     def to_dict(self):
         """Convert the model to a dictionary."""
         return self.model_dump(exclude_unset=True, by_alias=True)
@@ -64,8 +57,6 @@ class SiteListResponse(ModelReprMixin, BaseModel):
         df["Agency"] = data["Agency"]
         if "Version" in data:
             df["Version"] = data["Version"]
-        if "Projection" in data:
-            df["Projection"] = data["Projection"]
 
         return df
 
@@ -81,12 +72,6 @@ class SiteListResponse(ModelReprMixin, BaseModel):
             )
 
         data = response["HilltopServer"]
-
-        if "Error" in data:
-            raise HilltopResponseError(
-                f"Hilltop SiteList error: {response['Error']}",
-                raw_response=xml_str,
-            )
 
         if "Site" in data:
             if not isinstance(data["Site"], list):

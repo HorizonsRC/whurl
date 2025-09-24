@@ -17,7 +17,8 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
         from pathlib import Path
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests.collection_list import CollectionListRequest
+        from whurl.schemas.requests.collection_list import \
+            CollectionListRequest
 
         path = (
             Path(__file__).parent.parent.parent
@@ -38,11 +39,13 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
             ).gen_url()
             cached_xml = remote_client.session.get(cached_url).text
             path.write_text(cached_xml, encoding="utf-8")
-        
+
         # Skip gracefully if fixture cache file doesn't exist in offline mode
         if not path.exists():
-            pytest.skip(f"Fixture cache file not found: {path.name}. Use --update flag to populate from remote API.")
-        
+            pytest.skip(
+                f"Fixture cache file not found: {path.name}. Use --update flag to populate from remote API."
+            )
+
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
 
@@ -88,7 +91,8 @@ class TestRemoteFixtures:
         """Test that the basic response XML fixture is loaded correctly."""
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests.collection_list import CollectionListRequest
+        from whurl.schemas.requests.collection_list import \
+            CollectionListRequest
 
         # Generate the URL for the remote request.
         remote_url = CollectionListRequest(
@@ -112,7 +116,8 @@ class TestResponseValidation:
         """Validate the response XML against the CollectionListResponse schema with mocked data."""
 
         from whurl.client import HilltopClient
-        from whurl.schemas.requests.collection_list import CollectionListRequest
+        from whurl.schemas.requests.collection_list import \
+            CollectionListRequest
         from whurl.schemas.responses.collection_list import \
             CollectionListResponse
 
@@ -167,7 +172,8 @@ class TestResponseValidation:
         """Validate the response XML against the CollectionListResponse schema with cached data."""
 
         from whurl.client import HilltopClient
-        from whurl.schemas.requests.collection_list import CollectionListRequest
+        from whurl.schemas.requests.collection_list import \
+            CollectionListRequest
         from whurl.schemas.responses.collection_list import \
             CollectionListResponse
 
@@ -213,3 +219,39 @@ class TestResponseValidation:
                 assert isinstance(item.site_name, str)
                 assert isinstance(item.measurement, str | None)
                 assert isinstance(item.filename, str | None)
+
+    @pytest.mark.unit
+    async def test_collection_list_with_async_client_unit(
+        self, httpx_mock, basic_response_xml_mocked
+    ):
+        """Validate the response XML using AsyncHilltopClient."""
+
+        from whurl.client import AsyncHilltopClient
+        from whurl.schemas.requests.collection_list import \
+            CollectionListRequest
+        from whurl.schemas.responses.collection_list import \
+            CollectionListResponse
+
+        base_url = "http://example.com"
+        hts_endpoint = "foo.hts"
+
+        test_url = CollectionListRequest(
+            base_url=base_url,
+            hts_endpoint=hts_endpoint,
+        ).gen_url()
+
+        httpx_mock.add_response(
+            url=test_url,
+            method="GET",
+            text=basic_response_xml_mocked,
+        )
+
+        async with AsyncHilltopClient(
+            base_url=base_url,
+            hts_endpoint=hts_endpoint,
+        ) as client:
+            result = await client.get_collection_list()
+
+        # Base Model
+        assert isinstance(result, CollectionListResponse)
+        assert result.title == "Test Project"
