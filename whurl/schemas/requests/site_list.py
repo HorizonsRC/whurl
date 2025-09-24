@@ -1,4 +1,8 @@
-"""Hilltop SiteList request parameters."""
+"""Hilltop SiteList request parameters.
+
+This module defines the request model for retrieving lists of sites from
+Hilltop Server with various filtering and location options.
+"""
 
 from pydantic import Field, field_validator, model_validator
 
@@ -8,7 +12,32 @@ from whurl.schemas.mixins import ModelReprMixin
 
 
 class SiteListRequest(BaseHilltopRequest):
-    """Request parameters for Hilltop SiteList."""
+    """Request parameters for Hilltop SiteList endpoint.
+    
+    This request type retrieves a list of monitoring sites with optional
+    filtering by location, bounding box, measurements, and other criteria.
+    
+    Parameters
+    ----------
+    request : str, default "SiteList"
+        Fixed request type for site list queries.
+    location : str, optional
+        Location format ("Yes" for easting/northing, "LatLong" for lat/long).
+    bounding_box : str, optional
+        Geographic bounding box for spatial filtering.
+    measurement : str, optional
+        Filter sites by available measurement type.
+    collection : str, optional
+        Filter sites by data collection name.
+    site_parameters : str, optional
+        Request additional site parameter information.
+    target : str, optional
+        Response format ("HtmlSelect" for JSON, default is XML).
+    syn_level : str, optional
+        Synchronization level (1 or 2) when target is "HtmlSelect".
+    fill_cols : str, optional
+        Fill column data ("Yes") when site_parameters provided.
+    """
 
     request: str = Field(default="SiteList", serialization_alias="Request")
     location: str | None = Field(default=None, serialization_alias="Location")
@@ -24,21 +53,48 @@ class SiteListRequest(BaseHilltopRequest):
 
     @field_validator("request", mode="before")
     def validate_request(cls, value):
-        """Validate the request parameter."""
+        """Validate the request parameter is 'SiteList'.
+        
+        Parameters
+        ----------
+        value : str
+            The request type to validate.
+            
+        Returns
+        -------
+        str
+            The validated request type.
+            
+        Raises
+        ------
+        ValueError
+            If the request type is not 'SiteList'.
+        """
         if value != "SiteList":
             raise ValueError("Request must be 'SiteList'")
         return value
 
     @field_validator("location", mode="before")
     def validate_location(cls, value):
-        """
-        Validate the location parameter.
+        """Validate the location parameter format.
 
-        Acceptable values are 'Yes', 'LatLong', or None.
-
-        'Yes': Provide location in easting and northing format.
-        'LatLong': Provide location in latitude and longitude format (NZGD2000).
-
+        Acceptable values are 'Yes' for easting/northing coordinates,
+        'LatLong' for latitude/longitude in NZGD2000, or None.
+        
+        Parameters
+        ----------
+        value : str or None
+            The location format specifier to validate.
+            
+        Returns
+        -------
+        str or None
+            The validated location format.
+            
+        Raises
+        ------
+        HilltopRequestError
+            If the location format is not supported.
         """
         if value not in ["Yes", "LatLong", None]:
             raise HilltopRequestError("Location must be 'Yes', 'LatLong', or None")

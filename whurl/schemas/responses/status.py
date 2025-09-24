@@ -1,4 +1,8 @@
-"""Hilltop Status response schema."""
+"""Hilltop Status response schema.
+
+This module defines the response models for parsing Hilltop Server status
+information returned by the Status API endpoint.
+"""
 
 from __future__ import annotations
 
@@ -11,10 +15,53 @@ from whurl.schemas.requests import StatusRequest
 
 
 class StatusResponse(ModelReprMixin, BaseModel):
-    """Represents the status of a Hilltop server."""
+    """Represents the status response from a Hilltop server.
+    
+    This model contains information about the server's current state,
+    including version details, data files, and system metrics.
+    
+    Attributes
+    ----------
+    agency : str, optional
+        The agency operating the Hilltop server.
+    version : str, optional
+        The Hilltop server version number.
+    script_name : str, optional
+        The name of the server script/endpoint.
+    default_file : str, optional
+        The default data file being served.
+    relay_url : str, optional
+        URL for relayed requests, if configured.
+    process_id : int, optional
+        The server process identifier.
+    working_set : float, optional
+        Memory working set size in MB.
+    data_files : list of DataFile, optional
+        List of data files available on the server.
+    request : StatusRequest, optional
+        The original request that generated this response (excluded from output).
+    """
 
     class DataFile(ModelReprMixin, BaseModel):
-        """Represents a Hilltop data file."""
+        """Represents a Hilltop data file.
+        
+        Contains information about individual data files managed by
+        the Hilltop server, including usage statistics and refresh
+        information.
+        
+        Attributes
+        ----------
+        filename : str
+            The name of the data file.
+        usage_count : int, optional
+            Number of times the file has been accessed.
+        open_for : int, optional
+            Duration the file has been open (in seconds).
+        full_refresh : int, optional
+            Timestamp of last full refresh.
+        soft_refresh : int, optional
+            Timestamp of last soft refresh.
+        """
 
         filename: str = Field(alias="Filename")
         usage_count: int | None = Field(alias="UsageCount", default=None)
@@ -34,7 +81,21 @@ class StatusResponse(ModelReprMixin, BaseModel):
 
     @field_validator("data_files", mode="before")
     def validate_data_files(cls, value) -> list["StatusResponse.DataFile"]:
-        """Ensure data_files is a list of DataFile objects."""
+        """Ensure data_files is a list of DataFile objects.
+        
+        Handles both single DataFile dictionaries and lists of DataFile
+        dictionaries from the XML parsing process.
+        
+        Parameters
+        ----------
+        value : dict or list or None
+            The data files value from XML parsing.
+            
+        Returns
+        -------
+        list of DataFile
+            List of DataFile model instances.
+        """
         if value is None:
             return []
         if isinstance(value, dict):
@@ -42,12 +103,38 @@ class StatusResponse(ModelReprMixin, BaseModel):
         return [cls.DataFile(**item) for item in value]
 
     def to_dict(self):
-        """Convert the model to a dictionary."""
+        """Convert the model to a dictionary representation.
+        
+        Returns
+        -------
+        dict
+            Dictionary representation of the status response with unset
+            values excluded and using field aliases.
+        """
         return self.model_dump(exclude_unset=True, by_alias=True)
 
     @classmethod
     def from_xml(cls, xml_str: str) -> "StatusResponse":
-        """Parse the XML string and return a StatusReponse object."""
+        """Parse XML string and return a StatusResponse object.
+        
+        Converts the XML response from Hilltop Server into a structured
+        StatusResponse model with proper validation and type conversion.
+        
+        Parameters
+        ----------
+        xml_str : str
+            The XML string returned by the Hilltop server.
+            
+        Returns
+        -------
+        StatusResponse
+            Parsed and validated status response model.
+            
+        Raises
+        ------
+        HilltopParseError
+            If the XML is invalid or missing required HilltopServer root element.
+        """
         response = xmltodict.parse(xml_str)
 
         if "HilltopServer" not in response:

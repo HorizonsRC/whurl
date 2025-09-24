@@ -1,4 +1,8 @@
-"""Request models for HilltopServer API."""
+"""Request models for HilltopServer API.
+
+This package provides Pydantic models for validating and constructing
+requests to various Hilltop Server API endpoints.
+"""
 
 __author__ = """Nic Mostert"""
 __email__ = "nicolas.mostert@horizons.govt.nz"

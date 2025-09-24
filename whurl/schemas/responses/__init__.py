@@ -1,4 +1,8 @@
-"""Response models for HilltopServer API."""
+"""Response models for HilltopServer API.
+
+This package provides Pydantic models for parsing and validating
+responses from various Hilltop Server API endpoints.
+"""
 
 __author__ = """Nic Mostert"""
 __email__ = "nicolas.mostert@horizons.govt.nz"
