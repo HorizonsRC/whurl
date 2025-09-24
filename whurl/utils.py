@@ -14,34 +14,34 @@ def validate_hilltop_interval_notation(value: str) -> str:
 
     Validates time interval strings according to Hilltop Server requirements.
     Accepts formats like "2.5 minutes", "1 hour", or just "30" (for seconds).
-    
+
     From the Hilltop documentation: Set an interval by entering a value and
     its units with a space between the number and units. Valid units are
     seconds, minutes, hours, days, months and years. The default units are
     seconds, so units are not required if your interval is in seconds.
-    
+
     Parameters
     ----------
     value : str
         The interval notation string to validate.
-        
+
     Returns
     -------
     str
         The validated interval notation string.
-        
+
     Raises
     ------
     HilltopRequestError
         If the interval notation format is invalid or uses unsupported units.
-        
+
     Examples
     --------
     >>> validate_hilltop_interval_notation("1 hour")
     '1 hour'
     >>> validate_hilltop_interval_notation("30")
     '30'
-    >>> validate_hilltop_interval_notation("2.5 minutes") 
+    >>> validate_hilltop_interval_notation("2.5 minutes")
     '2.5 minutes'
     """
     if isinstance(value, str):
@@ -109,20 +109,20 @@ def validate_hilltop_interval_notation(value: str) -> str:
 
 def sanitise_xml_attributes(xml_str: str) -> str:
     """Sanitise XML attributes by escaping special characters.
-    
+
     Escapes special XML characters (&, <, >, ") in attribute values to prevent
     XML parsing errors and ensure well-formed XML documents.
-    
+
     Parameters
     ----------
     xml_str : str
         The XML string containing attributes to sanitise.
-        
+
     Returns
     -------
     str
         The XML string with sanitised attribute values.
-        
+
     Examples
     --------
     >>> sanitise_xml_attributes('name="value with & < > characters"')

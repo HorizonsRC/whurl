@@ -33,7 +33,7 @@ class ModelReprMixin:
 
     def _get_repr_include_unset(self) -> Set[str]:
         """Get the set of fields that should always be included in repr.
-        
+
         Returns
         -------
         Set[str]
@@ -149,7 +149,7 @@ class ModelReprMixin:
 
     def __repr__(self) -> str:
         """Return YAML-style representation of the model.
-        
+
         Returns
         -------
         str
@@ -159,11 +159,10 @@ class ModelReprMixin:
 
     def __str__(self) -> str:
         """Return YAML-style string representation of the model.
-        
+
         Returns
         -------
         str
             YAML-formatted string representation of the model.
         """
         return self._to_yaml()
-

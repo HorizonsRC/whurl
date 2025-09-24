@@ -13,10 +13,10 @@ from whurl.exceptions import HilltopRequestError
 
 class StatusRequest(BaseHilltopRequest):
     """Request parameters for Hilltop server status information.
-    
+
     This request type retrieves basic information about the Hilltop Server
     including version, process ID, data files, and system status.
-    
+
     Parameters
     ----------
     request : str, default "Status"
@@ -28,17 +28,17 @@ class StatusRequest(BaseHilltopRequest):
     @field_validator("request", mode="before")
     def validate_request(cls, value):
         """Validate the request parameter is 'Status'.
-        
+
         Parameters
         ----------
         value : str
             The request type to validate.
-            
+
         Returns
         -------
         str
             The validated request type.
-            
+
         Raises
         ------
         HilltopRequestError

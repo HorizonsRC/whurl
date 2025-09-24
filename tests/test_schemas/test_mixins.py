@@ -16,11 +16,9 @@ class TestModelReprMixin:
     def test_header_appears_in_repr(self):
         """Test that the model name appears as a header in the repr."""
         request = GetDataRequest(
-            base_url="https://example.com",
-            hts_endpoint="test.hts",
-            site="Test Site"
+            base_url="https://example.com", hts_endpoint="test.hts", site="Test Site"
         )
-        
+
         repr_str = str(request)
         assert repr_str.startswith("GetDataRequest:")
         assert "base_url: https://example.com" in repr_str
@@ -30,22 +28,22 @@ class TestModelReprMixin:
         """Test that the output is valid YAML."""
         request = GetDataRequest(
             base_url="https://example.com",
-            hts_endpoint="test.hts", 
+            hts_endpoint="test.hts",
             site="Test Site",
-            measurement="Flow"
+            measurement="Flow",
         )
-        
+
         repr_str = str(request)
-        
+
         # Should be parseable as YAML
         parsed = yaml.safe_load(repr_str)
         assert isinstance(parsed, dict)
         assert "GetDataRequest" in parsed
-        
+
         # Check that important fields are present
         request_data = parsed["GetDataRequest"]
         assert request_data["base_url"] == "https://example.com"
-        assert request_data["site"] == "Test Site" 
+        assert request_data["site"] == "Test Site"
         assert request_data["measurement"] == "Flow"
 
     def test_none_values_excluded(self):
@@ -55,9 +53,9 @@ class TestModelReprMixin:
             hts_endpoint="test.hts",
             site="Test Site",
             measurement=None,  # This should be excluded
-            from_datetime="2023-01-01T00:00:00"
+            from_datetime="2023-01-01T00:00:00",
         )
-        
+
         repr_str = str(request)
         assert "measurement:" not in repr_str
         assert "from_datetime: '2023-01-01T00:00:00'" in repr_str
@@ -82,21 +80,18 @@ class TestModelReprMixin:
                                 "ItemName": "Flow",
                                 "ItemFormat": "F2",
                                 "Units": "m³/s",
-                                "Format": "F"
+                                "Format": "F",
                             }
-                        ]
+                        ],
                     },
-                    "Data": {
-                        "@DateFormat": "Calendar", 
-                        "@NumItems": "0"
-                    }
+                    "Data": {"@DateFormat": "Calendar", "@NumItems": "0"},
                 }
-            ]
+            ],
         }
-        
+
         response = GetDataResponse(**sample_data)
         repr_str = str(response)
-        
+
         # Should contain nested structure with proper indentation
         assert "GetDataResponse:" in repr_str
         assert "measurement:" in repr_str
@@ -106,21 +101,22 @@ class TestModelReprMixin:
 
     def test_repr_include_unset_functionality(self):
         """Test the repr_include_unset functionality."""
-        
+
         class TestModel(ModelReprMixin, BaseModel):
             """Test model with repr_include_unset defined."""
+
             repr_include_unset: ClassVar[Set[str]] = {"important_field"}
-            
+
             name: str
             optional_field: str = None
             important_field: str = None
-        
+
         model = TestModel(name="test")
         repr_str = str(model)
-        
+
         # optional_field should be excluded (None and not in repr_include_unset)
         assert "optional_field:" not in repr_str
-        
+
         # important_field should be included (in repr_include_unset)
         assert "important_field: null" in repr_str or "important_field:" in repr_str
 
@@ -133,23 +129,23 @@ class TestModelReprMixin:
                     "@SiteName": "Test Site",
                     "DataSource": {
                         "@Name": "Test DataSource",
-                        "@NumItems": "1", 
+                        "@NumItems": "1",
                         "TSType": "StdSeries",
                         "DataType": "Flow",
-                        "Interpolation": "Discrete"
+                        "Interpolation": "Discrete",
                     },
                     "Data": {
                         "@DateFormat": "Calendar",
                         "@NumItems": "1",
-                        "E": [{"T": "2023-01-01T00:00:00", "I1": "10.5"}]
-                    }
+                        "E": [{"T": "2023-01-01T00:00:00", "I1": "10.5"}],
+                    },
                 }
-            ]
+            ],
         }
-        
+
         response = GetDataResponse(**sample_data)
         repr_str = str(response)
-        
+
         # Should contain DataFrame summary, not raw data
         assert "timeseries: '<DataFrame:" in repr_str
         assert "rows × " in repr_str

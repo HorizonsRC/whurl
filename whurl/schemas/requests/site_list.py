@@ -13,10 +13,10 @@ from whurl.schemas.mixins import ModelReprMixin
 
 class SiteListRequest(BaseHilltopRequest):
     """Request parameters for Hilltop SiteList endpoint.
-    
+
     This request type retrieves a list of monitoring sites with optional
     filtering by location, bounding box, measurements, and other criteria.
-    
+
     Parameters
     ----------
     request : str, default "SiteList"
@@ -54,17 +54,17 @@ class SiteListRequest(BaseHilltopRequest):
     @field_validator("request", mode="before")
     def validate_request(cls, value):
         """Validate the request parameter is 'SiteList'.
-        
+
         Parameters
         ----------
         value : str
             The request type to validate.
-            
+
         Returns
         -------
         str
             The validated request type.
-            
+
         Raises
         ------
         ValueError
@@ -80,17 +80,17 @@ class SiteListRequest(BaseHilltopRequest):
 
         Acceptable values are 'Yes' for easting/northing coordinates,
         'LatLong' for latitude/longitude in NZGD2000, or None.
-        
+
         Parameters
         ----------
         value : str or None
             The location format specifier to validate.
-            
+
         Returns
         -------
         str or None
             The validated location format.
-            
+
         Raises
         ------
         HilltopRequestError

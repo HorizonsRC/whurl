@@ -14,34 +14,43 @@ import httpx
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-from whurl.exceptions import (HilltopConfigError, HilltopParseError,
-                              HilltopResponseError)
-from whurl.schemas.requests import (CollectionListRequest, GetDataRequest,
-                                    MeasurementListRequest, SiteInfoRequest,
-                                    SiteListRequest, StatusRequest,
-                                    TimeRangeRequest)
-from whurl.schemas.responses import (CollectionListResponse, GetDataResponse,
-                                     MeasurementListResponse, SiteInfoResponse,
-                                     SiteListResponse, StatusResponse,
-                                     TimeRangeResponse)
+from whurl.exceptions import HilltopConfigError, HilltopParseError, HilltopResponseError
+from whurl.schemas.requests import (
+    CollectionListRequest,
+    GetDataRequest,
+    MeasurementListRequest,
+    SiteInfoRequest,
+    SiteListRequest,
+    StatusRequest,
+    TimeRangeRequest,
+)
+from whurl.schemas.responses import (
+    CollectionListResponse,
+    GetDataResponse,
+    MeasurementListResponse,
+    SiteInfoResponse,
+    SiteListResponse,
+    StatusResponse,
+    TimeRangeResponse,
+)
 
 load_dotenv()
 
 
 class HilltopClient:
     """A client for interacting with Hilltop Server.
-    
+
     This client provides methods for making requests to Hilltop Server APIs,
     including status checks, site listings, measurement data retrieval, and
     more. It handles request validation, response parsing, and proper resource
     management.
-    
+
     Parameters
     ----------
     base_url : str, optional
         Base URL for the Hilltop server. If not provided, uses
         HILLTOP_BASE_URL environment variable.
-    hts_endpoint : str, optional  
+    hts_endpoint : str, optional
         HTS endpoint path (e.g., 'data.hts'). If not provided, uses
         HILLTOP_HTS_ENDPOINT environment variable.
     timeout : int, default 60
@@ -54,12 +63,12 @@ class HilltopClient:
         Whether to enable HTTP/2 support.
     verify_ssl : bool, default False
         Whether to verify SSL certificates.
-        
+
     Raises
     ------
     HilltopConfigError
         If required configuration (base_url or hts_endpoint) is not provided.
-        
+
     Examples
     --------
     >>> with HilltopClient() as client:
@@ -109,12 +118,12 @@ class HilltopClient:
 
     def _validate_response(self, response: httpx.Response) -> None:
         """Validate HTTP response and raise HilltopResponseError if unsuccessful.
-        
+
         Parameters
         ----------
         response : httpx.Response
             HTTP response object to validate.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -132,17 +141,17 @@ class HilltopClient:
 
     def get_collection_list(self, **kwargs) -> CollectionListResponse:
         """Fetch the collection list from Hilltop Server.
-        
+
         Parameters
         ----------
         **kwargs
             Additional request parameters passed to CollectionListRequest.
-            
+
         Returns
         -------
         CollectionListResponse
             Parsed response containing collection information.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -163,20 +172,20 @@ class HilltopClient:
 
     def get_data(self, **kwargs) -> GetDataResponse:
         """Fetch measurement data from Hilltop Server.
-        
+
         Parameters
         ----------
         **kwargs
             Request parameters passed to GetDataRequest. Common parameters
             include site, measurement, from_datetime, to_datetime, interval,
             method, and format.
-            
+
         Returns
         -------
         GetDataResponse
             Parsed response containing measurement data with optional
             pandas DataFrame.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -197,18 +206,18 @@ class HilltopClient:
 
     def get_measurement_list(self, **kwargs) -> MeasurementListResponse:
         """Fetch the measurement list from Hilltop Server.
-        
+
         Parameters
         ----------
         **kwargs
             Additional request parameters passed to MeasurementListRequest.
             Common parameters include site and collection.
-            
+
         Returns
         -------
         MeasurementListResponse
             Parsed response containing available measurements for sites.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -230,19 +239,19 @@ class HilltopClient:
 
     def get_site_info(self, **kwargs) -> SiteInfoResponse:
         """Fetch detailed information about a specific site from Hilltop Server.
-        
+
         Parameters
         ----------
         **kwargs
             Additional request parameters passed to SiteInfoRequest.
             The 'site' parameter is typically required.
-            
+
         Returns
         -------
         SiteInfoResponse
             Parsed response containing detailed site information including
             location, parameters, and metadata.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -263,20 +272,20 @@ class HilltopClient:
 
     def get_site_list(self, **kwargs) -> SiteListResponse:
         """Fetch the site list from Hilltop Server.
-        
+
         Parameters
         ----------
         **kwargs
             Additional request parameters passed to SiteListRequest. Common
             parameters include location, bounding_box, measurement, and
             collection.
-            
+
         Returns
         -------
         SiteListResponse
             Parsed response containing list of available sites with their
             basic information.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -297,18 +306,18 @@ class HilltopClient:
 
     def get_status(self, **kwargs) -> StatusResponse:
         """Fetch the server status from Hilltop Server.
-        
+
         Parameters
         ----------
         **kwargs
             Additional request parameters passed to StatusRequest.
-            
+
         Returns
         -------
         StatusResponse
             Parsed response containing server status information including
             version, data files, and system information.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -330,19 +339,19 @@ class HilltopClient:
 
     def get_time_range(self, **kwargs) -> TimeRangeResponse:
         """Fetch the available time range for measurements from Hilltop Server.
-        
+
         Parameters
         ----------
         **kwargs
             Additional request parameters passed to TimeRangeRequest.
             Common parameters include site and measurement.
-            
+
         Returns
         -------
         TimeRangeResponse
             Parsed response containing the earliest and latest available
             data timestamps for the specified measurements.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -367,7 +376,7 @@ class HilltopClient:
 
     def __enter__(self):
         """Enter the runtime context for use with 'with' statement.
-        
+
         Returns
         -------
         HilltopClient
@@ -377,7 +386,7 @@ class HilltopClient:
 
     def __exit__(self, exc_type, exc_value, traceback):
         """Exit the runtime context and clean up resources.
-        
+
         Parameters
         ----------
         exc_type : type, optional
@@ -392,18 +401,18 @@ class HilltopClient:
 
 class AsyncHilltopClient:
     """An asynchronous client for interacting with Hilltop Server.
-    
+
     This async client provides methods for making concurrent requests to
     Hilltop Server APIs. It supports the same operations as HilltopClient
     but with async/await syntax for improved performance in concurrent
     applications.
-    
+
     Parameters
     ----------
     base_url : str, optional
         Base URL for the Hilltop server. If not provided, uses
         HILLTOP_BASE_URL environment variable.
-    hts_endpoint : str, optional  
+    hts_endpoint : str, optional
         HTS endpoint path (e.g., 'data.hts'). If not provided, uses
         HILLTOP_HTS_ENDPOINT environment variable.
     timeout : int, default 60
@@ -416,12 +425,12 @@ class AsyncHilltopClient:
         Whether to enable HTTP/2 support.
     verify_ssl : bool, default False
         Whether to verify SSL certificates.
-        
+
     Raises
     ------
     HilltopConfigError
         If required configuration (base_url or hts_endpoint) is not provided.
-        
+
     Examples
     --------
     >>> async with AsyncHilltopClient() as client:
@@ -471,12 +480,12 @@ class AsyncHilltopClient:
 
     async def _validate_response(self, response: httpx.Response) -> None:
         """Validate HTTP response and raise HilltopResponseError if unsuccessful.
-        
+
         Parameters
         ----------
         response : httpx.Response
             HTTP response object to validate.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -494,17 +503,17 @@ class AsyncHilltopClient:
 
     async def get_collection_list(self, **kwargs) -> CollectionListResponse:
         """Fetch the collection list from Hilltop Server asynchronously.
-        
+
         Parameters
         ----------
         **kwargs
             Additional request parameters passed to CollectionListRequest.
-            
+
         Returns
         -------
         CollectionListResponse
             Parsed response containing collection information.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -525,20 +534,20 @@ class AsyncHilltopClient:
 
     async def get_data(self, **kwargs) -> GetDataResponse:
         """Fetch measurement data from Hilltop Server asynchronously.
-        
+
         Parameters
         ----------
         **kwargs
             Request parameters passed to GetDataRequest. Common parameters
             include site, measurement, from_datetime, to_datetime, interval,
             method, and format.
-            
+
         Returns
         -------
         GetDataResponse
             Parsed response containing measurement data with optional
             pandas DataFrame.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -559,18 +568,18 @@ class AsyncHilltopClient:
 
     async def get_measurement_list(self, **kwargs) -> MeasurementListResponse:
         """Fetch the measurement list from Hilltop Server asynchronously.
-        
+
         Parameters
         ----------
         **kwargs
             Additional request parameters passed to MeasurementListRequest.
             Common parameters include site and collection.
-            
+
         Returns
         -------
         MeasurementListResponse
             Parsed response containing available measurements for sites.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -592,19 +601,19 @@ class AsyncHilltopClient:
 
     async def get_site_info(self, **kwargs) -> SiteInfoResponse:
         """Fetch detailed information about a site from Hilltop Server asynchronously.
-        
+
         Parameters
         ----------
         **kwargs
             Additional request parameters passed to SiteInfoRequest.
             The 'site' parameter is typically required.
-            
+
         Returns
         -------
         SiteInfoResponse
             Parsed response containing detailed site information including
             location, parameters, and metadata.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -625,20 +634,20 @@ class AsyncHilltopClient:
 
     async def get_site_list(self, **kwargs) -> SiteListResponse:
         """Fetch the site list from Hilltop Server asynchronously.
-        
+
         Parameters
         ----------
         **kwargs
             Additional request parameters passed to SiteListRequest. Common
             parameters include location, bounding_box, measurement, and
             collection.
-            
+
         Returns
         -------
         SiteListResponse
             Parsed response containing list of available sites with their
             basic information.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -659,18 +668,18 @@ class AsyncHilltopClient:
 
     async def get_status(self, **kwargs) -> StatusResponse:
         """Fetch the server status from Hilltop Server asynchronously.
-        
+
         Parameters
         ----------
         **kwargs
             Additional request parameters passed to StatusRequest.
-            
+
         Returns
         -------
         StatusResponse
             Parsed response containing server status information including
             version, data files, and system information.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -692,19 +701,19 @@ class AsyncHilltopClient:
 
     async def get_time_range(self, **kwargs) -> TimeRangeResponse:
         """Fetch available time range for measurements from Hilltop Server asynchronously.
-        
+
         Parameters
         ----------
         **kwargs
             Additional request parameters passed to TimeRangeRequest.
             Common parameters include site and measurement.
-            
+
         Returns
         -------
         TimeRangeResponse
             Parsed response containing the earliest and latest available
             data timestamps for the specified measurements.
-            
+
         Raises
         ------
         HilltopResponseError
@@ -729,7 +738,7 @@ class AsyncHilltopClient:
 
     async def __aenter__(self):
         """Enter the async runtime context for use with 'async with' statement.
-        
+
         Returns
         -------
         AsyncHilltopClient
@@ -739,7 +748,7 @@ class AsyncHilltopClient:
 
     async def __aexit__(self, exc_type, exc_value, traceback):
         """Exit the async runtime context and clean up resources.
-        
+
         Parameters
         ----------
         exc_type : type, optional

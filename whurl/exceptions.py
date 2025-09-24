@@ -7,10 +7,10 @@ conditions that can occur when interacting with Hilltop Server APIs.
 
 class HilltopError(Exception):
     """Base exception for all Hilltop-related errors.
-    
+
     This is the base exception class that all other Hilltop-specific
     exceptions inherit from. Use this to catch any Hilltop-related error.
-    
+
     Parameters
     ----------
     message : str, default "Hilltop API error"
@@ -24,17 +24,17 @@ class HilltopError(Exception):
 
 class HilltopRequestError(HilltopError):
     """Exception for malformed Hilltop API request.
-    
+
     Raised when request validation fails, such as invalid parameters,
     malformed URLs, or unsupported request types.
-    
+
     Parameters
     ----------
     message : str
         Human-readable error message describing the validation failure.
     url : str, optional
         The URL that caused the error, if available.
-        
+
     Attributes
     ----------
     url : str or None
@@ -53,10 +53,10 @@ class HilltopRequestError(HilltopError):
 
 class HilltopResponseError(HilltopError):
     """Exception for Hilltop HTTP response errors.
-    
+
     Raised when the server returns an HTTP error status code or when
     the response content indicates an error condition.
-    
+
     Parameters
     ----------
     message : str
@@ -65,7 +65,7 @@ class HilltopResponseError(HilltopError):
         The URL that caused the error, if available.
     raw_response : str, optional
         The raw response content from the server.
-        
+
     Attributes
     ----------
     url : str or None
@@ -91,10 +91,10 @@ class HilltopResponseError(HilltopError):
 
 class HilltopParseError(HilltopError):
     """Exception for response parsing failures.
-    
+
     Raised when the XML or JSON response from the server cannot be parsed
     or does not conform to the expected structure.
-    
+
     Parameters
     ----------
     message : str
@@ -103,7 +103,7 @@ class HilltopParseError(HilltopError):
         The URL that generated the unparseable response, if available.
     raw_response : str, optional
         The raw response content that could not be parsed.
-        
+
     Attributes
     ----------
     url : str or None
@@ -129,10 +129,10 @@ class HilltopParseError(HilltopError):
 
 class HilltopConfigError(HilltopError):
     """Exception for configuration issues.
-    
+
     Raised when required configuration parameters are missing or invalid,
     such as missing environment variables or invalid client settings.
-    
+
     Parameters
     ----------
     message : str, default "Hilltop configuration error"

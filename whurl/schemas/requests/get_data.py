@@ -19,10 +19,10 @@ from whurl.utils import validate_hilltop_interval_notation
 
 class GetDataRequest(BaseHilltopRequest):
     """Request parameters for Hilltop GetData endpoint.
-    
+
     This request type retrieves measurement data from specific sites with
     options for time filtering, statistical processing, and output formatting.
-    
+
     Parameters
     ----------
     request : str, default "GetData"

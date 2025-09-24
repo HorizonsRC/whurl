@@ -88,7 +88,9 @@ class MeasurementListResponse(ModelReprMixin, BaseModel):
 
     agency: str | None = Field(alias="Agency", default=None)
     data_sources: list["DataSource"] = Field(alias="DataSource", default_factory=list)
-    measurements: list["DataSource.Measurement"] = Field(alias="Measurement", default_factory=list)
+    measurements: list["DataSource.Measurement"] = Field(
+        alias="Measurement", default_factory=list
+    )
     error: str | None = Field(alias="Error", default=None)
     request: MeasurementListRequest | None = Field(default=None, exclude=True)
 

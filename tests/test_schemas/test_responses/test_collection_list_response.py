@@ -17,8 +17,7 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
         from pathlib import Path
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests.collection_list import \
-            CollectionListRequest
+        from whurl.schemas.requests.collection_list import CollectionListRequest
 
         path = (
             Path(__file__).parent.parent.parent
@@ -91,8 +90,7 @@ class TestRemoteFixtures:
         """Test that the basic response XML fixture is loaded correctly."""
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests.collection_list import \
-            CollectionListRequest
+        from whurl.schemas.requests.collection_list import CollectionListRequest
 
         # Generate the URL for the remote request.
         remote_url = CollectionListRequest(
@@ -116,10 +114,8 @@ class TestResponseValidation:
         """Validate the response XML against the CollectionListResponse schema with mocked data."""
 
         from whurl.client import HilltopClient
-        from whurl.schemas.requests.collection_list import \
-            CollectionListRequest
-        from whurl.schemas.responses.collection_list import \
-            CollectionListResponse
+        from whurl.schemas.requests.collection_list import CollectionListRequest
+        from whurl.schemas.responses.collection_list import CollectionListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -172,10 +168,8 @@ class TestResponseValidation:
         """Validate the response XML against the CollectionListResponse schema with cached data."""
 
         from whurl.client import HilltopClient
-        from whurl.schemas.requests.collection_list import \
-            CollectionListRequest
-        from whurl.schemas.responses.collection_list import \
-            CollectionListResponse
+        from whurl.schemas.requests.collection_list import CollectionListRequest
+        from whurl.schemas.responses.collection_list import CollectionListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
@@ -227,10 +221,8 @@ class TestResponseValidation:
         """Validate the response XML using AsyncHilltopClient."""
 
         from whurl.client import AsyncHilltopClient
-        from whurl.schemas.requests.collection_list import \
-            CollectionListRequest
-        from whurl.schemas.responses.collection_list import \
-            CollectionListResponse
+        from whurl.schemas.requests.collection_list import CollectionListRequest
+        from whurl.schemas.responses.collection_list import CollectionListResponse
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"

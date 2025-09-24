@@ -73,9 +73,7 @@ class SiteInfoResponse(ModelReprMixin, BaseModel):
         if not self.site:
             raise HilltopParseError("No site data available in the response.")
 
-        df = pd.DataFrame(
-            {site.name: site.info for site in self.site}
-        )
+        df = pd.DataFrame({site.name: site.info for site in self.site})
 
         return df
 

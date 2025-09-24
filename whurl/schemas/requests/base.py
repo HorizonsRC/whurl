@@ -1,4 +1,3 @@
-
 """Validation models for Hilltop request parameters.
 
 This module provides the base request model and common validation logic
@@ -15,18 +14,18 @@ from whurl.schemas.mixins import ModelReprMixin
 
 class BaseHilltopRequest(ModelReprMixin, BaseModel):
     """Base model for Hilltop request parameters.
-    
+
     This class provides common fields and validation logic shared by all
     Hilltop API request types. It handles URL generation and parameter
     serialization according to Hilltop Server requirements.
-    
+
     Parameters
     ----------
     base_url : str, default "http://example.com"
         Base URL for the Hilltop server.
     hts_endpoint : str, default "foo.hts"
         HTS endpoint filename (must end with '.hts').
-    service : str, default "Hilltop"  
+    service : str, default "Hilltop"
         Service name for the API request.
     request : str, default "Status"
         Request type identifier.
@@ -52,17 +51,17 @@ class BaseHilltopRequest(ModelReprMixin, BaseModel):
     @field_validator("base_url", mode="before")
     def validate_base_url(cls, value):
         """Validate the base URL format.
-        
+
         Parameters
         ----------
         value : str
             The base URL to validate.
-            
+
         Returns
         -------
         str
             The validated base URL.
-            
+
         Raises
         ------
         HilltopRequestError
@@ -76,17 +75,17 @@ class BaseHilltopRequest(ModelReprMixin, BaseModel):
     @field_validator("hts_endpoint", mode="before")
     def validate_hts_endpoint(cls, value):
         """Validate the HTS endpoint filename.
-        
+
         Parameters
         ----------
         value : str
             The HTS endpoint filename to validate.
-            
+
         Returns
         -------
         str
             The validated HTS endpoint filename.
-            
+
         Raises
         ------
         HilltopRequestError
@@ -99,17 +98,17 @@ class BaseHilltopRequest(ModelReprMixin, BaseModel):
     @field_validator("service", mode="before")
     def validate_service(cls, value):
         """Validate the service name.
-        
+
         Parameters
         ----------
         value : str
             The service name to validate.
-            
+
         Returns
         -------
         str
             The validated service name.
-            
+
         Raises
         ------
         HilltopRequestError
@@ -131,17 +130,17 @@ class BaseHilltopRequest(ModelReprMixin, BaseModel):
     @field_validator("request", mode="before")
     def validate_request(cls, value):
         """Validate the request type name.
-        
+
         Parameters
         ----------
         value : str
             The request type name to validate.
-            
+
         Returns
         -------
         str
             The validated request type name.
-            
+
         Raises
         ------
         HilltopRequestError
@@ -158,11 +157,11 @@ class BaseHilltopRequest(ModelReprMixin, BaseModel):
 
     def gen_url(self) -> str:
         """Generate the complete URL for the Hilltop request.
-        
+
         Combines the base URL, HTS endpoint, and request parameters into
         a properly formatted URL suitable for making HTTP requests to
         the Hilltop Server.
-        
+
         Returns
         -------
         str

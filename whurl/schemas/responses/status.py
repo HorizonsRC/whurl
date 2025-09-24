@@ -16,10 +16,10 @@ from whurl.schemas.requests import StatusRequest
 
 class StatusResponse(ModelReprMixin, BaseModel):
     """Represents the status response from a Hilltop server.
-    
+
     This model contains information about the server's current state,
     including version details, data files, and system metrics.
-    
+
     Attributes
     ----------
     agency : str, optional
@@ -44,11 +44,11 @@ class StatusResponse(ModelReprMixin, BaseModel):
 
     class DataFile(ModelReprMixin, BaseModel):
         """Represents a Hilltop data file.
-        
+
         Contains information about individual data files managed by
         the Hilltop server, including usage statistics and refresh
         information.
-        
+
         Attributes
         ----------
         filename : str
@@ -82,15 +82,15 @@ class StatusResponse(ModelReprMixin, BaseModel):
     @field_validator("data_files", mode="before")
     def validate_data_files(cls, value) -> list["StatusResponse.DataFile"]:
         """Ensure data_files is a list of DataFile objects.
-        
+
         Handles both single DataFile dictionaries and lists of DataFile
         dictionaries from the XML parsing process.
-        
+
         Parameters
         ----------
         value : dict or list or None
             The data files value from XML parsing.
-            
+
         Returns
         -------
         list of DataFile
@@ -104,7 +104,7 @@ class StatusResponse(ModelReprMixin, BaseModel):
 
     def to_dict(self):
         """Convert the model to a dictionary representation.
-        
+
         Returns
         -------
         dict
@@ -116,20 +116,20 @@ class StatusResponse(ModelReprMixin, BaseModel):
     @classmethod
     def from_xml(cls, xml_str: str) -> "StatusResponse":
         """Parse XML string and return a StatusResponse object.
-        
+
         Converts the XML response from Hilltop Server into a structured
         StatusResponse model with proper validation and type conversion.
-        
+
         Parameters
         ----------
         xml_str : str
             The XML string returned by the Hilltop server.
-            
+
         Returns
         -------
         StatusResponse
             Parsed and validated status response model.
-            
+
         Raises
         ------
         HilltopParseError

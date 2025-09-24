@@ -6,7 +6,7 @@ servers.
 
 This package provides:
 - HilltopClient: Synchronous client for Hilltop API operations
-- AsyncHilltopClient: Asynchronous client for Hilltop API operations  
+- AsyncHilltopClient: Asynchronous client for Hilltop API operations
 - Pydantic-based request validation and response parsing
 - Comprehensive error handling and configuration management
 """
