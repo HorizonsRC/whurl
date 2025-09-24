@@ -373,4 +373,3 @@ class TestHilltopClientConcurrency:
         print(
             f"Single client improvement: {((multiple_clients_time - single_client_time) / multiple_clients_time * 100):.1f}%"
         )
-

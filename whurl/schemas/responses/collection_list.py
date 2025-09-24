@@ -1,7 +1,6 @@
 """Contains the schema for the Hilltop CollectionList response."""
 
 import xmltodict
-
 from pydantic import BaseModel, Field, field_validator
 
 from whurl.schemas.mixins import ModelReprMixin

@@ -1,4 +1,8 @@
-"""WHURL utils module."""
+"""WHURL utilities module.
+
+This module contains utility functions for validating and processing
+Hilltop-specific data formats and request parameters.
+"""
 
 import re
 
@@ -6,40 +10,39 @@ from whurl.exceptions import HilltopRequestError
 
 
 def validate_hilltop_interval_notation(value: str) -> str:
-    """
-    Validate the Hilltop interval notation.
+    """Validate Hilltop interval notation format.
 
-    From the Hilltop docs:
+    Validates time interval strings according to Hilltop Server requirements.
+    Accepts formats like "2.5 minutes", "1 hour", or just "30" (for seconds).
 
-    Set an interval by entering a value and its units into the text field with a
-    space between the number and its units, for example 2.5 minutes.
-    Valid units are seconds, minutes, hours, days, months and years.
-    The default units are seconds so units are not required if your interval is in
-    seconds.
+    From the Hilltop documentation: Set an interval by entering a value and
+    its units with a space between the number and units. Valid units are
+    seconds, minutes, hours, days, months and years. The default units are
+    seconds, so units are not required if your interval is in seconds.
 
-    You don't have to type all the keyword, for example 1 w will retrieve one value
-    per week.
-
-    An interval of zero retrieves the filed values at whatever time steps were used.
-
-    Hydro uses a fixed interval for months and years based on a solar year. One
-    solar year is 365.25 days and a solar month is one twelfth of a solar year.
-
-    <time interval (in secs)> OR <time interval><units>>
-
-    HOWEVER, it seems that it also works without a space
-
-    Args
-    ----
-        value (str): The interval notation to validate.
-
-    Raises
-    ------
-        HilltopRequestError: If the interval notation is invalid.
+    Parameters
+    ----------
+    value : str
+        The interval notation string to validate.
 
     Returns
     -------
-        str: The validated interval notation.
+    str
+        The validated interval notation string.
+
+    Raises
+    ------
+    HilltopRequestError
+        If the interval notation format is invalid or uses unsupported units.
+
+    Examples
+    --------
+    >>> validate_hilltop_interval_notation("1 hour")
+    '1 hour'
+    >>> validate_hilltop_interval_notation("30")
+    '30'
+    >>> validate_hilltop_interval_notation("2.5 minutes")
+    '2.5 minutes'
     """
     if isinstance(value, str):
         # Regex all leading numbers and decimal points
@@ -105,7 +108,26 @@ def validate_hilltop_interval_notation(value: str) -> str:
 
 
 def sanitise_xml_attributes(xml_str: str) -> str:
-    """Sanitise XML attributes by escaping special characters."""
+    """Sanitise XML attributes by escaping special characters.
+
+    Escapes special XML characters (&, <, >, ") in attribute values to prevent
+    XML parsing errors and ensure well-formed XML documents.
+
+    Parameters
+    ----------
+    xml_str : str
+        The XML string containing attributes to sanitise.
+
+    Returns
+    -------
+    str
+        The XML string with sanitised attribute values.
+
+    Examples
+    --------
+    >>> sanitise_xml_attributes('name="value with & < > characters"')
+    'name="value with &amp; &lt; &gt; characters"'
+    """
     clean = re.sub(
         r'="([^"]*.*)"',
         lambda m: '="'

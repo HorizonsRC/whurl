@@ -142,8 +142,8 @@ class TestRemoteFixtures:
 
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests import GetDataRequest
         from tests.conftest import remove_tags
+        from whurl.schemas.requests import GetDataRequest
 
         # Get the remote URL
         remote_url = GetDataRequest(
@@ -179,8 +179,8 @@ class TestRemoteFixtures:
 
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests import GetDataRequest
         from tests.conftest import remove_tags
+        from whurl.schemas.requests import GetDataRequest
 
         # Get the remote URL
         remote_url = GetDataRequest(
@@ -218,8 +218,8 @@ class TestRemoteFixtures:
 
         import pandas as pd
 
-        from whurl.schemas.requests import GetDataRequest
         from tests.conftest import remove_tags
+        from whurl.schemas.requests import GetDataRequest
 
         # 12 hours ago from now
         start_time = pd.Timestamp.now() - pd.Timedelta(hours=48)
@@ -260,8 +260,8 @@ class TestRemoteFixtures:
 
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests import GetDataRequest
         from tests.conftest import remove_tags
+        from whurl.schemas.requests import GetDataRequest
 
         # Get the remote URL
         remote_url = GetDataRequest(
@@ -298,8 +298,8 @@ class TestRemoteFixtures:
 
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests import GetDataRequest
         from tests.conftest import remove_tags
+        from whurl.schemas.requests import GetDataRequest
 
         # Get the remote URL
         remote_url = GetDataRequest(

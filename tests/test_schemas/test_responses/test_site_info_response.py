@@ -3,7 +3,6 @@
 import os
 
 import pytest
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -39,11 +38,13 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
             ).gen_url()
             cached_xml = remote_client.session.get(cached_url).text
             path.write_text(cached_xml, encoding="utf-8")
-        
+
         # Skip gracefully if fixture cache file doesn't exist in offline mode
         if not path.exists():
-            pytest.skip(f"Fixture cache file not found: {path.name}. Use --update flag to populate from remote API.")
-        
+            pytest.skip(
+                f"Fixture cache file not found: {path.name}. Use --update flag to populate from remote API."
+            )
+
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
 
@@ -92,8 +93,8 @@ class TestRemoteFixtures:
         """Validate the XML response from Hilltop Server."""
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests.site_info import SiteInfoRequest
         from tests.conftest import remove_tags
+        from whurl.schemas.requests.site_info import SiteInfoRequest
 
         # Generate the remote URL
         remote_url = SiteInfoRequest(
@@ -130,8 +131,8 @@ class TestRemoteFixtures:
         """Validate the XML response from Hilltop Server."""
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests.site_info import SiteInfoRequest
         from tests.conftest import remove_tags
+        from whurl.schemas.requests.site_info import SiteInfoRequest
 
         # Generate the remote URL
         remote_url = SiteInfoRequest(

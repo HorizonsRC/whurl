@@ -1,4 +1,9 @@
-"""Mixins for Pydantic models in whurl.schemas."""
+"""Mixins for Pydantic models in whurl.schemas.
+
+This module provides mixin classes that extend Pydantic models with
+additional functionality for consistent string representations and
+YAML-formatted output.
+"""
 
 from typing import Any, Dict, Set
 
@@ -27,7 +32,13 @@ class ModelReprMixin:
     """
 
     def _get_repr_include_unset(self) -> Set[str]:
-        """Get the set of fields that should always be included in repr."""
+        """Get the set of fields that should always be included in repr.
+
+        Returns
+        -------
+        Set[str]
+            Set of field names that should be included even when unset/None.
+        """
         # Try to get repr_include_unset from the class
         return getattr(self.__class__, "repr_include_unset", set())
 
@@ -62,12 +73,18 @@ class ModelReprMixin:
     def _process_nested_models(self, data: Any) -> Any:
         """Recursively process nested models and lists for YAML representation.
 
-        Args
-        ----
-            data: Data to process (could be dict, list, BaseModel, etc.)
+        This method handles conversion of complex data types including nested
+        Pydantic models, pandas DataFrames, and other special types into
+        formats suitable for YAML display.
+
+        Parameters
+        ----------
+        data : Any
+            Data to process (could be dict, list, BaseModel, etc.)
 
         Returns
         -------
+        Any
             Processed data with nested models converted appropriately.
         """
         if isinstance(data, dict):
@@ -101,7 +118,7 @@ class ModelReprMixin:
             elif hasattr(data, "to_dict") and callable(data.to_dict):
                 try:
                     return data.to_dict()
-                except:
+                except Exception:
                     return str(data)
             return data
 
@@ -131,10 +148,21 @@ class ModelReprMixin:
         return yaml_str.rstrip()  # Remove trailing newline
 
     def __repr__(self) -> str:
-        """Return YAML-style representation of the model."""
+        """Return YAML-style representation of the model.
+
+        Returns
+        -------
+        str
+            YAML-formatted string representation of the model.
+        """
         return self._to_yaml()
 
     def __str__(self) -> str:
-        """Return YAML-style string representation of the model."""
-        return self._to_yaml()
+        """Return YAML-style string representation of the model.
 
+        Returns
+        -------
+        str
+            YAML-formatted string representation of the model.
+        """
+        return self._to_yaml()

@@ -5,8 +5,8 @@ class TestParameterValidation:
     def test_StatusRequest(self):
         from urllib.parse import quote, urlencode
 
-        from whurl.schemas.requests import StatusRequest
         from whurl.exceptions import HilltopRequestError
+        from whurl.schemas.requests import StatusRequest
 
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"

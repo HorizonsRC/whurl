@@ -2,9 +2,9 @@
 
 from pydantic import Field, field_validator
 
-from whurl.schemas.requests.base import BaseHilltopRequest
 from whurl.exceptions import HilltopRequestError
 from whurl.schemas.mixins import ModelReprMixin
+from whurl.schemas.requests.base import BaseHilltopRequest
 
 
 class CollectionListRequest(BaseHilltopRequest):

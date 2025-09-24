@@ -1,4 +1,8 @@
-"""GetData request schema."""
+"""GetData request schema.
+
+This module defines the request model for retrieving measurement data
+from Hilltop Server with various filtering and formatting options.
+"""
 
 from datetime import datetime
 from typing import Literal
@@ -8,13 +12,45 @@ from isodate import ISO8601Error, parse_datetime, parse_duration
 from pydantic import Field, ValidationError, field_validator, model_validator
 
 from whurl.exceptions import HilltopRequestError
-from whurl.schemas.requests.base import BaseHilltopRequest
 from whurl.schemas.mixins import ModelReprMixin
+from whurl.schemas.requests.base import BaseHilltopRequest
 from whurl.utils import validate_hilltop_interval_notation
 
 
 class GetDataRequest(BaseHilltopRequest):
-    """Request parameters for Hilltop GetData."""
+    """Request parameters for Hilltop GetData endpoint.
+
+    This request type retrieves measurement data from specific sites with
+    options for time filtering, statistical processing, and output formatting.
+
+    Parameters
+    ----------
+    request : str, default "GetData"
+        Fixed request type for data retrieval queries.
+    site : str, optional
+        Name of the monitoring site to query.
+    measurement : str, optional
+        Name of the measurement type to retrieve.
+    from_datetime : str, optional
+        Start datetime for data retrieval (ISO 8601 format).
+    to_datetime : str, optional
+        End datetime for data retrieval (ISO 8601 format).
+    time_interval : str, optional
+        Regular time interval for data aggregation.
+    alignment : str, optional
+        Time alignment for interval processing (e.g., "00:00").
+    collection : str, optional
+        Data collection name to filter by.
+    method : str, optional
+        Statistical method for data processing ("Interpolate", "Average",
+        "Total", "Moving Average", "EP", "Extrema").
+    interval : str, optional
+        Time interval for statistical calculations.
+    gap_tolerance : str, optional
+        Maximum acceptable gap between data points.
+    format : str, optional
+        Output format specification ("Native" or custom formats).
+    """
 
     request: str = Field(default="GetData", serialization_alias="Request")
     site: str | None = Field(default=None, serialization_alias="Site")
@@ -145,8 +181,8 @@ class GetDataRequest(BaseHilltopRequest):
                 else:
                     raise HilltopRequestError(
                         f"Invalid time interval format: '{value}'.\n"
-                        "Expected ISO8601 interval/duration or Hilltop special keywords "
-                        "('Data Start', 'Data End', 'now')."
+                        "Expected ISO8601 interval/duration or Hilltop special keywords"
+                        " ('Data Start', 'Data End', 'now')."
                     )
             except ISO8601Error as e:
                 pass

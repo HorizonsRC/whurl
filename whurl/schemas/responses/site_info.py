@@ -1,18 +1,14 @@
 """Hilltop SiteInfo response schema."""
 
 from typing import Any, Dict
-
-import xmltodict
-
 from xml.parsers.expat import ExpatError
 
+import xmltodict
 from pydantic import BaseModel, Field, model_validator
 
 from whurl.exceptions import HilltopParseError, HilltopResponseError
-
 from whurl.schemas.mixins import ModelReprMixin
 from whurl.schemas.requests import SiteInfoRequest
-
 from whurl.utils import sanitise_xml_attributes
 
 
@@ -73,9 +69,7 @@ class SiteInfoResponse(ModelReprMixin, BaseModel):
         if not self.site:
             raise HilltopParseError("No site data available in the response.")
 
-        df = pd.DataFrame(
-            {site.name: site.info for site in self.site}
-        )
+        df = pd.DataFrame({site.name: site.info for site in self.site})
 
         return df
 

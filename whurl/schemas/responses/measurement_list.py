@@ -9,11 +9,8 @@ import pandas as pd
 import xmltodict
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from whurl.exceptions import (
-    HilltopParseError,
-    HilltopRequestError,
-    HilltopResponseError,
-)
+from whurl.exceptions import (HilltopParseError, HilltopRequestError,
+                              HilltopResponseError)
 from whurl.schemas.mixins import ModelReprMixin
 from whurl.schemas.requests import MeasurementListRequest
 
@@ -88,7 +85,9 @@ class MeasurementListResponse(ModelReprMixin, BaseModel):
 
     agency: str | None = Field(alias="Agency", default=None)
     data_sources: list["DataSource"] = Field(alias="DataSource", default_factory=list)
-    measurements: list["DataSource.Measurement"] = Field(alias="Measurement", default_factory=list)
+    measurements: list["DataSource.Measurement"] = Field(
+        alias="Measurement", default_factory=list
+    )
     error: str | None = Field(alias="Error", default=None)
     request: MeasurementListRequest | None = Field(default=None, exclude=True)
 
