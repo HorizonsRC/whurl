@@ -3,7 +3,6 @@
 import os
 
 import pytest
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -94,8 +93,8 @@ class TestRemoteFixtures:
         """Validate the XML response from Hilltop Server."""
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests.site_info import SiteInfoRequest
         from tests.conftest import remove_tags
+        from whurl.schemas.requests.site_info import SiteInfoRequest
 
         # Generate the remote URL
         remote_url = SiteInfoRequest(
@@ -132,8 +131,8 @@ class TestRemoteFixtures:
         """Validate the XML response from Hilltop Server."""
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests.site_info import SiteInfoRequest
         from tests.conftest import remove_tags
+        from whurl.schemas.requests.site_info import SiteInfoRequest
 
         # Generate the remote URL
         remote_url = SiteInfoRequest(

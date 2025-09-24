@@ -9,11 +9,8 @@ import pandas as pd
 import xmltodict
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from whurl.exceptions import (
-    HilltopParseError,
-    HilltopRequestError,
-    HilltopResponseError,
-)
+from whurl.exceptions import (HilltopParseError, HilltopRequestError,
+                              HilltopResponseError)
 from whurl.schemas.mixins import ModelReprMixin
 from whurl.schemas.requests import MeasurementListRequest
 

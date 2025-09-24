@@ -4,7 +4,7 @@ This module provides the base request model and common validation logic
 for all Hilltop API requests.
 """
 
-from urllib.parse import urlparse, urlencode, quote
+from urllib.parse import quote, urlencode, urlparse
 
 from pydantic import BaseModel, Field, field_validator
 

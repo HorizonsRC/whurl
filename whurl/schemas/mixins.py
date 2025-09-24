@@ -118,7 +118,7 @@ class ModelReprMixin:
             elif hasattr(data, "to_dict") and callable(data.to_dict):
                 try:
                     return data.to_dict()
-                except:
+                except Exception:
                     return str(data)
             return data
 

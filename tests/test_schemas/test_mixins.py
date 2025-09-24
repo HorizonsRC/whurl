@@ -1,13 +1,14 @@
 """Tests for ModelReprMixin functionality."""
 
+from typing import ClassVar, Set
+
 import pytest
 import yaml
-from typing import ClassVar, Set
 from pydantic import BaseModel, Field
 
 from whurl.schemas.mixins import ModelReprMixin
-from whurl.schemas.responses.get_data import GetDataResponse
 from whurl.schemas.requests.get_data import GetDataRequest
+from whurl.schemas.responses.get_data import GetDataResponse
 
 
 class TestModelReprMixin:

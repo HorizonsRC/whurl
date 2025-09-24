@@ -7,14 +7,8 @@ from urllib.parse import quote, urlencode
 import httpx
 import pandas as pd
 import xmltodict
-from pydantic import (
-    BaseModel,
-    ConfigDict,
-    Field,
-    PrivateAttr,
-    field_validator,
-    model_validator,
-)
+from pydantic import (BaseModel, ConfigDict, Field, PrivateAttr,
+                      field_validator, model_validator)
 
 from whurl.exceptions import HilltopParseError, HilltopResponseError
 from whurl.schemas.mixins import ModelReprMixin

@@ -14,25 +14,16 @@ import httpx
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-from whurl.exceptions import HilltopConfigError, HilltopParseError, HilltopResponseError
-from whurl.schemas.requests import (
-    CollectionListRequest,
-    GetDataRequest,
-    MeasurementListRequest,
-    SiteInfoRequest,
-    SiteListRequest,
-    StatusRequest,
-    TimeRangeRequest,
-)
-from whurl.schemas.responses import (
-    CollectionListResponse,
-    GetDataResponse,
-    MeasurementListResponse,
-    SiteInfoResponse,
-    SiteListResponse,
-    StatusResponse,
-    TimeRangeResponse,
-)
+from whurl.exceptions import (HilltopConfigError, HilltopParseError,
+                              HilltopResponseError)
+from whurl.schemas.requests import (CollectionListRequest, GetDataRequest,
+                                    MeasurementListRequest, SiteInfoRequest,
+                                    SiteListRequest, StatusRequest,
+                                    TimeRangeRequest)
+from whurl.schemas.responses import (CollectionListResponse, GetDataResponse,
+                                     MeasurementListResponse, SiteInfoResponse,
+                                     SiteListResponse, StatusResponse,
+                                     TimeRangeResponse)
 
 load_dotenv()
 
@@ -700,7 +691,7 @@ class AsyncHilltopClient:
         return result
 
     async def get_time_range(self, **kwargs) -> TimeRangeResponse:
-        """Fetch available time range for measurements from Hilltop Server asynchronously.
+        """Fetch time range for measurements from Hilltop Server asynchronously.
 
         Parameters
         ----------

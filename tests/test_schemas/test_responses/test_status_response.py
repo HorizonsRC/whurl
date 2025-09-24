@@ -80,8 +80,8 @@ class TestRemoteFixtures:
         """Validate the status response XML fixture."""
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests import StatusRequest
         from tests.conftest import remove_tags
+        from whurl.schemas.requests import StatusRequest
 
         cached_xml = status_response_xml_cached
 

@@ -11,7 +11,7 @@ This package provides:
 - Comprehensive error handling and configuration management
 """
 
-from .client import HilltopClient, AsyncHilltopClient
+from .client import AsyncHilltopClient, HilltopClient
 
 __author__ = """Nic Mostert"""
 __email__ = "nicolas.mostert@horizons.govt.nz"

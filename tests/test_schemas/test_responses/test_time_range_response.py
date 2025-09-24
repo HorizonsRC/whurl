@@ -93,8 +93,8 @@ class TestRemoteFixtures:
         """Test that the basic response XML fixture is loaded correctly."""
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests.time_range import TimeRangeRequest
         from tests.conftest import remove_tags
+        from whurl.schemas.requests.time_range import TimeRangeRequest
 
         # Generate the URL for the remote request.
         remote_url = TimeRangeRequest(

@@ -12,8 +12,8 @@ from isodate import ISO8601Error, parse_datetime, parse_duration
 from pydantic import Field, ValidationError, field_validator, model_validator
 
 from whurl.exceptions import HilltopRequestError
-from whurl.schemas.requests.base import BaseHilltopRequest
 from whurl.schemas.mixins import ModelReprMixin
+from whurl.schemas.requests.base import BaseHilltopRequest
 from whurl.utils import validate_hilltop_interval_notation
 
 
@@ -181,8 +181,8 @@ class GetDataRequest(BaseHilltopRequest):
                 else:
                     raise HilltopRequestError(
                         f"Invalid time interval format: '{value}'.\n"
-                        "Expected ISO8601 interval/duration or Hilltop special keywords "
-                        "('Data Start', 'Data End', 'now')."
+                        "Expected ISO8601 interval/duration or Hilltop special keywords"
+                        " ('Data Start', 'Data End', 'now')."
                     )
             except ISO8601Error as e:
                 pass
