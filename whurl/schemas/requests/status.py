@@ -4,6 +4,7 @@ from pydantic import Field, field_validator
 
 from whurl.schemas.mixins import ModelReprMixin
 from whurl.schemas.requests.base import BaseHilltopRequest
+from whurl.exceptions import HilltopRequestError
 
 
 class StatusRequest(BaseHilltopRequest):
@@ -15,5 +16,5 @@ class StatusRequest(BaseHilltopRequest):
     def validate_request(cls, value):
         """Validate the request parameter."""
         if value != "Status":
-            raise ValueError("Request must be 'Status'")
+            raise HilltopRequestError("Request must be 'Status'")
         return value

@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<HilltopServer>
+<Agency>Test Council</Agency>
+<Version>2404.1.2.60</Version>
+<Site Name="Test Site Alpha">
+<Latitude>-39.76939402</Latitude>
+<Longitude>175.16182082</Longitude>
+</Site>
+<CRC>30406</CRC>
+</HilltopServer>

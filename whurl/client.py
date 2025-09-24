@@ -4,22 +4,21 @@ import asyncio
 import os
 from typing import Optional
 
-import httpx
 import certifi
-
+import httpx
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
 from whurl.exceptions import (HilltopConfigError, HilltopParseError,
-                             HilltopResponseError)
+                              HilltopResponseError)
 from whurl.schemas.requests import (CollectionListRequest, GetDataRequest,
-                                   MeasurementListRequest, SiteInfoRequest,
-                                   SiteListRequest, StatusRequest,
-                                   TimeRangeRequest)
+                                    MeasurementListRequest, SiteInfoRequest,
+                                    SiteListRequest, StatusRequest,
+                                    TimeRangeRequest)
 from whurl.schemas.responses import (CollectionListResponse, GetDataResponse,
-                                    MeasurementListResponse, SiteInfoResponse,
-                                    SiteListResponse, StatusResponse,
-                                    TimeRangeResponse)
+                                     MeasurementListResponse, SiteInfoResponse,
+                                     SiteListResponse, StatusResponse,
+                                     TimeRangeResponse)
 
 load_dotenv()
 
@@ -44,13 +43,13 @@ class HilltopClient:
         self.max_keepalive_connections = max_keepalive_connections
         self.http2 = http2
         self.verify_ssl = verify_ssl
-        
+
         # Create httpx session with configurable options
         self.session = httpx.Client(
             timeout=httpx.Timeout(timeout=timeout),
             limits=httpx.Limits(
                 max_connections=max_connections,
-                max_keepalive_connections=max_keepalive_connections
+                max_keepalive_connections=max_keepalive_connections,
             ),
             http2=http2,
             verify=verify_ssl,
@@ -205,13 +204,13 @@ class AsyncHilltopClient:
         self.max_keepalive_connections = max_keepalive_connections
         self.http2 = http2
         self.verify_ssl = verify_ssl
-        
+
         # Create async httpx session
         self.session = httpx.AsyncClient(
             timeout=httpx.Timeout(timeout=timeout),
             limits=httpx.Limits(
                 max_connections=max_connections,
-                max_keepalive_connections=max_keepalive_connections
+                max_keepalive_connections=max_keepalive_connections,
             ),
             http2=http2,
             verify=verify_ssl,

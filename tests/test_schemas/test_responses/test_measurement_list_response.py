@@ -38,11 +38,13 @@ def create_cached_fixtures(filename: str, request_kwargs: dict = None):
             ).gen_url()
             cached_xml = remote_client.session.get(cached_url).text
             path.write_text(cached_xml, encoding="utf-8")
-        
+
         # Skip gracefully if fixture cache file doesn't exist in offline mode
         if not path.exists():
-            pytest.skip(f"Fixture cache file not found: {path.name}. Use --update flag to populate from remote API.")
-        
+            pytest.skip(
+                f"Fixture cache file not found: {path.name}. Use --update flag to populate from remote API."
+            )
+
         raw_xml = path.read_text(encoding="utf-8")
         return raw_xml
 
@@ -100,8 +102,8 @@ class VerifyCachedFixtures:
         """Validate the XML response from Hilltop Server."""
         from urllib.parse import urlparse
 
-        from whurl.schemas.requests import MeasurementListRequest
         from tests.conftest import remove_tags
+        from whurl.schemas.requests import MeasurementListRequest
 
         # Generate the remote URL
         remote_url = MeasurementListRequest(
@@ -423,11 +425,7 @@ class TestMeasurementList:
 
         # Test a specific measurement
         stage_measurement = next(
-            (
-                m
-                for m in flow_ds.measurements
-                if m.name == "Stage"
-            ),
+            (m for m in flow_ds.measurements if m.name == "Stage"),
             None,
         )
         assert isinstance(
@@ -683,3 +681,38 @@ class TestMeasurementList:
         naive_dict = xmltodict.parse(all_response_xml_cached)["HilltopServer"]
 
         assert test_dict == naive_dict
+
+    @pytest.mark.unit
+    async def test_measurement_list_with_async_client_unit(
+        self, httpx_mock, all_response_xml_mocked
+    ):
+        """Test that the XML can be parsed into a MeasurementListResponse object."""
+
+        from whurl.client import AsyncHilltopClient
+        from whurl.schemas.requests import MeasurementListRequest
+        from whurl.schemas.responses import MeasurementListResponse
+
+        base_url = "http://example.com"
+        hts_endpoint = "foo.hts"
+
+        # Generate the remote URL
+        test_url = MeasurementListRequest(
+            base_url=base_url,
+            hts_endpoint=hts_endpoint,
+        ).gen_url()
+
+        httpx_mock.add_response(
+            url=test_url,
+            method="GET",
+            text=all_response_xml_mocked,
+        )
+
+        async with AsyncHilltopClient(
+            base_url=base_url,
+            hts_endpoint=hts_endpoint,
+        ) as client:
+            measurement_list = await client.get_measurement_list()
+
+        # Test the top level response object
+        assert isinstance(measurement_list, MeasurementListResponse)
+        assert measurement_list.agency == "Test Council"
