@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional, Union
 from whurl.schemas.responses.measurement_list import MeasurementListResponse
 from whurl.schemas.responses.site_list import SiteListResponse
@@ -33,7 +33,7 @@ class CacheEntry:
         """Check if the cache entry has expired."""
         if self.expires is None:
             return False
-        return datetime.now(datetime.UTC) > self.expires
+        return datetime.now(timezone.utc) > self.expires
 
 
 def normalize_name(name: str, ascii_fold: bool = False) -> str:
@@ -145,10 +145,10 @@ class DomainCache:
             # This is future-proofing for potential site ID fields
             
         # Update cache metadata
-        expires = datetime.now(datetime.UTC) + self.default_ttl
+        expires = datetime.now(timezone.utc) + self.default_ttl
         self._sites_cache_entry = CacheEntry(
             data=response,
-            timestamp=datetime.now(datetime.UTC),
+            timestamp=datetime.now(timezone.utc),
             etag=etag,
             last_modified=last_modified,
             expires=expires
@@ -202,10 +202,10 @@ class DomainCache:
             self._measurements_by_site[normalized_site_name] = site_measurements
         
         # Update cache metadata
-        expires = datetime.now(datetime.UTC) + self.default_ttl
+        expires = datetime.now(timezone.utc) + self.default_ttl
         self._measurements_cache_entry = CacheEntry(
             data=response,
-            timestamp=datetime.now(datetime.UTC),
+            timestamp=datetime.now(timezone.utc),
             etag=etag,
             last_modified=last_modified,
             expires=expires

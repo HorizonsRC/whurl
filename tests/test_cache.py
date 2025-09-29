@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock
 from whurl.cache import DomainCache, CacheEntry, normalize_name
 from whurl.schemas.responses.measurement_list import MeasurementListResponse
@@ -42,7 +42,7 @@ class TestCacheEntry:
     def test_basic_creation(self):
         """Test basic cache entry creation."""
         data = {"test": "data"}
-        timestamp = datetime.utcnow()
+        timestamp = datetime.now(timezone.utc)
         entry = CacheEntry(data=data, timestamp=timestamp)
         
         assert entry.data == data
@@ -54,7 +54,7 @@ class TestCacheEntry:
     def test_with_metadata(self):
         """Test cache entry with HTTP cache metadata."""
         data = {"test": "data"}
-        timestamp = datetime.utcnow()
+        timestamp = datetime.now(timezone.utc)
         expires = timestamp + timedelta(hours=1)
         
         entry = CacheEntry(
@@ -71,17 +71,17 @@ class TestCacheEntry:
 
     def test_expiry_check(self):
         """Test cache entry expiry checking."""
-        past_time = datetime.utcnow() - timedelta(hours=1)
-        future_time = datetime.utcnow() + timedelta(hours=1)
+        past_time = datetime.now(timezone.utc) - timedelta(hours=1)
+        future_time = datetime.now(timezone.utc) + timedelta(hours=1)
         
         # Entry without expiry
-        entry_no_expire = CacheEntry(data={}, timestamp=datetime.utcnow())
+        entry_no_expire = CacheEntry(data={}, timestamp=datetime.now(timezone.utc))
         assert not entry_no_expire.is_expired
 
         # Entry with past expiry
         entry_expired = CacheEntry(
             data={}, 
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
             expires=past_time
         )
         assert entry_expired.is_expired
@@ -89,7 +89,7 @@ class TestCacheEntry:
         # Entry with future expiry
         entry_valid = CacheEntry(
             data={}, 
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
             expires=future_time
         )
         assert not entry_valid.is_expired
@@ -239,7 +239,7 @@ class TestDomainCache:
         # Wait for expiry (simulate by manipulating the cache entry)
         import time
         time.sleep(0.2)
-        cache._sites_cache_entry.expires = datetime.utcnow() - timedelta(seconds=1)
+        cache._sites_cache_entry.expires = datetime.now(timezone.utc) - timedelta(seconds=1)
         
         assert not cache.sites_cache_valid
 
