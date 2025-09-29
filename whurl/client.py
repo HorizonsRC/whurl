@@ -1,3 +1,15 @@
+from dotenv import load_dotenv
+from pydantic import BaseModel
+from typing import Optional, Any
+from whurl.cache import DomainCache
+from whurl.exceptions import (HilltopConfigError, HilltopParseError,
+from whurl.schemas.requests import (CollectionListRequest, GetDataRequest,
+from whurl.schemas.responses import (CollectionListResponse, GetDataResponse,
+import asyncio
+import certifi
+import httpx
+import os
+
 """Hilltop Client Module.
 
 This module provides synchronous and asynchronous client classes for
@@ -5,22 +17,12 @@ interacting with Hilltop Server APIs. The clients handle request validation,
 response parsing, and proper resource management.
 """
 
-import asyncio
-import os
-from typing import Optional
 
-import certifi
-import httpx
-from dotenv import load_dotenv
-from pydantic import BaseModel
 
-from whurl.exceptions import (HilltopConfigError, HilltopParseError,
                               HilltopResponseError)
-from whurl.schemas.requests import (CollectionListRequest, GetDataRequest,
                                     MeasurementListRequest, SiteInfoRequest,
                                     SiteListRequest, StatusRequest,
                                     TimeRangeRequest)
-from whurl.schemas.responses import (CollectionListResponse, GetDataResponse,
                                      MeasurementListResponse, SiteInfoResponse,
                                      SiteListResponse, StatusResponse,
                                      TimeRangeResponse)
@@ -106,6 +108,9 @@ class HilltopClient:
             raise HilltopConfigError(
                 "Hilltop HTS endpoint must be provided or set in environment variables."
             )
+
+        # Initialize domain cache
+        self._domain_cache = DomainCache()
 
     def _validate_response(self, response: httpx.Response) -> None:
         """Validate HTTP response and raise HilltopResponseError if unsuccessful.
@@ -389,6 +394,144 @@ class HilltopClient:
         """
         self.close()
 
+    def list_all_sites(self, refresh: bool = False) -> list:
+        """Return cached or refreshed site list.
+        
+        Parameters
+        ----------
+        refresh : bool, default False
+            Whether to force refresh the cache from server.
+            
+        Returns
+        -------
+        list
+            List of all site objects.
+        """
+        if refresh or not self._domain_cache.sites_cache_valid:
+            self.refresh_sites()
+        return self._domain_cache.list_all_sites()
+
+    def check_for_site(self, name: str, refresh: bool = False) -> bool:
+        """Check if site exists in cached index.
+        
+        Parameters
+        ----------
+        name : str
+            Site name to check.
+        refresh : bool, default False
+            Whether to refresh cache if site not found.
+            
+        Returns
+        -------
+        bool
+            True if site exists in cached index.
+        """
+        if refresh or not self._domain_cache.sites_cache_valid:
+            self.refresh_sites()
+        return self._domain_cache.check_for_site(name)
+
+    def get_site(self, name: str) -> Optional[Any]:
+        """Return site metadata by name.
+        
+        Parameters
+        ----------
+        name : str
+            Site name to retrieve.
+            
+        Returns
+        -------
+        Optional[Any]
+            Site metadata object if found, None otherwise.
+        """
+        if not self._domain_cache.sites_cache_valid:
+            self.refresh_sites()
+        return self._domain_cache.get_site(name)
+
+    def list_all_measurements(self, refresh: bool = False) -> list:
+        """Return cached or refreshed measurement list.
+        
+        Parameters
+        ----------
+        refresh : bool, default False
+            Whether to force refresh the cache from server.
+            
+        Returns
+        -------
+        list
+            List of all measurement objects.
+        """
+        if refresh or not self._domain_cache.measurements_cache_valid:
+            self.refresh_measurements()
+        return self._domain_cache.list_all_measurements()
+
+    def refresh_sites(self) -> None:
+        """Explicit refresh method for sites cache."""
+        headers = {}
+        
+        # Add conditional request headers if we have cache metadata
+        if self._domain_cache.sites_cache_valid:
+            etag = self._domain_cache.get_sites_etag()
+            last_modified = self._domain_cache.get_sites_last_modified()
+            
+            if etag:
+                headers['If-None-Match'] = etag
+            if last_modified:
+                headers['If-Modified-Since'] = last_modified
+        
+        request = SiteListRequest(
+            base_url=self.base_url,
+            hts_endpoint=self.hts_endpoint,
+        )
+        response = self.session.get(request.gen_url(), headers=headers)
+        
+        # Handle 304 Not Modified - cache is still valid
+        if response.status_code == 304:
+            return
+            
+        self._validate_response(response)
+        result = SiteListResponse.from_xml(response.text)
+        
+        # Extract cache headers from response
+        etag = response.headers.get('etag')
+        last_modified = response.headers.get('last-modified')
+        
+        # Update cache
+        self._domain_cache.refresh_sites(result, etag, last_modified)
+
+    def refresh_measurements(self) -> None:
+        """Explicit refresh method for measurements cache."""
+        headers = {}
+        
+        # Add conditional request headers if we have cache metadata
+        if self._domain_cache.measurements_cache_valid:
+            etag = self._domain_cache.get_measurements_etag()
+            last_modified = self._domain_cache.get_measurements_last_modified()
+            
+            if etag:
+                headers['If-None-Match'] = etag
+            if last_modified:
+                headers['If-Modified-Since'] = last_modified
+        
+        request = MeasurementListRequest(
+            base_url=self.base_url,
+            hts_endpoint=self.hts_endpoint,
+        )
+        response = self.session.get(request.gen_url(), headers=headers)
+        
+        # Handle 304 Not Modified - cache is still valid
+        if response.status_code == 304:
+            return
+            
+        self._validate_response(response)
+        result = MeasurementListResponse.from_xml(response.text)
+        
+        # Extract cache headers from response
+        etag = response.headers.get('etag')
+        last_modified = response.headers.get('last-modified')
+        
+        # Update cache
+        self._domain_cache.refresh_measurements(result, etag, last_modified)
+
 
 class AsyncHilltopClient:
     """An asynchronous client for interacting with Hilltop Server.
@@ -468,6 +611,9 @@ class AsyncHilltopClient:
             raise HilltopConfigError(
                 "Hilltop HTS endpoint must be provided or set in environment variables."
             )
+
+        # Initialize domain cache
+        self._domain_cache = DomainCache()
 
     async def _validate_response(self, response: httpx.Response) -> None:
         """Validate HTTP response and raise HilltopResponseError if unsuccessful.
@@ -750,3 +896,141 @@ class AsyncHilltopClient:
             Traceback object if an exception occurred.
         """
         await self.close()
+
+    async def list_all_sites(self, refresh: bool = False) -> list:
+        """Return cached or refreshed site list.
+        
+        Parameters
+        ----------
+        refresh : bool, default False
+            Whether to force refresh the cache from server.
+            
+        Returns
+        -------
+        list
+            List of all site objects.
+        """
+        if refresh or not self._domain_cache.sites_cache_valid:
+            await self.refresh_sites()
+        return self._domain_cache.list_all_sites()
+
+    async def check_for_site(self, name: str, refresh: bool = False) -> bool:
+        """Check if site exists in cached index.
+        
+        Parameters
+        ----------
+        name : str
+            Site name to check.
+        refresh : bool, default False
+            Whether to refresh cache if site not found.
+            
+        Returns
+        -------
+        bool
+            True if site exists in cached index.
+        """
+        if refresh or not self._domain_cache.sites_cache_valid:
+            await self.refresh_sites()
+        return self._domain_cache.check_for_site(name)
+
+    async def get_site(self, name: str) -> Optional[Any]:
+        """Return site metadata by name.
+        
+        Parameters
+        ----------
+        name : str
+            Site name to retrieve.
+            
+        Returns
+        -------
+        Optional[Any]
+            Site metadata object if found, None otherwise.
+        """
+        if not self._domain_cache.sites_cache_valid:
+            await self.refresh_sites()
+        return self._domain_cache.get_site(name)
+
+    async def list_all_measurements(self, refresh: bool = False) -> list:
+        """Return cached or refreshed measurement list.
+        
+        Parameters
+        ----------
+        refresh : bool, default False
+            Whether to force refresh the cache from server.
+            
+        Returns
+        -------
+        list
+            List of all measurement objects.
+        """
+        if refresh or not self._domain_cache.measurements_cache_valid:
+            await self.refresh_measurements()
+        return self._domain_cache.list_all_measurements()
+
+    async def refresh_sites(self) -> None:
+        """Explicit refresh method for sites cache."""
+        headers = {}
+        
+        # Add conditional request headers if we have cache metadata
+        if self._domain_cache.sites_cache_valid:
+            etag = self._domain_cache.get_sites_etag()
+            last_modified = self._domain_cache.get_sites_last_modified()
+            
+            if etag:
+                headers['If-None-Match'] = etag
+            if last_modified:
+                headers['If-Modified-Since'] = last_modified
+        
+        request = SiteListRequest(
+            base_url=self.base_url,
+            hts_endpoint=self.hts_endpoint,
+        )
+        response = await self.session.get(request.gen_url(), headers=headers)
+        
+        # Handle 304 Not Modified - cache is still valid
+        if response.status_code == 304:
+            return
+            
+        await self._validate_response(response)
+        result = SiteListResponse.from_xml(response.text)
+        
+        # Extract cache headers from response
+        etag = response.headers.get('etag')
+        last_modified = response.headers.get('last-modified')
+        
+        # Update cache
+        self._domain_cache.refresh_sites(result, etag, last_modified)
+
+    async def refresh_measurements(self) -> None:
+        """Explicit refresh method for measurements cache."""
+        headers = {}
+        
+        # Add conditional request headers if we have cache metadata
+        if self._domain_cache.measurements_cache_valid:
+            etag = self._domain_cache.get_measurements_etag()
+            last_modified = self._domain_cache.get_measurements_last_modified()
+            
+            if etag:
+                headers['If-None-Match'] = etag
+            if last_modified:
+                headers['If-Modified-Since'] = last_modified
+        
+        request = MeasurementListRequest(
+            base_url=self.base_url,
+            hts_endpoint=self.hts_endpoint,
+        )
+        response = await self.session.get(request.gen_url(), headers=headers)
+        
+        # Handle 304 Not Modified - cache is still valid
+        if response.status_code == 304:
+            return
+            
+        await self._validate_response(response)
+        result = MeasurementListResponse.from_xml(response.text)
+        
+        # Extract cache headers from response
+        etag = response.headers.get('etag')
+        last_modified = response.headers.get('last-modified')
+        
+        # Update cache
+        self._domain_cache.refresh_measurements(result, etag, last_modified)
