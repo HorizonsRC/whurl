@@ -11,6 +11,26 @@ from whurl.schemas.requests.get_data import GetDataRequest
 from whurl.schemas.responses.get_data import GetDataResponse
 
 
+def create_mocked_fixtures(filename: str):
+    """Factory to create mocked fixtures."""
+
+    @pytest.fixture
+    def fixture_func():
+        """Load test XML once per test session."""
+        from pathlib import Path
+
+        path = (
+            Path(__file__).parent.parent / "mocked_data" / "get_data" / filename
+        )
+        raw_xml = path.read_text(encoding="utf-8")
+        return raw_xml
+
+    return fixture_func
+
+
+basic_response_xml_mocked = create_mocked_fixtures("basic_response.xml")
+
+
 class TestModelReprMixin:
     """Test the ModelReprMixin functionality."""
 
@@ -61,36 +81,11 @@ class TestModelReprMixin:
         assert "measurement:" not in repr_str
         assert "from_datetime: '2023-01-01T00:00:00'" in repr_str
 
-    def test_nested_models_recursive(self):
+    def test_nested_models_recursive(self, basic_response_xml_mocked):
         """Test that nested models are recursively formatted."""
         # Create a response with nested models
-        sample_data = {
-            "Agency": "Test Agency",
-            "Measurement": [
-                {
-                    "@SiteName": "Test Site",
-                    "DataSource": {
-                        "@Name": "Test DataSource",
-                        "@NumItems": "1",
-                        "TSType": "StdSeries",
-                        "DataType": "Flow",
-                        "Interpolation": "Discrete",
-                        "ItemInfo": [
-                            {
-                                "@ItemNumber": 1,
-                                "ItemName": "Flow",
-                                "ItemFormat": "F2",
-                                "Units": "m³/s",
-                                "Format": "F",
-                            }
-                        ],
-                    },
-                    "Data": {"@DateFormat": "Calendar", "@NumItems": "0"},
-                }
-            ],
-        }
 
-        response = GetDataResponse(**sample_data)
+        response = GetDataResponse.from_xml(basic_response_xml_mocked)
         repr_str = str(response)
 
         # Should contain nested structure with proper indentation
@@ -98,7 +93,7 @@ class TestModelReprMixin:
         assert "measurement:" in repr_str
         assert "data_source:" in repr_str
         assert "item_info:" in repr_str
-        assert "item_name: Flow" in repr_str
+        assert "item_name: Stage" in repr_str
 
     def test_repr_include_unset_functionality(self):
         """Test the repr_include_unset functionality."""

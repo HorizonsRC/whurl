@@ -88,11 +88,44 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                     }
                 else:
                     mapping = {}
+                formatter = {}
+                divisor = {}
                 if self._item_info is not None:
                     for item in self._item_info:
                         current_name = f"I{item.item_number}"
                         mapping[current_name] = item.item_name
+                        formatter[item.item_name] = item.item_format
+                        divisor[item.item_name] = item.divisor
                 self.timeseries.rename(columns=mapping, inplace=True)
+
+                # Apply formatting and divisors
+                for col, fmt in formatter.items():
+                    if fmt == "I":
+                        # Parse as integer
+                        self.timeseries[col] = (
+                            pd.to_numeric(self.timeseries[col], errors="coerce")
+                            .fillna(0)
+                            .astype(int)
+                        ) / int(divisor.get(col, 1) or 1)
+                    elif fmt == "F":
+                        # Parse as float
+                        self.timeseries[col] = (
+                            pd.to_numeric(self.timeseries[col], errors="coerce")
+                            .fillna(0.0)
+                            .astype(float)
+                        ) / float(divisor.get(col, 1.0) or 1.0)
+                    elif fmt == "D":
+                        # Parse as DateTime??
+                        self.timeseries[col] = pd.to_datetime(
+                            self.timeseries[col],
+                            errors="coerce",
+                        )
+                    elif fmt == "S":
+                        # Parse as string
+                        self.timeseries[col] = self.timeseries[col].astype(str)
+                    else:
+                        raise HilltopParseError(f"Unknown Format Spec: {fmt}")
+
                 if "DateTime" in self.timeseries.columns:
                     if self.date_format == "Calendar":
                         self.timeseries["DateTime"] = pd.to_datetime(
@@ -101,12 +134,16 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                     elif self.date_format == "mowsecs":
                         mowsecs_offset = 946771200
                         # Convert mowsecs to unix time
-                        self.time_series["DateTime"] = (
-                            self.timeseries["DateTime"] - mowsecs_offset
-                        )
+                        time_ints = pd.to_numeric(
+                            self.timeseries["DateTime"], errors="coerce"
+                        ).fillna(0)
+                        self.timeseries["DateTime"] = time_ints - mowsecs_offset
                         # Convert unix time to datetime
-                        self.timeseries["DateTime"] = pd.Timestamp(
-                            self.timeseries["DateTime"], unit="s"
+                        self.timeseries["DateTime"] = pd.to_datetime(
+                            self.timeseries["DateTime"],
+                            unit="s",
+                            origin="unix",
+                            utc=False,
                         )
                     self.timeseries.set_index("DateTime", inplace=True)
                 return self

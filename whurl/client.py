@@ -120,7 +120,6 @@ class HilltopClient:
         HilltopResponseError
             If the response status code indicates an error.
         """
-        print(f"Response status code: {response.status_code}")
         try:
             response.raise_for_status()
         except httpx.HTTPStatusError as e:
@@ -221,7 +220,6 @@ class HilltopClient:
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        print(request.gen_url())
         response = self.session.get(request.gen_url())
         self._validate_response(response)
         result = MeasurementListResponse.from_xml(response.text)
@@ -321,7 +319,6 @@ class HilltopClient:
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        print(request.gen_url())
         response = self.session.get(request.gen_url())
         self._validate_response(response)
         result = StatusResponse.from_xml(response.text)
@@ -482,7 +479,6 @@ class AsyncHilltopClient:
         HilltopResponseError
             If the response status code indicates an error.
         """
-        print(f"Response status code: {response.status_code}")
         try:
             response.raise_for_status()
         except httpx.HTTPStatusError as e:
@@ -583,7 +579,6 @@ class AsyncHilltopClient:
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        print(request.gen_url())
         response = await self.session.get(request.gen_url())
         await self._validate_response(response)
         result = MeasurementListResponse.from_xml(response.text)
@@ -683,7 +678,6 @@ class AsyncHilltopClient:
             hts_endpoint=self.hts_endpoint,
             **kwargs,
         )
-        print(request.gen_url())
         response = await self.session.get(request.gen_url())
         await self._validate_response(response)
         result = StatusResponse.from_xml(response.text)

@@ -406,6 +406,7 @@ class TestResponseValidation:
         # Base Model
         assert isinstance(result, GetDataResponse)
         assert result.agency == "Test Council"
+        assert isinstance(result.request, GetDataRequest)
 
         # Measurement
         assert len(result.measurement) == 1
@@ -498,6 +499,7 @@ class TestResponseValidation:
         # Base Model
         assert isinstance(result, GetDataResponse)
         assert result.agency == os.getenv("TEST_AGENCY")
+        assert isinstance(result.request, GetDataRequest)
 
         # Measurement
         assert len(result.measurement) == 1
@@ -574,6 +576,7 @@ class TestResponseValidation:
         # Test the top level response object
         assert isinstance(result, GetDataResponse)
         assert result.agency == "Test Council"
+        assert isinstance(result.request, GetDataRequest)
 
         assert len(result.measurement) > 0
         assert isinstance(result.measurement, list)
@@ -667,6 +670,7 @@ class TestResponseValidation:
         # Test the top level response object
         assert isinstance(result, GetDataResponse)
         assert result.agency == os.getenv("TEST_AGENCY")
+        assert isinstance(result.request, GetDataRequest)
 
         assert len(result.measurement) > 0
         assert isinstance(result.measurement, list)
@@ -747,6 +751,7 @@ class TestResponseValidation:
         # Test the top level response object
         assert isinstance(result, GetDataResponse)
         assert result.agency == "Test Council"
+        assert isinstance(result.request, GetDataRequest)
 
         assert len(result.measurement) > 0
         assert isinstance(result.measurement, list)
@@ -838,6 +843,7 @@ class TestResponseValidation:
         # Test the top level response object
         assert isinstance(result, GetDataResponse)
         assert result.agency == os.getenv("TEST_AGENCY")
+        assert isinstance(result.request, GetDataRequest)
 
         assert len(result.measurement) > 0
         assert isinstance(result.measurement, list)
@@ -920,6 +926,7 @@ class TestResponseValidation:
         # Test the top level response object
         assert isinstance(result, GetDataResponse)
         assert result.agency == "Test Council"
+        assert isinstance(result.request, GetDataRequest)
 
         assert len(result.measurement) > 0
         assert isinstance(result.measurement, list)
@@ -1015,6 +1022,7 @@ class TestResponseValidation:
         # Test the top level response object
         assert isinstance(result, GetDataResponse)
         assert result.agency == os.getenv("TEST_AGENCY")
+        assert isinstance(result.request, GetDataRequest)
 
         assert len(result.measurement) > 0
         assert isinstance(result.measurement, list)
@@ -1100,6 +1108,7 @@ class TestResponseValidation:
         # Test the top level response object
         assert isinstance(result, GetDataResponse)
         assert result.agency == "Test Council"
+        assert isinstance(result.request, GetDataRequest)
 
         assert len(result.measurement) > 0
         assert isinstance(result.measurement, list)
@@ -1207,6 +1216,7 @@ class TestResponseValidation:
         # Test the top level response object
         assert isinstance(result, GetDataResponse)
         assert result.agency == os.getenv("TEST_AGENCY")
+        assert isinstance(result.request, GetDataRequest)
 
         assert len(result.measurement) > 0
         assert isinstance(result.measurement, list)
@@ -1297,3 +1307,4 @@ class TestResponseValidation:
         # Base Model
         assert isinstance(result, GetDataResponse)
         assert result.agency == "Test Council"
+        assert isinstance(result.request, GetDataRequest)

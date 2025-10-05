@@ -30,7 +30,9 @@ class TimeRangeResponse(ModelReprMixin, BaseModel):
     def validate_time(cls, value: str) -> datetime:
         """Convert time strings to datetime objects."""
         try:
-            return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S%z")
+            dt = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S%z")
+            dt = dt.replace(tzinfo=None)  # Convert to naive datetime
+            return dt
         except ValueError as e:
             raise HilltopResponseError(
                 f"Invalid time format: {value}", raw_response=value
