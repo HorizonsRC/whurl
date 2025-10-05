@@ -6,7 +6,7 @@ responses from various Hilltop Server API endpoints.
 
 __author__ = """Nic Mostert"""
 __email__ = "nicolas.mostert@horizons.govt.nz"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from .collection_list import CollectionListResponse
 from .get_data import GetDataResponse

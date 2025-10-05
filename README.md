@@ -5,7 +5,7 @@ A Python client library for interacting with Hilltop Server APIs, developed by H
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
 [![Poetry](https://img.shields.io/badge/dependency%20management-Poetry-blue)](https://python-poetry.org/)
-[![Version](https://img.shields.io/badge/version-0.1.0-green)](https://github.com/HorizonsRC/whurl)
+[![Version](https://img.shields.io/badge/version-0.1.1-green)](https://github.com/HorizonsRC/whurl)
 
 ## Overview
 
@@ -526,6 +526,6 @@ Developed by Horizons Regional Council for environmental data management and ana
 
 ---
 
-**Version**: 0.1.0  
+**Version**: 0.1.1  
 **Python Compatibility**: 3.11+  
 **License**: GPL-3.0

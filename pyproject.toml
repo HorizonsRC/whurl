@@ -1,6 +1,6 @@
 [project]
 name = "whurl"
-version = "0.1.0"
+version = "0.1.1"
 description = "Which Hydro URL? - Python API wrapper for Hilltop Server"
 authors = [
     {name = "nicmostert",email = "nicolas.mostert@horizons.govt.nz"}
