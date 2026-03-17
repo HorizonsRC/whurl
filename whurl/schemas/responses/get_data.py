@@ -1,6 +1,7 @@
 """GetData response schema."""
 
 from __future__ import annotations
+from dulwich.config import Value
 
 from urllib.parse import quote, urlencode
 
@@ -115,11 +116,29 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                             .astype(float)
                         ) / float(divisor.get(col, 1.0) or 1.0)
                     elif fmt == "D":
-                        # Parse as DateTime??
-                        self.timeseries[col] = pd.to_datetime(
-                            self.timeseries[col],
-                            errors="coerce",
-                        )
+                        try:
+                            self.timeseries[col] = pd.to_datetime(
+                                self.timeseries[col], format="%Y-%m-%dT%H:%M:%S", errors="raise"
+                            )
+                        except ValueError:
+                            try:
+                                self.timeseries[col] = pd.to_datetime(
+                                    self.timeseries[col], format="%Y-%m-%d %H:%M:%S",
+                                )
+                            except ValueError:
+                                mowsecs_offset = 946771200
+                                # Convert mowsecs to unix time
+                                time_ints = pd.to_numeric(
+                                    self.timeseries[col], errors="coerce"
+                                ).fillna(0)
+                                self.timeseries[col] = time_ints - mowsecs_offset
+                                # Convert unix time to datetime
+                                self.timeseries[col] = pd.to_datetime(
+                                    self.timeseries[col],
+                                    unit="s",
+                                    origin="unix",
+                                    utc=False,
+                                )
                     elif fmt == "S":
                         # Parse as string
                         self.timeseries[col] = self.timeseries[col].astype(str)
@@ -128,9 +147,15 @@ class GetDataResponse(ModelReprMixin, BaseModel):
 
                 if "DateTime" in self.timeseries.columns:
                     if self.date_format == "Calendar":
-                        self.timeseries["DateTime"] = pd.to_datetime(
-                            self.timeseries["DateTime"], format="%Y-%m-%dT%H:%M:%S"
-                        )
+                        try:
+                            self.timeseries["DateTime"] = pd.to_datetime(
+                                self.timeseries["DateTime"], format="%Y-%m-%dT%H:%M:%S", errors="raise"
+                            )
+                        except ValueError:
+                            self.timeseries["DateTime"] = pd.to_datetime(
+                                self.timeseries["DateTime"], format="%Y-%m-%d %H:%M:%S",
+                            )
+                            
                     elif self.date_format == "mowsecs":
                         mowsecs_offset = 946771200
                         # Convert mowsecs to unix time

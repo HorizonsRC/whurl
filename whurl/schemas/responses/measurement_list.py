@@ -73,6 +73,7 @@ class MeasurementListResponse(ModelReprMixin, BaseModel):
         @field_validator("measurements", mode="before")
         def validate_measurements(cls, value) -> list["Measurement"]:
             """Ensure measurements is a list, even when there is only one."""
+
             if value is None:
                 return []
             if isinstance(value, dict):
@@ -94,6 +95,7 @@ class MeasurementListResponse(ModelReprMixin, BaseModel):
     @field_validator("measurements", mode="before")
     def validate_measurements(cls, value) -> list["Measurement"]:
         """Ensure measurements is a list, even when there is only one."""
+
         if value is None:
             return []
         if isinstance(value, dict):
@@ -156,5 +158,5 @@ class MeasurementListResponse(ModelReprMixin, BaseModel):
         if "Measurement" in data:
             if not isinstance(data["Measurement"], list):
                 data["Measurement"] = [data["Measurement"]]
-
+                 
         return cls(**data)

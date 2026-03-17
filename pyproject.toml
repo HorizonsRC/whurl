@@ -1,6 +1,6 @@
 [project]
 name = "whurl"
-version = "0.1.1"
+version = "0.1.2"
 description = "Which Hydro URL? - Python API wrapper for Hilltop Server"
 authors = [
     {name = "nicmostert",email = "nicolas.mostert@horizons.govt.nz"}
@@ -58,4 +58,4 @@ markers = [
   "integration: marks tests as integration tests (deselect as '-m \"not integration\"')",
   "performance: marks tests as performance tests (deselect as '-m \"not performance\"')",
 ]
-addopts = "--cov=whurl --cov-report=term-missing"
+addopts = "--cov=whurl --cov-report=term-missing --mode=all --update"

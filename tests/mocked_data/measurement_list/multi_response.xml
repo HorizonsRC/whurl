@@ -39,4 +39,23 @@
       <Ratset2>15</Ratset2>
     </Measurement>
   </DataSource>
+  <DataSource Name="Atmospheric Pressure" Site="Test Site 123">
+    <NumItems>1</NumItems>
+    <TSType>StdSeries</TSType>
+    <DataType>SimpleTimeSeries</DataType>
+    <Interpolation>Instant</Interpolation>
+    <ItemFormat>0</ItemFormat>
+    <From>2023-01-01T00:00:00</From>
+    <To>2025-09-16T08:15:00</To>
+    <Measurement Name="Atmospheric Pressure">
+      <Item>1</Item>
+      <DefaultMeasurement />
+      <RequestAs>Atmospheric Pressure</RequestAs>
+      <Units>kpa</Units>
+      <Format>#</Format>
+      <Ratset1>1</Ratset1>
+      <FirstRating>2021-02-24T00:00:00</FirstRating>
+      <LastRating>2025-02-14T00:00:00</LastRating>
+    </Measurement>
+  </DataSource>
 </HilltopServer>

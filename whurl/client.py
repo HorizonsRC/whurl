@@ -150,8 +150,8 @@ class HilltopClient:
             If the XML response cannot be parsed.
         """
         request = CollectionListRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(str(self.hts_endpoint)),
             **kwargs,
         )
         response = self.session.get(request.gen_url())
@@ -184,8 +184,8 @@ class HilltopClient:
             If the XML response cannot be parsed.
         """
         request = GetDataRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
         response = self.session.get(request.gen_url())
@@ -216,8 +216,8 @@ class HilltopClient:
             If the XML response cannot be parsed.
         """
         request = MeasurementListRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
         response = self.session.get(request.gen_url())
@@ -249,8 +249,8 @@ class HilltopClient:
             If the XML response cannot be parsed.
         """
         request = SiteInfoRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
         response = self.session.get(request.gen_url())
@@ -283,8 +283,8 @@ class HilltopClient:
             If the XML response cannot be parsed.
         """
         request = SiteListRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
         response = self.session.get(request.gen_url())
@@ -315,8 +315,8 @@ class HilltopClient:
             If the XML response cannot be parsed.
         """
         request = StatusRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
         response = self.session.get(request.gen_url())
@@ -348,8 +348,8 @@ class HilltopClient:
             If the XML response cannot be parsed.
         """
         request = TimeRangeRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
         response = self.session.get(request.gen_url())
@@ -509,8 +509,8 @@ class AsyncHilltopClient:
             If the XML response cannot be parsed.
         """
         request = CollectionListRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
         response = await self.session.get(request.gen_url())
@@ -543,8 +543,8 @@ class AsyncHilltopClient:
             If the XML response cannot be parsed.
         """
         request = GetDataRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
         response = await self.session.get(request.gen_url())
@@ -575,8 +575,8 @@ class AsyncHilltopClient:
             If the XML response cannot be parsed.
         """
         request = MeasurementListRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
         response = await self.session.get(request.gen_url())
@@ -608,8 +608,8 @@ class AsyncHilltopClient:
             If the XML response cannot be parsed.
         """
         request = SiteInfoRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
         response = await self.session.get(request.gen_url())
@@ -642,8 +642,8 @@ class AsyncHilltopClient:
             If the XML response cannot be parsed.
         """
         request = SiteListRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
         response = await self.session.get(request.gen_url())
@@ -674,8 +674,8 @@ class AsyncHilltopClient:
             If the XML response cannot be parsed.
         """
         request = StatusRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
         response = await self.session.get(request.gen_url())
@@ -707,8 +707,8 @@ class AsyncHilltopClient:
             If the XML response cannot be parsed.
         """
         request = TimeRangeRequest(
-            base_url=self.base_url,
-            hts_endpoint=self.hts_endpoint,
+            base_url=str(self.base_url),
+            hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
         response = await self.session.get(request.gen_url())

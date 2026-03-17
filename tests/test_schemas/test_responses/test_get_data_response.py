@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def create_cached_fixtures(filename: str, request_kwargs: dict = None):
+def create_cached_fixtures(filename: str, request_kwargs: dict | None = None):
     """Factory to create cached fixtures."""
 
     @pytest.fixture
@@ -73,8 +73,8 @@ basic_response_xml_cached = create_cached_fixtures(
     {
         "site": os.getenv("TEST_SITE"),
         "measurement": os.getenv("TEST_MEASUREMENT"),
-        "from_datetime": "2023-01-01T00:00:00",
-        "to_datetime": "2023-02-01T00:00:00",
+        "from_datetime": "2025-01-01T00:00:00",
+        "to_datetime": "2025-02-01T00:00:00",
     },
 )
 one_point_response_xml_cached = create_cached_fixtures(
@@ -90,8 +90,8 @@ collection_response_xml_cached = create_cached_fixtures(
         "site": os.getenv("TEST_SITE"),
         "measurement": os.getenv("TEST_MEASUREMENT"),
         "collection": os.getenv("TEST_COLLECTION"),
-        "from_datetime": "2023-01-01T00:00:00",
-        "to_datetime": "2023-02-01T00:00:00",
+        "from_datetime": "2025-01-01T00:00:00",
+        "to_datetime": "2025-02-01T00:00:00",
     },
 )
 time_interval_response_xml_cached = create_cached_fixtures(
@@ -99,7 +99,7 @@ time_interval_response_xml_cached = create_cached_fixtures(
     {
         "site": os.getenv("TEST_SITE"),
         "measurement": os.getenv("TEST_MEASUREMENT"),
-        "time_interval": "2023-01-01T12:00:00/2023-01-02T12:00:00",
+        "time_interval": "2025-01-01T12:00:00/2025-01-02T12:00:00",
     },
 )
 time_interval_complex_response_xml_cached = create_cached_fixtures(
@@ -107,7 +107,7 @@ time_interval_complex_response_xml_cached = create_cached_fixtures(
     {
         "site": os.getenv("TEST_SITE"),
         "measurement": os.getenv("TEST_MEASUREMENT"),
-        "time_interval": "2023-01-01T12:00:00/P2DT2H",  # 2 days
+        "time_interval": "2025-01-01T12:00:00/P2DT2H",  # 2 days
         "alignment": "3h",
     },
 )
@@ -116,7 +116,7 @@ date_only_response_xml_cached = create_cached_fixtures(
     {
         "site": os.getenv("TEST_SITE"),
         "measurement": os.getenv("TEST_MEASUREMENT"),
-        "time_interval": "2023-01-01T12:00:00/P2DT2H",  # 2 days
+        "time_interval": "2025-01-01T12:00:00/P2DT2H",  # 2 days
         "date_only": "Yes",
     },
 )
@@ -151,8 +151,8 @@ class TestRemoteFixtures:
             hts_endpoint=remote_client.hts_endpoint,
             site=os.getenv("TEST_SITE"),
             measurement=os.getenv("TEST_MEASUREMENT"),
-            from_datetime="2023-01-01T00:00:00",
-            to_datetime="2023-02-01T00:00:00",
+            from_datetime="2025-01-01T00:00:00",
+            to_datetime="2025-02-01T00:00:00",
         ).gen_url()
 
         # Switch off httpx mock so that remote request can go through.
@@ -230,8 +230,8 @@ class TestRemoteFixtures:
             base_url=remote_client.base_url,
             hts_endpoint=remote_client.hts_endpoint,
             collection=os.getenv("TEST_COLLECTION"),
-            from_datetime="2023-01-01T00:00:00",
-            to_datetime="2023-02-01T00:00:00",
+            from_datetime="2025-01-01T00:00:00",
+            to_datetime="2025-02-01T00:00:00",
         ).gen_url()
 
         # Switch off httpx mock so that remote request can go through.
@@ -269,7 +269,7 @@ class TestRemoteFixtures:
             hts_endpoint=remote_client.hts_endpoint,
             site=os.getenv("TEST_SITE"),
             measurement=os.getenv("TEST_MEASUREMENT"),
-            time_interval="2023-01-01T12:00:00/2023-01-02T12:00:00",
+            time_interval="2025-01-01T12:00:00/2025-01-02T12:00:00",
         ).gen_url()
 
         # Switch off httpx mock so that remote request can go through.
@@ -307,7 +307,7 @@ class TestRemoteFixtures:
             hts_endpoint=remote_client.hts_endpoint,
             site=os.getenv("TEST_SITE"),
             measurement=os.getenv("TEST_MEASUREMENT"),
-            time_interval="2023-01-01T12:00:00/P2DT2H",  # 2 days, 2 hours
+            time_interval="2025-01-01T12:00:00/P2DT2H",  # 2 days, 2 hours
             alignment="3h",  # Align to 3 hour intervals
         ).gen_url()
 
@@ -345,7 +345,7 @@ class TestRemoteFixtures:
             hts_endpoint=remote_client.hts_endpoint,
             site=os.getenv("TEST_SITE"),
             measurement=os.getenv("TEST_MEASUREMENT"),
-            time_interval="2023-01-01T12:00:00/P2DT2H",  # 2 days, 2 hours
+            time_interval="2025-01-01T12:00:00/P2DT2H",  # 2 days, 2 hours
             date_only="Yes",
         ).gen_url()
 
@@ -382,8 +382,8 @@ class TestResponseValidation:
             hts_endpoint=hts_endpoint,
             site="Test Site Alpha",
             measurement="Stage",
-            from_datetime="2023-01-01T00:00:00",
-            to_datetime="2023-02-01T00:00:00",
+            from_datetime="2025-01-01T00:00:00",
+            to_datetime="2025-02-01T00:00:00",
         ).gen_url()
 
         httpx_mock.add_response(
@@ -399,8 +399,8 @@ class TestResponseValidation:
             result = client.get_data(
                 site="Test Site Alpha",
                 measurement="Stage",
-                from_datetime="2023-01-01T00:00:00",
-                to_datetime="2023-02-01T00:00:00",
+                from_datetime="2025-01-01T00:00:00",
+                to_datetime="2025-02-01T00:00:00",
             )
 
         # Base Model
@@ -472,8 +472,8 @@ class TestResponseValidation:
             hts_endpoint=hts_endpoint,
             site=os.getenv("TEST_SITE"),
             measurement=os.getenv("TEST_MEASUREMENT"),
-            from_datetime="2023-01-01T00:00:00",
-            to_datetime="2023-01-02T00:00:00",
+            from_datetime="2025-01-01T00:00:00",
+            to_datetime="2025-01-02T00:00:00",
         ).gen_url()
 
         # Here we tell httpx_mock to expect a GET request to the test_url, and
@@ -492,8 +492,8 @@ class TestResponseValidation:
             result = client.get_data(
                 site=os.getenv("TEST_SITE"),
                 measurement=os.getenv("TEST_MEASUREMENT"),
-                from_datetime="2023-01-01T00:00:00",
-                to_datetime="2023-01-02T00:00:00",
+                from_datetime="2025-01-01T00:00:00",
+                to_datetime="2025-01-02T00:00:00",
             )
 
         # Base Model
@@ -644,8 +644,8 @@ class TestResponseValidation:
             base_url=base_url,
             hts_endpoint=hts_endpoint,
             collection=os.getenv("TEST_COLLECTION"),
-            from_datetime="2023-01-01T00:00:00",
-            to_datetime="2023-02-01T00:00:00",
+            from_datetime="2025-01-01T00:00:00",
+            to_datetime="2025-02-01T00:00:00",
         ).gen_url()
 
         # Here we tell httpx_mock to expect a GET request to the test_url, and
@@ -663,8 +663,8 @@ class TestResponseValidation:
 
             result = client.get_data(
                 collection=os.getenv("TEST_COLLECTION"),
-                from_datetime="2023-01-01T00:00:00",
-                to_datetime="2023-02-01T00:00:00",
+                from_datetime="2025-01-01T00:00:00",
+                to_datetime="2025-02-01T00:00:00",
             )
 
         # Test the top level response object
@@ -893,7 +893,7 @@ class TestResponseValidation:
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
 
-        time_interval = "2023-01-01T12:00:00/2023-01-02T12:00:00"
+        time_interval = "2025-01-01T12:00:00/2025-01-02T12:00:00"
 
         # This is a reconstruction of the url that would be generated by the client
         test_url = GetDataRequest(
@@ -989,7 +989,7 @@ class TestResponseValidation:
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
 
-        time_interval = "2023-01-01T12:00:00/2023-01-02T12:00:00"
+        time_interval = "2025-01-01T12:00:00/2025-01-02T12:00:00"
 
         # This is a reconstruction of the url that would be generated by the client
         test_url = GetDataRequest(
@@ -1072,7 +1072,7 @@ class TestResponseValidation:
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
 
-        time_interval = "2023-01-01T12:00:00/P2DT2H"  # 2 days 2 hours
+        time_interval = "2025-01-01T12:00:00/P2DT2H"  # 2 days 2 hours
         alignment = "3h"  # Align to 3 hour intervals
 
         # This is a reconstruction of the url that would be generated by the client
@@ -1157,7 +1157,7 @@ class TestResponseValidation:
         assert data.timeseries.index.dtype == "datetime64[ns]"
 
         # Check that the timeseries starts at the expected time
-        expected_start_time = pd.Timestamp("2023-01-01T12:00:00")
+        expected_start_time = pd.Timestamp("2025-01-01T12:00:00")
         assert data.timeseries.index[0] == expected_start_time
 
         # Check that the timeseries ends at the expected time
@@ -1180,7 +1180,7 @@ class TestResponseValidation:
         base_url = "http://example.com"
         hts_endpoint = "foo.hts"
 
-        time_interval = "2023-01-01T12:00:00/P2DT2H"  # 2 days 2 hours
+        time_interval = "2025-01-01T12:00:00/P2DT2H"  # 2 days 2 hours
         alignment = "3h"  # Align to 3 hour intervals
 
         # This is a reconstruction of the url that would be generated by the client
@@ -1254,7 +1254,7 @@ class TestResponseValidation:
         assert data.timeseries.index.dtype == "datetime64[ns]"
 
         # Check that the timeseries starts at the expected time
-        expected_start_time = pd.Timestamp("2023-01-01T12:00:00")
+        expected_start_time = pd.Timestamp("2025-01-01T12:00:00")
         assert data.timeseries.index[0] == expected_start_time
 
         # Check that the timeseries ends at the expected time
@@ -1283,8 +1283,8 @@ class TestResponseValidation:
             hts_endpoint=hts_endpoint,
             site="Test Site Alpha",
             measurement="Stage",
-            from_datetime="2023-01-01T00:00:00",
-            to_datetime="2023-02-01T00:00:00",
+            from_datetime="2025-01-01T00:00:00",
+            to_datetime="2025-02-01T00:00:00",
         ).gen_url()
 
         httpx_mock.add_response(
@@ -1300,8 +1300,8 @@ class TestResponseValidation:
             result = await client.get_data(
                 site="Test Site Alpha",
                 measurement="Stage",
-                from_datetime="2023-01-01T00:00:00",
-                to_datetime="2023-02-01T00:00:00",
+                from_datetime="2025-01-01T00:00:00",
+                to_datetime="2025-02-01T00:00:00",
             )
 
         # Base Model
