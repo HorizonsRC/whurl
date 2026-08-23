@@ -409,8 +409,8 @@ class TestResponseValidation:
         assert isinstance(result.request, GetDataRequest)
 
         # Measurement
-        assert len(result.measurement) == 1
-        measurement = result.measurement[0]
+        assert len(result.measurements) == 1
+        measurement = result.measurements[0]
         assert isinstance(measurement, GetDataResponse.Measurement)
         assert measurement.site_name == "Test Site Alpha"
 
@@ -502,8 +502,8 @@ class TestResponseValidation:
         assert isinstance(result.request, GetDataRequest)
 
         # Measurement
-        assert len(result.measurement) == 1
-        measurement = result.measurement[0]
+        assert len(result.measurements) == 1
+        measurement = result.measurements[0]
         assert isinstance(measurement, GetDataResponse.Measurement)
         assert measurement.site_name == os.getenv("TEST_SITE")
 
@@ -578,12 +578,12 @@ class TestResponseValidation:
         assert result.agency == "Test Council"
         assert isinstance(result.request, GetDataRequest)
 
-        assert len(result.measurement) > 0
-        assert isinstance(result.measurement, list)
+        assert len(result.measurements) > 0
+        assert isinstance(result.measurements, list)
 
         # Find the measurement with the site_name "Kahuterawa at Scotts Road"
         measurement = next(
-            (m for m in result.measurement if m.site_name == "Test Site Alpha"),
+            (m for m in result.measurements if m.site_name == "Test Site Alpha"),
             None,
         )
         assert isinstance(measurement, GetDataResponse.Measurement)
@@ -672,12 +672,12 @@ class TestResponseValidation:
         assert result.agency == os.getenv("TEST_AGENCY")
         assert isinstance(result.request, GetDataRequest)
 
-        assert len(result.measurement) > 0
-        assert isinstance(result.measurement, list)
+        assert len(result.measurements) > 0
+        assert isinstance(result.measurements, list)
 
         # Find the measurement with the site_name "Kahuterawa at Scotts Road"
         measurement = next(
-            (m for m in result.measurement if m.site_name == os.getenv("TEST_SITE")),
+            (m for m in result.measurements if m.site_name == os.getenv("TEST_SITE")),
             None,
         )
         assert isinstance(measurement, GetDataResponse.Measurement)
@@ -753,12 +753,12 @@ class TestResponseValidation:
         assert result.agency == "Test Council"
         assert isinstance(result.request, GetDataRequest)
 
-        assert len(result.measurement) > 0
-        assert isinstance(result.measurement, list)
+        assert len(result.measurements) > 0
+        assert isinstance(result.measurements, list)
 
         # Find the measurement with the site_name os.getenv("TEST_SITE")
         measurement = next(
-            (m for m in result.measurement if m.site_name == "Test Site Alpha"),
+            (m for m in result.measurements if m.site_name == "Test Site Alpha"),
             None,
         )
         assert isinstance(measurement, GetDataResponse.Measurement)
@@ -845,12 +845,12 @@ class TestResponseValidation:
         assert result.agency == os.getenv("TEST_AGENCY")
         assert isinstance(result.request, GetDataRequest)
 
-        assert len(result.measurement) > 0
-        assert isinstance(result.measurement, list)
+        assert len(result.measurements) > 0
+        assert isinstance(result.measurements, list)
 
         # Find the measurement with the site_name os.getenv("TEST_SITE")
         measurement = next(
-            (m for m in result.measurement if m.site_name == os.getenv("TEST_SITE")),
+            (m for m in result.measurements if m.site_name == os.getenv("TEST_SITE")),
             None,
         )
         assert isinstance(measurement, GetDataResponse.Measurement)
@@ -928,12 +928,12 @@ class TestResponseValidation:
         assert result.agency == "Test Council"
         assert isinstance(result.request, GetDataRequest)
 
-        assert len(result.measurement) > 0
-        assert isinstance(result.measurement, list)
+        assert len(result.measurements) > 0
+        assert isinstance(result.measurements, list)
 
         # Find the measurement with the site_name os.getenv("TEST_SITE")
         measurement = next(
-            (m for m in result.measurement if m.site_name == "Test Site Alpha"),
+            (m for m in result.measurements if m.site_name == "Test Site Alpha"),
             None,
         )
         assert isinstance(measurement, GetDataResponse.Measurement)
@@ -1024,12 +1024,12 @@ class TestResponseValidation:
         assert result.agency == os.getenv("TEST_AGENCY")
         assert isinstance(result.request, GetDataRequest)
 
-        assert len(result.measurement) > 0
-        assert isinstance(result.measurement, list)
+        assert len(result.measurements) > 0
+        assert isinstance(result.measurements, list)
 
         # Find the measurement with the site_name os.getenv("TEST_SITE")
         measurement = next(
-            (m for m in result.measurement if m.site_name == os.getenv("TEST_SITE")),
+            (m for m in result.measurements if m.site_name == os.getenv("TEST_SITE")),
             None,
         )
         assert isinstance(measurement, GetDataResponse.Measurement)
@@ -1110,12 +1110,12 @@ class TestResponseValidation:
         assert result.agency == "Test Council"
         assert isinstance(result.request, GetDataRequest)
 
-        assert len(result.measurement) > 0
-        assert isinstance(result.measurement, list)
+        assert len(result.measurements) > 0
+        assert isinstance(result.measurements, list)
 
         # Find the measurement with the site_name os.getenv("TEST_SITE")
         measurement = next(
-            (m for m in result.measurement if m.site_name == "Test Site Alpha"),
+            (m for m in result.measurements if m.site_name == "Test Site Alpha"),
             None,
         )
         assert isinstance(measurement, GetDataResponse.Measurement)
@@ -1218,12 +1218,12 @@ class TestResponseValidation:
         assert result.agency == os.getenv("TEST_AGENCY")
         assert isinstance(result.request, GetDataRequest)
 
-        assert len(result.measurement) > 0
-        assert isinstance(result.measurement, list)
+        assert len(result.measurements) > 0
+        assert isinstance(result.measurements, list)
 
         # Find the measurement with the site_name os.getenv("TEST_SITE")
         measurement = next(
-            (m for m in result.measurement if m.site_name == os.getenv("TEST_SITE")),
+            (m for m in result.measurements if m.site_name == os.getenv("TEST_SITE")),
             None,
         )
         assert isinstance(measurement, GetDataResponse.Measurement)

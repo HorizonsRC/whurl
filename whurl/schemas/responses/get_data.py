@@ -187,13 +187,13 @@ class GetDataResponse(ModelReprMixin, BaseModel):
             return self
 
     agency: str = Field(alias="Agency", default=None)
-    measurement: list[Measurement] = Field(alias="Measurement", default_factory=list)
+    measurements: list[Measurement] = Field(alias="Measurement", default_factory=list)
     error: str | None = Field(alias="Error", default=None)
     request: GetDataRequest | None = Field(default=None, exclude=True)
 
-    @field_validator("measurement", mode="before")
-    def validate_measurement(cls, value: dict | list) -> list[Measurement]:
-        """Ensure measurement is a list, even when there is only one."""
+    @field_validator("measurements", mode="before")
+    def validate_measurements(cls, value: dict | list) -> list[Measurement]:
+        """Ensure measurements is a list, even when there is only one."""
         if value is None:
             return []
         if isinstance(value, dict):
@@ -217,7 +217,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
     def to_dataframe(self):
         """Convert the model to a pandas DataFrame."""
         frames = []
-        for measurement in self.measurement:
+        for measurement in self.measurements:
             frame = measurement.data.timeseries
             if not frame.empty:
                 frame["Site"] = measurement.site_name

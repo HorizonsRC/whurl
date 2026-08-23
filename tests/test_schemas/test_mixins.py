@@ -90,7 +90,7 @@ class TestModelReprMixin:
 
         # Should contain nested structure with proper indentation
         assert "GetDataResponse:" in repr_str
-        assert "measurement:" in repr_str
+        assert "measurements:" in repr_str
         assert "data_source:" in repr_str
         assert "item_info:" in repr_str
         assert "item_name: Stage" in repr_str

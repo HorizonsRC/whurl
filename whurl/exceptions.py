@@ -141,3 +141,8 @@ class HilltopConfigError(HilltopError):
 
     def __init__(self, message: str = "Hilltop configuration error"):
         super().__init__(message)
+
+
+class TimezoneConversionWarning(UserWarning):
+    """Warning raised when a timezone is convertd to NZST"""
+    pass
