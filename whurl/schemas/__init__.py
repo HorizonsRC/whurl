@@ -11,10 +11,10 @@ This package provides:
 - Comprehensive error handling and configuration management
 """
 
-from .client import HilltopClient
+from .mixins import ModelReprMixin
 
 __author__ = """Nic Mostert"""
 __email__ = "nicolas.mostert@horizons.govt.nz"
-__version__ = "0.2.0"
+__version__ = "0.1.3"
 
-__all__ = ["HilltopClient"]
+__all__ = ["ModelReprMixin"]

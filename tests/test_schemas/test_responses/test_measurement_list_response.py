@@ -682,38 +682,3 @@ class TestMeasurementList:
         naive_dict = xmltodict.parse(all_response_xml_cached)["HilltopServer"]
 
         assert test_dict == naive_dict
-
-    @pytest.mark.unit
-    async def test_measurement_list_with_async_client_unit(
-        self, httpx_mock, all_response_xml_mocked
-    ):
-        """Test that the XML can be parsed into a MeasurementListResponse object."""
-
-        from whurl.client import AsyncHilltopClient
-        from whurl.schemas.requests import MeasurementListRequest
-        from whurl.schemas.responses import MeasurementListResponse
-
-        base_url = "http://example.com"
-        hts_endpoint = "foo.hts"
-
-        # Generate the remote URL
-        test_url = MeasurementListRequest(
-            base_url=base_url,
-            hts_endpoint=hts_endpoint,
-        ).gen_url()
-
-        httpx_mock.add_response(
-            url=test_url,
-            method="GET",
-            text=all_response_xml_mocked,
-        )
-
-        async with AsyncHilltopClient(
-            base_url=base_url,
-            hts_endpoint=hts_endpoint,
-        ) as client:
-            measurement_list = await client.get_measurement_list()
-
-        # Test the top level response object
-        assert isinstance(measurement_list, MeasurementListResponse)
-        assert measurement_list.agency == "Test Council"

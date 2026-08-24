@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<Hilltop>
+    <Agency>Test Council</Agency>
+    <Measurement SiteName="Test Site Alpha">
+        <DataSource Name="Water Level" NumItems="3">
+            <TSType>CheckSeries</TSType>
+            <DataType>SimpleTimeSeries</DataType>
+            <Interpolation>Discrete</Interpolation>
+            <ItemFormat>45</ItemFormat>
+            <ItemInfo ItemNumber="1">
+                <ItemName>Check Level</ItemName>
+                <ItemFormat>F</ItemFormat>
+                <Divisor>1</Divisor>
+                <Units>hPa</Units>
+                <Format>####.#</Format>
+            </ItemInfo>
+            <ItemInfo ItemNumber="3">
+                <ItemName>Comment</ItemName>
+                <ItemFormat>S</ItemFormat>
+                <Divisor>1</Divisor>
+                <Units></Units>
+                <Format>###</Format>
+            </ItemInfo>
+            <ItemInfo ItemNumber="2">
+                <ItemName>Recorder Time</ItemName>
+                <ItemFormat>D</ItemFormat>
+                <Divisor>1</Divisor>
+                <Units></Units>
+                <Format>#.##</Format>
+            </ItemInfo>
+        </DataSource>
+        <Data DateFormat="Calendar" NumItems="3">
+            <E>
+                <T>2025-06-11T12:30:00</T>
+                <I1>999</I1>
+                <I2>2696416200</I2>
+                <I3>Other. NA</I3>
+            </E>
+            <E>
+                <T>2025-12-15T13:40:00</T>
+                <I1>1016</I1>
+                <I2>2712577200</I2>
+                <I3/>
+            </E>
+        </Data>
+    </Measurement>
+</Hilltop>

@@ -3,9 +3,9 @@
 A Python client library for interacting with Hilltop Server APIs, developed by Horizons Regional Council as a dependency of [Hydrobot](https://github.com/HorizonsRC/hydrobot). WHURL provides a clean, Pythonic interface for fetching environmental and scientific data from Hilltop servers.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.14%2B-blue)](https://www.python.org/downloads/)
 [![Poetry](https://img.shields.io/badge/dependency%20management-Poetry-blue)](https://python-poetry.org/)
-[![Version](https://img.shields.io/badge/version-0.1.3-green)](https://github.com/HorizonsRC/whurl)
+[![Version](https://img.shields.io/badge/version-0.2.0-green)](https://github.com/HorizonsRC/whurl)
 
 ## Overview
 
@@ -27,7 +27,7 @@ WHURL (Which Hydro URL) is designed to simplify interactions with Hilltop Server
 
 ### Prerequisites
 
-- Python 3.11 or higher
+- Python 3.14 or higher
 - [Poetry](https://python-poetry.org/) for dependency management
 - Internet connectivity to reach your Hilltop server
 
@@ -526,6 +526,6 @@ Developed by Horizons Regional Council for environmental data management and ana
 
 ---
 
-**Version**: 0.1.3
-**Python Compatibility**: 3.11+  
+**Version**: 0.2.0
+**Python Compatibility**: 3.14+  
 **License**: GPL-3.0

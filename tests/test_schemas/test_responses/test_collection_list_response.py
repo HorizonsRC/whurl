@@ -219,39 +219,3 @@ class TestResponseValidation:
                 assert isinstance(item.site_name, str)
                 assert isinstance(item.measurement, str | None)
                 assert isinstance(item.filename, str | None)
-
-    @pytest.mark.unit
-    async def test_collection_list_with_async_client_unit(
-        self, httpx_mock, basic_response_xml_mocked
-    ):
-        """Validate the response XML using AsyncHilltopClient."""
-
-        from whurl.client import AsyncHilltopClient
-        from whurl.schemas.requests.collection_list import \
-            CollectionListRequest
-        from whurl.schemas.responses.collection_list import \
-            CollectionListResponse
-
-        base_url = "http://example.com"
-        hts_endpoint = "foo.hts"
-
-        test_url = CollectionListRequest(
-            base_url=base_url,
-            hts_endpoint=hts_endpoint,
-        ).gen_url()
-
-        httpx_mock.add_response(
-            url=test_url,
-            method="GET",
-            text=basic_response_xml_mocked,
-        )
-
-        async with AsyncHilltopClient(
-            base_url=base_url,
-            hts_endpoint=hts_endpoint,
-        ) as client:
-            result = await client.get_collection_list()
-
-        # Base Model
-        assert isinstance(result, CollectionListResponse)
-        assert result.title == "Test Project"

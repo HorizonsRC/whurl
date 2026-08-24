@@ -16,6 +16,20 @@ from whurl.schemas.mixins import ModelReprMixin
 from whurl.schemas.requests import GetDataRequest
 
 
+class ItemInfo(ModelReprMixin, BaseModel):
+    """Describes a data type in the data."""
+
+    item_number: int = Field(alias="@ItemNumber")
+    item_name: str = Field(alias="ItemName")
+    item_format: str = Field(alias="ItemFormat")
+    divisor: float | None = Field(alias="Divisor", default=None)
+    units: str | None = Field(alias="Units", default=None)
+    format: str = Field(alias="Format")
+
+    def to_dict(self):
+        """Convert the model to a dictionary."""
+        return self.model_dump(exclude_unset=True, by_alias=True)
+
 class GetDataResponse(ModelReprMixin, BaseModel):
     """Top-level Hilltop GetData response model."""
 
@@ -25,19 +39,6 @@ class GetDataResponse(ModelReprMixin, BaseModel):
         class DataSource(ModelReprMixin, BaseModel):
             """Represents a data source containing info about the fields in the data."""
 
-            class ItemInfo(ModelReprMixin, BaseModel):
-                """Describes a data type in the data."""
-
-                item_number: int = Field(alias="@ItemNumber")
-                item_name: str = Field(alias="ItemName")
-                item_format: str = Field(alias="ItemFormat")
-                divisor: float | None = Field(alias="Divisor", default=None)
-                units: str | None = Field(alias="Units", default=None)
-                format: str = Field(alias="Format")
-
-                def to_dict(self):
-                    """Convert the model to a dictionary."""
-                    return self.model_dump(exclude_unset=True, by_alias=True)
 
             name: str = Field(alias="@Name")
             num_items: int = Field(alias="@NumItems")
@@ -45,7 +46,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
             data_type: str = Field(alias="DataType")
             interpolation: str = Field(alias="Interpolation")
             item_format: str | None = Field(alias="ItemFormat", default=None)
-            item_info: list["ItemInfo"] = Field(alias="ItemInfo", default_factory=list)
+            item_info: list[ItemInfo] = Field(alias="ItemInfo", default_factory=list)
 
             @field_validator("item_info", mode="before")
             def validate_item_info(cls, value: dict | list) -> list["ItemInfo"]:
@@ -53,8 +54,8 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                 if value is None:
                     return []
                 if isinstance(value, dict):
-                    return [cls.ItemInfo(**value)]
-                return [cls.ItemInfo(**item) for item in value]
+                    return [ItemInfo(**value)]
+                return [ItemInfo(**item) for item in value]
 
             def to_dict(self):
                 """Convert the model to a dictionary."""
@@ -66,7 +67,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
             date_format: str = Field(alias="@DateFormat")
             num_items: int = Field(alias="@NumItems")
             timeseries: pd.DataFrame = Field(alias="E", default_factory=pd.DataFrame)
-            _item_info: list["ItemInfo"] = PrivateAttr(default_factory=list)
+            item_info: list[ItemInfo] = Field(default_factory=list, exclude=True)
 
             model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -80,6 +81,15 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                     return pd.DataFrame.from_dict([value])
                 return pd.DataFrame.from_records(value)
 
+            @field_validator("item_info", mode="before")
+            def validate_item_info(cls, value: dict | list) -> list["ItemInfo"]:
+                """Ensure item_info is a list, even when there is only one."""
+                if value is None:
+                    return []
+                if isinstance(value, dict):
+                    return [ItemInfo(**value)]
+                return [ItemInfo(**item) for item in value]
+
             @model_validator(mode="after")
             def construct_dataframe(self) -> "self":
                 """Rename columns in the DataFrame to match items in ItemInfo."""
@@ -91,8 +101,8 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                     mapping = {}
                 formatter = {}
                 divisor = {}
-                if self._item_info is not None:
-                    for item in self._item_info:
+                if self.item_info is not None:
+                    for item in self.item_info:
                         current_name = f"I{item.item_number}"
                         mapping[current_name] = item.item_name
                         formatter[item.item_name] = item.item_format
@@ -140,8 +150,10 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                                     utc=False,
                                 )
                     elif fmt == "S":
-                        # Parse as string
-                        self.timeseries[col] = self.timeseries[col].astype(str)
+                        # Parse as string. 
+                        # "string" uses pandas' nullable dtype which prepresents
+                        # missing values as pd.NA
+                        self.timeseries[col] = self.timeseries[col].astype("string")
                     else:
                         raise HilltopParseError(f"Unknown Format Spec: {fmt}")
 
@@ -178,14 +190,38 @@ class GetDataResponse(ModelReprMixin, BaseModel):
         data: Data = Field(alias="Data", default_factory=list)
         tideda_site_number: str | None = Field(alias="TidedaSiteNumber", default=None)
 
-        @model_validator(mode="after")
-        def transfer_item_info(self) -> "self":
-            """Send item_info from datasource to data."""
-            if self.data_source.item_info is not None:
-                self.data._item_info = self.data_source.item_info
-                self.data.model_validate(self.data)
-            return self
+        @model_validator(mode="before")
+        def prepare_data_with_item_info(cls, values: dict) -> dict:
+            """Inject them_info into Data before Data is constructed."""
+            if "DataSource" in values and "Data" in values:
+                data_source = values["DataSource"]
+                data = values["Data"]
 
+                # If Data is a dict, add item_info
+                if isinstance(data, dict):
+                    # Get item_info from DataSource
+                    if isinstance(data_source, dict):
+                        item_info = data_source.get("ItemInfo", [])
+                    else:
+                        item_info = getattr(data_source, "item_info", [])
+
+                    # Add item_info to Data dict
+                    data["item_info"] = item_info
+                elif data is not None:
+                    # If Data is already an object, set item_info directly
+                    data.item_info = getattr(data_source, "item_info", [])
+                    
+            return values
+    
+        @model_validator(mode="after")
+        def ensure_item_info_transferred(self) -> "self":
+            """Ensure item_info is transferred to Data."""
+            if self.data and self.data_source and self.data_source.item_info:
+                if not self.data.item_info:
+                    self.data.item_info = self.data_source.item_info
+            return self
+    
+    
     agency: str = Field(alias="Agency", default=None)
     measurements: list[Measurement] = Field(alias="Measurement", default_factory=list)
     error: str | None = Field(alias="Error", default=None)

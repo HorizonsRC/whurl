@@ -1,4 +1,5 @@
 from whurl.client import HilltopClient
+from whurl.schemas.responses import GetDataResponse
 
 client = HilltopClient(
     base_url="http://hilltopdev.horizons.govt.nz",
@@ -7,9 +8,18 @@ client = HilltopClient(
 )
 
 with client:
-    status = client.get_status()
-    print(f"Server status: {status}")
+    filepath = "./processed_cond.xml"
+    with open(filepath, 'r', encoding="utf-8") as file:
+        xml = file.read()
+        
+        data = GetDataResponse.from_xml(xml)
 
-    measurements = client.get_measurement_list(site="Manawatu at Teachers College")
-
-    print(measurements.measurements)
+        for meas in data.measurements:
+            df = meas.data.timeseries
+            print(df)
+            print(df.dtypes)
+            if "Comment" in df.columns:
+                for i, row in df.iterrows():
+                    print(row)
+                    print(row["Comment"])
+                    print(type(row["Comment"]))

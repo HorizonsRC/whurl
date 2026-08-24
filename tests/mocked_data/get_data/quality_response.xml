@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<Hilltop>
+    <Agency>Test Council</Agency>
+    <Measurement SiteName="Test Site Alpha">
+        <DataSource Name="Atmospheric Pressure" NumItems="1">
+            <TSType>StdQualSeries</TSType>
+            <DataType>SimpleTimeSeries</DataType>
+            <Interpolation>Event</Interpolation>
+            <ItemInfo ItemNumber="1">
+                <ItemName>Atmospheric Pressure</ItemName>
+                <ItemFormat>F</ItemFormat>
+                <Units>hPa</Units>
+                <Format>#.#</Format>
+            </ItemInfo>
+        </DataSource>
+        <Data DateFormat="Calendar" NumItems="1">
+            <E>
+                <T>2024-01-01T00:00:00</T>
+                <I1>200</I1>
+            </E>
+        </Data>
+    </Measurement>
+</Hilltop>
