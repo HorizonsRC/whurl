@@ -88,7 +88,7 @@ class GetDataRequest(BaseHilltopRequest):
     format: Literal["Native", "WML2", "JSON"] | None = Field(
         default=None, serialization_alias="Format"
     )
-    ts_type: Literal["StdQualSeries", "Standard", "StdCheckSeries"] | None = Field(
+    ts_type: Literal["StdQualSeries", "StdSeries", "CheckSeries"] | None = Field(
         default=None, serialization_alias="TSType"
     )
     show_quality: Literal["Yes"] | None = Field(
