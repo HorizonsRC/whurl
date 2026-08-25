@@ -15,6 +15,6 @@ from .client import HilltopClient
 
 __author__ = """Nic Mostert"""
 __email__ = "nicolas.mostert@horizons.govt.nz"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 __all__ = ["HilltopClient"]

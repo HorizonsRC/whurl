@@ -1,6 +1,6 @@
 [project]
 name = "whurl"
-version = "0.2.0"
+version = "0.2.1"
 description = "Which Hydro URL? - Python API wrapper for Hilltop Server"
 authors = [
     {name = "nicmostert",email = "nicolas.mostert@horizons.govt.nz"}
@@ -23,23 +23,24 @@ dependencies = [
     "httpx (>=0.28.1,<0.29.0)",
     "pydantic (>=2.11.9,<3.0.0)",
     "lxml (>=6.0.1,<7.0.0)",
-    "pandas (>=2.3.2,<3.0.0)",
+    "pandas (>=3.0.5,<4.0.0)",
     "python-dotenv (>=1.1.1,<2.0.0)",
     "isodate (>=0.7.2,<0.8.0)",
     "xmltodict (>=1.0.0,<2.0.0)",
-    "certifi (>=2025.8.3,<2026.0.0)",
+    "certifi (>=2026.7.22,<2027.0.0)",
     "pyyaml (>=6.0.2,<7.0.0)",
-    "numpy (>=1.26.4,<2.0.0)",
-    "fastapi (>=0.116.1,<0.117.0)",
-    "uvicorn (>=0.35.0,<0.36.0)",
+    "numpy (>=2.5.2,<3.0.0)",
+    "fastapi (>=0.141.1,<0.142.0)",
+    "uvicorn (>=0.52.4,<0.53.0)",
     "pytest-benchmark (>=5.1.0,<6.0.0)",
     "anyio (>=4.10.0,<5.0.0)",
     "pytest-asyncio (>=1.2.0,<2.0.0)",
     "h2 (>=4.3.0,<5.0.0)",
     "pytest-cov (>=7.0.0,<8.0.0)",
-    "poetry (>=2.2.1,<3.0.0)",
+    "poetry (>=2.4.1,<3.0.0)",
     "pytest (>=9.0.3,<10.0.0)",
-    "pytest-httpx (>=0.36.2,<0.37.0)"
+    "pytest-httpx (>=0.36.2,<0.37.0)",
+    "starlette (>=1.6.0,<2.0.0)"
 ]
 
 [build-system]
