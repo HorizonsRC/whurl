@@ -14,6 +14,7 @@ from isodate import ISO8601Error, parse_datetime, parse_duration
 import warnings
 from whurl.exceptions import TimezoneConversionWarning
 
+MOWSECS_OFFSET = 946771200
 
 # Define NZ timezones
 NZST = timezone(timedelta(hours=12))  # UTC+12
@@ -243,7 +244,6 @@ def validate_time_interval(value: Optional[str]) -> Optional[str]:
 
     # Interval with "/" separator
     if "/" in value:
-        print("Validating Interval!")
         return _validate_interval(value)
 
     raise ValueError(

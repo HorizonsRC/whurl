@@ -10,11 +10,11 @@
         <ItemName>Stage</ItemName>
         <ItemFormat>F</ItemFormat>
         <Units>mm</Units>
-        <Format>####</Format>
+        <Format>#.#</Format>
       </ItemInfo>
     </DataSource>
     <Data DateFormat="Calendar" NumItems="1">
-    <E><T>2025-09-16T08:15:00</T><I1>1021</I1></E>
+    <E><T>2025-09-16T08:15:00</T><I1>1021.53</I1></E>
     </Data>
   </Measurement>
 </Hilltop>

@@ -393,7 +393,7 @@ class TestGetDataRequestAlignmentValidation:
         from whurl.schemas.requests.get_data import GetDataRequest
         
         # Should not raise any exception
-        GetDataRequest(
+        url = GetDataRequest(
             base_url="http://example.com",
             hts_endpoint="foo.hts",
             site="site",

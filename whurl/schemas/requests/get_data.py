@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Literal, Any, Optional
 
 import pandas as pd
-from isodate import ISO8601Error, parse_datetime, parse_duration
+from isodate import ISO8601Error, parse_datetime, parse_duration, parse_time
 from pydantic import Field, ValidationError, field_validator, model_validator
 
 from whurl.exceptions import HilltopRequestError
@@ -158,21 +158,17 @@ class GetDataRequest(BaseHilltopRequest):
         if value is None:
             return None
         try:
+            validate_hilltop_interval_notation(value)
+        except ValueError as e:
             # Test to see if it is a time of day (Time only, no date)
-            time = pd.to_datetime(value)
-            if time.date() != datetime.now().date():
+            try:
+                parse_time(value)
+            except ISO8601Error:
                 raise HilltopRequestError(
-                    "Alignment must be a time of day (e.g. '12:00:00') or a "
+                    "Alignment must be a time of day in ISO8601 format (e.g. '12:00:00') or a "
                     "Hilltop interval  (e.g '1 month'). You entered "
                     f"'{value}' which is not a valid time of day."
                 )
-        except ValueError:
-            # If it fails, check if it's a Hilltop interval
-            try:
-                validate_hilltop_interval_notation(value)
-            except ValueError as e:
-                raise HilltopRequestError(str(e))
-
         return value
 
     @model_validator(mode="after")

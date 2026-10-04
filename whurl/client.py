@@ -183,15 +183,15 @@ class HilltopClient:
         HilltopParseError
             If the XML response cannot be parsed.
         """
-        request = GetDataRequest(
+        self.request = GetDataRequest(
             base_url=str(self.base_url),
             hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
-        response = self.session.get(request.gen_url())
+        response = self.session.get(self.request.gen_url())
         self._validate_response(response)
         result = GetDataResponse.from_xml(response.text)
-        result.request = request
+        result.request = self.request
         return result
 
     def get_measurement_list(self, **kwargs) -> MeasurementListResponse:

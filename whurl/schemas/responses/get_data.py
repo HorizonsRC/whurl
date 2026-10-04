@@ -1,8 +1,6 @@
 """GetData response schema."""
 
 from __future__ import annotations
-from dulwich.config import Value
-
 from urllib.parse import quote, urlencode
 
 import httpx
@@ -14,6 +12,7 @@ from pydantic import (BaseModel, ConfigDict, Field, PrivateAttr,
 from whurl.exceptions import HilltopParseError, HilltopResponseError
 from whurl.schemas.mixins import ModelReprMixin
 from whurl.schemas.requests import GetDataRequest
+from whurl.utils import MOWSECS_OFFSET
 
 
 class ItemInfo(ModelReprMixin, BaseModel):
@@ -25,6 +24,15 @@ class ItemInfo(ModelReprMixin, BaseModel):
     divisor: float | None = Field(alias="Divisor", default=None)
     units: str | None = Field(alias="Units", default=None)
     format: str = Field(alias="Format")
+
+    def to_dict(self):
+        """Convert the model to a dictionary."""
+        return self.model_dump(exclude_unset=True, by_alias=True)
+
+class DataType(ModelReprMixin, BaseModel):
+    
+    data_type_interval: str = Field(alias="@DataTypeInterval")
+    data_type: str = Field(alias="#text")
 
     def to_dict(self):
         """Convert the model to a dictionary."""
@@ -43,7 +51,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
             name: str = Field(alias="@Name")
             num_items: int = Field(alias="@NumItems")
             ts_type: str = Field(alias="TSType")
-            data_type: str = Field(alias="DataType")
+            data_type: DataType | str = Field(alias="DataType")
             interpolation: str = Field(alias="Interpolation")
             item_format: str | None = Field(alias="ItemFormat", default=None)
             item_info: list[ItemInfo] = Field(alias="ItemInfo", default_factory=list)
@@ -128,7 +136,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                     elif fmt == "D":
                         try:
                             self.timeseries[col] = pd.to_datetime(
-                                self.timeseries[col], format="%Y-%m-%dT%H:%M:%S", errors="raise"
+                                self.timeseries[col], format="%Y-%m-%dT%H:%M:%S.f", errors="raise"
                             )
                         except ValueError:
                             try:
@@ -164,17 +172,28 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                                 self.timeseries["DateTime"], format="%Y-%m-%dT%H:%M:%S", errors="raise"
                             )
                         except ValueError:
-                            self.timeseries["DateTime"] = pd.to_datetime(
-                                self.timeseries["DateTime"], format="%Y-%m-%d %H:%M:%S",
-                            )
+                            try:
+                                # Try without T
+                                self.timeseries["DateTime"] = pd.to_datetime(
+                                    self.timeseries["DateTime"], format="%Y-%m-%d %H:%M:%S", errors="raise"
+                                )
+                            except ValueError:
+                                try:
+                                    # Try to remove milliseconds
+                                    self.timeseries["DateTime"] = pd.to_datetime(
+                                        self.timeseries["DateTime"].str.replace(r'\.\d+$', '', regex=True),
+                                        format="%Y-%m-%d %H:%M:%S",
+                                        errors="raise"
+                                    )
+                                except ValueError as e:
+                                    raise HilltopParseError(f"Unknown date format: {str(e)}")
                             
                     elif self.date_format == "mowsecs":
-                        mowsecs_offset = 946771200
                         # Convert mowsecs to unix time
                         time_ints = pd.to_numeric(
                             self.timeseries["DateTime"], errors="coerce"
                         ).fillna(0)
-                        self.timeseries["DateTime"] = time_ints - mowsecs_offset
+                        self.timeseries["DateTime"] = time_ints - MOWSECS_OFFSET
                         # Convert unix time to datetime
                         self.timeseries["DateTime"] = pd.to_datetime(
                             self.timeseries["DateTime"],
@@ -185,6 +204,113 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                     self.timeseries.set_index("DateTime", inplace=True)
                 return self
 
+            
+            def _format_timestamp(self, value) -> str:
+                """Render a single timestamp back into its Hilltop text form.
+
+                Mirrors ``construct_dataframe``'s parsing of the ``DateFormat``
+                attribute: "Calendar" round-trips to an ISO-like string, and
+                "mowsecs" round-trips to seconds-since-1940 as an integer string.
+                """
+                if pd.isna(value):
+                    return ""
+                timestamp = pd.Timestamp(value)
+                if  self.date_format == "mowsecs":
+                    return str(int(timestamp.timestamp()) + MOWSECS_OFFSET)
+                # Default to the "Calendar" behaviour.
+                return timestamp.strftime("%Y-%m-%dT%H:%M:%S")
+
+            @staticmethod
+            def _format_item_value(value, item: "ItemInfo") -> str:
+                """Render a single data value back into its Hilltop text form.
+
+                Reverses the divisor and type coercion applied for the given
+                ``ItemFormat`` ("I", "F", "D" or "S") in ``construct_dataframe``.
+                Note that "D"-formatted item columns are always rendered as
+                Calendar-style strings, since the original text (Calendar vs.
+                mowsecs) is not recoverable once both have been parsed into
+                the same datetime value, and a mowsecs integer round-trips
+                deterministically through ``construct_dataframe``'s fallback
+                chain, unlike an ISO string, whose success depends on the
+                first ``strptime``-style branch matching exactly.
+                """
+                if value is None or (isinstance(value, str) is False and pd.isna(value)):
+                    return ""
+
+                divisor = item.divisor or 1
+                
+                if item.item_format == "I":
+                    return str(int(round(float(value) * divisor)))
+                
+                if item.item_format == "F":
+                    scaled = float(value) * divisor
+                    # `Format` (e.g. "####" or "####.##") is only a display
+                    # hint, and in practice can understate a value's real
+                    # precision (Hilltop servers have been observed to
+                    # return e.g. "1024.53" for an item whose Format is
+                    # "#.#", i.e. one decimal place). Treat it as a
+                    # floor, not the true decimal count: widen as needed so
+                    # the formatted text round-trips back to the same float.
+                    
+                    decimals = 0
+                    
+                    if item.format and "." in item.format:
+                        decimals = len(item.format.split(".")[1])
+                        
+                    # Round off any floating-point noise introduced by the
+                    # divisor multiplication before inspecting precision,
+                    # so it doesn't get mistaken for genuine extra decimals.
+                    natural = repr(round(scaled, 9))
+                    if "." in natural and not natural.endswith(".0"):
+                        decimals = max(decimals, len(natural.split(".")[1]))
+                        
+                    return f"{scaled:.{decimals}f}"
+                
+                if item.item_format == "D":
+                    timestamp = pd.Timestamp(value)
+                    return str(int(timestamp.timestamp()) + MOWSECS_OFFSET)
+                # "S" (string) and anything unrecognised: pass through as text.
+                return str(value)
+
+            def to_xml_dict(self) -> dict:
+                """Rebuild the raw ``xmltodict``-style dict for this <Data> element.
+
+                This is the inverse of ``parse_data``/``construct_dataframe``: it
+                turns ``self.timeseries`` back into a list of ``E`` row dicts, 
+                undoing the column renaming, divisor scaling, and date
+                formatting that were applied when the response was parsed.
+                """
+                result = {
+                    "@DateFormat": self.date_format,
+                    "@NumItems": str(self.num_items),
+                }
+                if self.timeseries.empty:
+                    return result
+
+                items_by_number = sorted(self.item_info, key=lambda i: i.item_number)
+                is_datetime_indexed = self.timeseries.index.name == "DateTime"
+                frame = (
+                    self.timeseries.reset_index()
+                    if is_datetime_indexed
+                    else self.timeseries
+                )
+
+                rows = []
+                for _, row in frame.iterrows():
+                    entry = {}
+                    if is_datetime_indexed:
+                        entry["T"] = self._format_timestamp(row["DateTime"])
+                    elif "D" in frame.columns:
+                        entry["D"] = str(row["D"])
+                    for item in items_by_number:
+                        entry[f"I{item.item_number}"] = self._format_item_value(
+                            row.get(item.item_name), item
+                        )
+                    rows.append(entry)
+                result["E"] = rows
+                return result
+                                
+        
         site_name: str = Field(alias="@SiteName")
         data_source: DataSource = Field(alias="DataSource")
         data: Data = Field(alias="Data", default_factory=list)
@@ -220,6 +346,17 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                 if not self.data.item_info:
                     self.data.item_info = self.data_source.item_info
             return self
+
+        def to_xml_dict(self) -> dict:
+            """Rebuild the raw xmltodict-style dict for this <Measurement> element."""
+            result = {
+                "@SiteName": self.site_name,
+                "DataSource": self.data_source.to_dict(),
+                "Data": self.data.to_xml_dict(),
+            }
+            if self.tideda_site_number is not None:
+                result["TidedaSiteNumber"] = self.tideda_site_number
+            return result
     
     
     agency: str = Field(alias="Agency", default=None)
@@ -264,6 +401,37 @@ class GetDataResponse(ModelReprMixin, BaseModel):
         else:
             return pd.concat(frames, ignore_index=False)
 
+    def to_xml(self, pretty: bool = True) -> str:
+        """Serialize this response back into Hilltop GetData XML.
+
+        This is the inverse of ``from_xml``. Note that it is a best-effort
+        round-trip rather than a byte-for-byte one: numeric text is
+        regenerated from the parsed values (using each item's ``Format``
+        spec to decide decimal places), and datetime text is regenerated
+        from the parsed timestamps according to the ``Data`` element's
+        ``DateFormat``. Item-level "D"-formatted columns are always written
+        back out as Calendar-style strings, since it's not possible to tell,
+        after parsing, whether the original text was a Calendar-style string or a
+        mowsecs integer.
+
+        Parameters
+        ----------
+        pretty : bool
+            Whether to indent the output XML. Defaults to True.
+
+        Returns
+        -------
+        str
+            The Hilltop GetData XML representation of this response.
+        """
+        root: dict = {}
+        if self.agency is not None:
+            root["Agency"] = self.agency
+        if self.measurements:
+            root["Measurement"] = [m.to_xml_dict() for m in self.measurements]
+
+        return xmltodict.unparse({"Hilltop": root}, pretty=pretty)
+        
     @classmethod
     def from_xml(cls, xml_str: str) -> "GetDataResponse":
         """Parse XML string into GetData object."""

@@ -1,6 +1,7 @@
 import os
 import pytest
 import pandas as pd
+import xmltodict
 from pathlib import Path
 from urllib.parse import urlparse
 from dotenv import load_dotenv
@@ -82,7 +83,7 @@ def assert_response_structure(
     assert len(data.timeseries) > 0
     assert data.timeseries.index.name == "DateTime"
     assert expected_measurement in data.timeseries.columns
-    assert data.timeseries.index.dtype == "datetime64[ns]"
+    assert pd.api.types.is_datetime64_any_dtype(data.timeseries.index)
 
     return measurement
 
@@ -113,6 +114,108 @@ def assert_measurement_data(
     assert item_info.divisor == expected_divisor
     assert item_info.units == expected_units
     assert item_info.format == expected_format
+
+MOWSECS_2023_01_01 = 2619302400
+
+def as_list(value) -> list:
+    """xmltodict returns a bare dict for a single element; normalise to a list."""
+    return value if isinstance(value, list) else [value]
+
+
+def parse_output(response: GetDataResponse, **kwargs) -> dict:
+    """Serialise a response with to_xml and parse it back into a plain dict."""
+    return xmltodict.parse(response.to_xml(**kwargs))["Hilltop"]
+
+
+def make_xml(
+    data: str,
+    date_format: str = "Calendar",
+    item_format: str = "F",
+    fmt: str = "####",
+    divisor: str | None = None,
+    extra_measurement: str = "",
+) -> str:
+    """Build a minimal single-item GetData XML document."""
+    divisor_xml = f"<Divisor>{divisor}</Divisor>" if divisor is not None else ""
+    return f"""<?xml version="1.0" ?>
+<Hilltop>
+    <Agency>Test Council</Agency>
+    <Measurement SiteName="Test Site Alpha">
+        <DataSource Name="Water Level" NumItems="1">
+            <TSType>StdSeries</TSType>
+            <DataType>SimpleTimeSeries</DataType>
+            <Interpolation>Instant</Interpolation>
+            <ItemInfo ItemNumber="1">
+                <ItemName>Stage</ItemName>
+                <ItemFormat>{item_format}</ItemFormat>
+                {divisor_xml}
+                <Units>mm</Units>
+                <Format>{fmt}</Format>
+            </ItemInfo>
+        </DataSource>
+        <Data DateFormat="{date_format}" NumItems="1">
+            {data}
+        </Data>
+        {extra_measurement}
+    </Measurement>
+</Hilltop>
+"""
+
+
+def assert_round_trip(original: GetDataResponse) -> GetDataResponse:
+    """Assert from_xml(to_xml(x)) preserves x, and return the re-parsed reponse."""
+    xml = original.to_xml()
+    reparsed = GetDataResponse.from_xml(xml)
+    assert reparsed.agency == original.agency
+    assert len(reparsed.measurements) == len(original.measurements)
+
+    assert reparsed.agency == original.agency
+    assert len(reparsed.measurements) == len(original.measurements)
+
+    for before, after in zip(original.measurements, reparsed.measurements):
+        assert after.site_name == before.site_name
+        assert after.data_source.to_dict() == before.data_source.to_dict()
+        assert after.data.date_format == before.data.date_format
+        pd.testing.assert_frame_equal(
+            after.data.timeseries,
+            before.data.timeseries,
+            # Datetime resolution (s vs us) can differ after re-parsing.
+            check_dtype=False,
+        )
+
+    print(reparsed.to_xml())
+    print(xml)
+    # Serialising again must be stable.
+    assert reparsed.to_xml() == xml
+    return reparsed
+
+
+def assert_output_matches_response(response: GetDataResponse) -> None:
+    """Assert the to_xml output structurally agrees with the parsed response.
+
+    Only uses values derived from the response itself, so it works for cached
+    real-server data where site and measurement names are not known up front.
+    """
+    root = parse_output(response)
+    assert root.get("Agency") == response.agency
+
+    output_measurements = as_list(root["Measurement"])
+    assert len(output_measurements) == len(response.measurements)
+
+    for out, measurement in zip(output_measurements, response.measurements):
+        assert out["@SiteName"] == measurement.site_name
+        assert out["DataSource"]["@Name"] == measurement.data_source.name
+
+        expected_numbers = [
+            str(i.item_number) for i in measurement.data_source.item_info
+        ]
+        out_items = as_list(out["DataSource"]["ItemInfo"])
+        assert [i["@ItemNumber"] for i in out_items] == expected_numbers
+
+        rows = as_list(out["Data"].get("E", []))
+        assert len(rows) == len(measurement.data.timeseries)
+        for row in rows:
+            assert {f"I{n}" for n in expected_numbers} <= set(row)
 
 
 # ============================================================================
@@ -717,6 +820,7 @@ class TestResponseValidation:
         assert_measurement_data(
             measurement=measurement,
             expected_item_name="Stage",
+            expected_format="#.#"
         )
 
         # One point response should have exactly one row
@@ -884,6 +988,7 @@ class TestResponseValidation:
             hts_endpoint=hts_endpoint,
             **request_kwargs,
         )
+        print(test_url)
 
         httpx_mock.add_response(
             url=test_url,
@@ -896,3 +1001,326 @@ class TestResponseValidation:
             hts_endpoint=hts_endpoint,
         ) as client:
             return client.get_data(**request_kwargs)
+
+
+ALL_RESPONSE_NAMES = [
+    "basic_response",
+    "one_point_response",
+    "quality_response",
+    "check_response",
+    "collection_response",
+    "time_interval_response",
+    "time_interval_complex_response",
+    "date_only_response",
+]
+
+
+class TestToXml:
+    """Test GetDataResponse.to_xml, the inverse of from_xml."""
+
+    # ========================================================================
+    # Round trip: mocked (unit) and cached (integration)
+    # ========================================================================
+    
+    @pytest.mark.unit
+    @pytest.mark.parametrize("name", ALL_RESPONSE_NAMES)
+    def test_round_trip_unit(self, request, name):
+        """from_xml -> to_xml -> from_xml preserves mocked responses."""
+        xml = request.getfixturevalue(f"{name}_xml_mocked")
+        assert_round_trip(GetDataResponse.from_xml(xml))
+
+    @pytest.mark.integration
+    @pytest.mark.parametrize("name", ALL_RESPONSE_NAMES)
+    def test_round_trip_integration(self, request, name):
+        """from_xml -> to_xml -> from_xml preserves cached server responses."""
+        xml = request.getfixturevalue(f"{name}_xml_cached")
+        assert_round_trip(GetDataResponse.from_xml(xml))
+
+    @pytest.mark.unit
+    @pytest.mark.parametrize("name", ALL_RESPONSE_NAMES)
+    def assert_output_matches_response_unit(self, request, name):
+        """to_xml output agrees with the parsed mocked response."""
+        xml = request.getfixturevalue(f"{name}_xml_mocked")
+        assert_output_matches_response(GetDataResponse.from_xml(xml))
+
+    @pytest.mark.integration
+    @pytest.mark.parametrize("name", ALL_RESPONSE_NAMES)
+    def test_output_matches_response_integration(self, request, name):
+        """to_xml output agrees with the parsed cached response."""
+        xml = request.getfixturevalue(f"{name}_xml_cached")
+        assert_output_matches_response(GetDataResponse.from_xml(xml))
+
+    
+    # ========================================================================
+    # Structure
+    # ========================================================================
+
+    @pytest.mark.unit
+    def test_basic_structure_unit(self, basic_response_xml_mocked):
+        """Test the generated XML for the basic response in detail."""
+        root = parse_output(GetDataResponse.from_xml(basic_response_xml_mocked))
+
+        assert root["Agency"] == "Test Council"
+
+        measurement = root["Measurement"]
+        assert measurement["@SiteName"] == "Test Site Alpha"
+        
+        source = measurement["DataSource"]
+        assert source["@Name"] == "Water Level"
+        assert source["@NumItems"] == "1"
+        assert source["TSType"] == "StdSeries"
+        assert source["DataType"] == "SimpleTimeSeries"
+        assert source["Interpolation"] == "Instant"
+        assert source["ItemInfo"]["@ItemNumber"] == "1"
+        assert source["ItemInfo"]["ItemName"] == "Stage"
+        assert source["ItemInfo"]["ItemFormat"] == "F"
+        assert source["ItemInfo"]["Units"] == "mm"
+        assert source["ItemInfo"]["Format"] == "####"
+ 
+        data = measurement["Data"]
+        assert data["@DateFormat"] == "Calendar"
+        assert data["@NumItems"] == "1"
+        rows = as_list(data["E"])
+        assert len(rows) == 13
+        assert rows[0] == {"T": "2023-01-01T00:00:00", "I1": "584"}
+        assert rows[-1] == {"T": "2023-01-01T01:00:00", "I1": "582"}
+ 
+    @pytest.mark.unit
+    def test_returns_xml_document_string_unit(self, basic_response_xml_mocked):
+        xml = GetDataResponse.from_xml(basic_response_xml_mocked).to_xml()
+ 
+        assert isinstance(xml, str)
+        assert xml.startswith("<?xml")
+        assert "<Hilltop>" in xml
+ 
+    @pytest.mark.unit
+    def test_one_point_unit(self, one_point_response_xml_mocked):
+        response = GetDataResponse.from_xml(one_point_response_xml_mocked)
+        rows = as_list(parse_output(response)["Measurement"]["Data"]["E"])
+ 
+        assert rows == [{"T": "2025-09-16T08:15:00", "I1": "1021.53"}]
+ 
+    @pytest.mark.unit
+    def test_multiple_measurements_unit(self, collection_response_xml_mocked):
+        response = GetDataResponse.from_xml(collection_response_xml_mocked)
+        measurements = as_list(parse_output(response)["Measurement"])
+ 
+        assert [m["DataSource"]["@Name"] for m in measurements] == [
+            "Water Level",
+            "Rainfall",
+        ]
+ 
+    @pytest.mark.unit
+    def test_pretty_flag_unit(self, basic_response_xml_mocked):
+        response = GetDataResponse.from_xml(basic_response_xml_mocked)
+ 
+        assert "\n" in response.to_xml()
+        # xmltodict still puts a newline after the XML declaration.
+        body = response.to_xml(pretty=False).split("?>", 1)[1].strip()
+        assert "\n" not in body
+ 
+    @pytest.mark.unit
+    def test_special_characters_are_escaped_unit(self, basic_response_xml_mocked):
+        xml = basic_response_xml_mocked.replace(
+            "Test Council", "Test &amp; Council &lt;NZ&gt;"
+        )
+        output = GetDataResponse.from_xml(xml).to_xml()
+ 
+        assert "&amp;" in output
+        assert GetDataResponse.from_xml(output).agency == "Test & Council <NZ>"
+ 
+    @pytest.mark.unit
+    def test_tideda_site_number_is_preserved_unit(self):
+        xml = make_xml(
+            data="<E><T>2023-01-01T00:00:00</T><I1>584</I1></E>",
+        ).replace(
+            "</Measurement>",
+            "<TidedaSiteNumber>12345</TidedaSiteNumber></Measurement>",
+        )
+        response = GetDataResponse.from_xml(xml)
+ 
+        assert parse_output(response)["Measurement"]["TidedaSiteNumber"] == "12345"
+ 
+    @pytest.mark.unit
+    def test_tideda_site_number_omitted_when_absent_unit(
+        self, basic_response_xml_mocked
+    ):
+        response = GetDataResponse.from_xml(basic_response_xml_mocked)
+ 
+        assert "TidedaSiteNumber" not in parse_output(response)["Measurement"]
+ 
+    # ========================================================================
+    # Value formatting
+    # ========================================================================
+ 
+    @pytest.mark.unit
+    def test_float_uses_format_spec_for_decimal_places_unit(self):
+        xml = make_xml(
+            data="<E><T>2023-01-01T00:00:00</T><I1>12.5</I1></E>",
+            fmt="####.##",
+        )
+        rows = as_list(
+            parse_output(GetDataResponse.from_xml(xml))["Measurement"]["Data"]["E"]
+        )
+ 
+        assert rows[0]["I1"] == "12.50"
+ 
+    @pytest.mark.unit
+    def test_float_without_decimals_in_format_unit(self):
+        xml = make_xml(data="<E><T>2023-01-01T00:00:00</T><I1>584</I1></E>")
+        rows = as_list(
+            parse_output(GetDataResponse.from_xml(xml))["Measurement"]["Data"]["E"]
+        )
+ 
+        assert rows[0]["I1"] == "584"
+ 
+    @pytest.mark.unit
+    def test_divisor_is_reapplied_unit(self):
+        # Parsing divides by the divisor, so serialising must multiply it back.
+        xml = make_xml(
+            data="<E><T>2023-01-01T00:00:00</T><I1>5840</I1></E>",
+            divisor="10",
+        )
+        response = GetDataResponse.from_xml(xml)
+ 
+        assert response.measurements[0].data.timeseries["Stage"].iloc[0] == 584.0
+        rows = as_list(parse_output(response)["Measurement"]["Data"]["E"])
+        assert rows[0]["I1"] == "5840"
+ 
+    @pytest.mark.unit
+    def test_format_spec_decimals_are_a_floor_not_a_ceiling_unit(self):
+        """The Format spec can understate a value's real precision.
+ 
+        A real Hilltop server returned "1024.53" for an item whose Format
+        is "#.#" (nominally one decimal place) - see the one_point_response
+        cached fixture. to_xml must not truncate that extra precision away.
+        """
+        xml = make_xml(
+            data="<E><T>2023-01-01T00:00:00</T><I1>1024.53</I1></E>",
+            fmt="#.#",
+        )
+        rows = as_list(
+            parse_output(GetDataResponse.from_xml(xml))["Measurement"]["Data"]["E"]
+        )
+ 
+        assert rows[0]["I1"] == "1024.53"
+ 
+    @pytest.mark.unit
+    def test_integer_item_format_unit(self):
+        xml = make_xml(
+            data="<E><T>2023-01-01T00:00:00</T><I1>42</I1></E>",
+            item_format="I",
+        )
+        rows = as_list(
+            parse_output(GetDataResponse.from_xml(xml))["Measurement"]["Data"]["E"]
+        )
+ 
+        assert rows[0]["I1"] == "42"
+ 
+    @pytest.mark.unit
+    def test_string_item_format_unit(self):
+        xml = make_xml(
+            data="<E><T>2023-01-01T00:00:00</T><I1>Some comment</I1></E>",
+            item_format="S",
+            fmt="###",
+        )
+        rows = as_list(
+            parse_output(GetDataResponse.from_xml(xml))["Measurement"]["Data"]["E"]
+        )
+ 
+        assert rows[0]["I1"] == "Some comment"
+ 
+    @pytest.mark.unit
+    def test_check_response_mixed_item_formats_unit(self, check_response_xml_mocked):
+        response = GetDataResponse.from_xml(check_response_xml_mocked)
+        rows = as_list(parse_output(response)["Measurement"]["Data"]["E"])
+ 
+        assert len(rows) == 2
+        # F: float formatted to one decimal place (Format is "####.#").
+        assert rows[0]["I1"] == "999.0"
+        # D: written back as a mowsecs integer (matching the original).
+        assert rows[0]["I2"] == "2696416200"
+        # S: text passes through.
+        assert rows[0]["I3"] == "Other. NA"
+ 
+    @pytest.mark.unit
+    def test_missing_string_value_unit(self, check_response_xml_mocked):
+        response = GetDataResponse.from_xml(check_response_xml_mocked)
+        rows = as_list(parse_output(response)["Measurement"]["Data"]["E"])
+ 
+        # xmltodict reads an empty element as None.
+        assert rows[1]["I3"] is None
+        reparsed = GetDataResponse.from_xml(response.to_xml())
+        assert pd.isna(reparsed.measurements[0].data.timeseries["Comment"].iloc[1])
+ 
+    @pytest.mark.unit
+    def test_item_info_order_is_preserved_unit(self, check_response_xml_mocked):
+        response = GetDataResponse.from_xml(check_response_xml_mocked)
+        items = parse_output(response)["Measurement"]["DataSource"]["ItemInfo"]
+ 
+        assert [i["@ItemNumber"] for i in items] == ["1", "3", "2"]
+ 
+    @pytest.mark.unit
+    def test_data_source_item_format_is_preserved_unit(
+        self, check_response_xml_mocked
+    ):
+        response = GetDataResponse.from_xml(check_response_xml_mocked)
+ 
+        assert parse_output(response)["Measurement"]["DataSource"]["ItemFormat"] == "45"
+ 
+    # ========================================================================
+    # Date formats
+    # ========================================================================
+ 
+    @pytest.mark.unit
+    def test_calendar_dates_unit(self, basic_response_xml_mocked):
+        response = GetDataResponse.from_xml(basic_response_xml_mocked)
+        rows = as_list(parse_output(response)["Measurement"]["Data"]["E"])
+ 
+        assert all("T" in row and "D" not in row for row in rows)
+        assert rows[1]["T"] == "2023-01-01T00:05:00"
+ 
+    @pytest.mark.unit
+    def test_mowsecs_dates_unit(self):
+        xml = make_xml(
+            data=f"<E><T>{MOWSECS_2023_01_01}</T><I1>584</I1></E>",
+            date_format="mowsecs",
+        )
+        response = GetDataResponse.from_xml(xml)
+ 
+        timeseries = response.measurements[0].data.timeseries
+        assert timeseries.index[0] == pd.Timestamp("2023-01-01T00:00:00")
+ 
+        data = parse_output(response)["Measurement"]["Data"]
+        assert data["@DateFormat"] == "mowsecs"
+        assert data["E"]["T"] == str(MOWSECS_2023_01_01)
+ 
+    @pytest.mark.unit
+    def test_date_only_uses_d_tag_unit(self, date_only_response_xml_mocked):
+        response = GetDataResponse.from_xml(date_only_response_xml_mocked)
+        rows = as_list(parse_output(response)["Measurement"]["Data"]["E"])
+ 
+        assert len(rows) == 29
+        assert all("D" in row and "T" not in row for row in rows)
+        assert rows[0] == {"D": "2023-01-01", "I1": "573"}
+ 
+    @pytest.mark.integration
+    def test_date_only_uses_d_tag_integration(self, date_only_response_xml_cached):
+        response = GetDataResponse.from_xml(date_only_response_xml_cached)
+        rows = as_list(parse_output(response)["Measurement"]["Data"]["E"])
+ 
+        assert len(rows) > 0
+        assert all("D" in row and "T" not in row for row in rows)
+ 
+    # ========================================================================
+    # Edge cases
+    # ========================================================================
+ 
+    @pytest.mark.unit
+    def test_no_measurements_unit(self):
+        response = GetDataResponse(Agency="Test Council")
+ 
+        assert parse_output(response) == {"Agency": "Test Council"}
+        reparsed = GetDataResponse.from_xml(response.to_xml())
+        assert reparsed.agency == "Test Council"
+        assert reparsed.measurements == []
