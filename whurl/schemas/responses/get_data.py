@@ -101,12 +101,12 @@ class GetDataResponse(ModelReprMixin, BaseModel):
             @model_validator(mode="after")
             def construct_dataframe(self) -> "self":
                 """Rename columns in the DataFrame to match items in ItemInfo."""
+                mapping = {}
                 if "T" in self.timeseries.columns:
-                    mapping = {
-                        "T": "DateTime",
-                    }
-                else:
-                    mapping = {}
+                    mapping["T"] = "DateTime"
+                if "Q1" in self.timeseries.columns:
+                    mapping["Q1"] = "Quality"
+                    
                 formatter = {}
                 divisor = {}
                 if self.item_info is not None:
