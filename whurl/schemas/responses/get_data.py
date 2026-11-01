@@ -121,16 +121,16 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                 for col, fmt in formatter.items():
                     if fmt == "I":
                         # Parse as integer
+                        # A blank stays NaN. Dividing by the dividor already
+                        # made this column float, so NaN fits.
                         self.timeseries[col] = (
                             pd.to_numeric(self.timeseries[col], errors="coerce")
-                            .fillna(0)
-                            .astype(int)
+                            .astype(float)
                         ) / int(divisor.get(col, 1) or 1)
                     elif fmt == "F":
                         # Parse as float
                         self.timeseries[col] = (
                             pd.to_numeric(self.timeseries[col], errors="coerce")
-                            .fillna(0.0)
                             .astype(float)
                         ) / float(divisor.get(col, 1.0) or 1.0)
                     elif fmt == "D":
@@ -146,9 +146,11 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                             except ValueError:
                                 mowsecs_offset = 946771200
                                 # Convert mowsecs to unix time
+                                # A blank stays NaN here and becomes NaT below.
+                                # (It used to become mowsecs zero: 1940-01-01.)
                                 time_ints = pd.to_numeric(
                                     self.timeseries[col], errors="coerce"
-                                ).fillna(0)
+                                )
                                 self.timeseries[col] = time_ints - mowsecs_offset
                                 # Convert unix time to datetime
                                 self.timeseries[col] = pd.to_datetime(
@@ -240,7 +242,18 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                 divisor = item.divisor or 1
                 
                 if item.item_format == "I":
-                    return str(int(round(float(value) * divisor)))
+                    scaled = float(value) * divisor
+                    # "I" items are parsed as floats (a blank must be able to
+                    # be NaN, and dividing by the divisor makes floats anyway).
+                    # Real responses carry fractional values under "I"
+                    # (e.g. rainfall tips of 0.2 (TODO CONFIRM THIS)), so
+                    # rounding here would lose them on a round-trip. Whole
+                    # numbers are written without a decimal point, as the
+                    # server does.
+                    rounded = round(scaled, 9)
+                    if rounded == int(rounded):
+                        return str(int(rounded))
+                    return repr(rounded)
                 
                 if item.item_format == "F":
                     scaled = float(value) * divisor

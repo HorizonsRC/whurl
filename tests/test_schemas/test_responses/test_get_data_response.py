@@ -130,6 +130,7 @@ def parse_output(response: GetDataResponse, **kwargs) -> dict:
 def make_xml(
     data: str,
     date_format: str = "Calendar",
+    item_name: str = "Stage",
     item_format: str = "F",
     fmt: str = "####",
     divisor: str | None = None,
@@ -146,7 +147,7 @@ def make_xml(
             <DataType>SimpleTimeSeries</DataType>
             <Interpolation>Instant</Interpolation>
             <ItemInfo ItemNumber="1">
-                <ItemName>Stage</ItemName>
+                <ItemName>{item_name}</ItemName>
                 <ItemFormat>{item_format}</ItemFormat>
                 {divisor_xml}
                 <Units>mm</Units>
@@ -183,8 +184,6 @@ def assert_round_trip(original: GetDataResponse) -> GetDataResponse:
             check_dtype=False,
         )
 
-    print(reparsed.to_xml())
-    print(xml)
     # Serialising again must be stable.
     assert reparsed.to_xml() == xml
     return reparsed
@@ -217,6 +216,25 @@ def assert_output_matches_response(response: GetDataResponse) -> None:
         for row in rows:
             assert {f"I{n}" for n in expected_numbers} <= set(row)
 
+
+def parse_column(xml: str, item_name: str = "Stage") -> pd.Series:
+    """Parse the document and return the one data column."""
+    response = GetDataResponse.from_xml(xml)
+    return response.measurements[0].data.timeseries[item_name]
+
+def rows_to_data(rows: list[str]) -> str:
+    """Build one data element.
+
+    ``rows`` holds the text of each <I1> element, e.g. ``["999", ""]``. A row
+    of ``""`` is written as ``<I1></I1>``, which is how a blank looks on the
+    wire. Timestamps are generated for us so the tests only describe values.
+    """
+    entries = ""
+    for i, text in enumerate(rows):
+        entries += (
+            f"<E><T>2025-01-01T00:0{i}:00</T><I1>{text}</I1></E>\n"
+        )
+    return entries
 
 # ============================================================================
 # Fixture Factory
@@ -1324,3 +1342,177 @@ class TestToXml:
         reparsed = GetDataResponse.from_xml(response.to_xml())
         assert reparsed.agency == "Test Council"
         assert reparsed.measurements == []
+
+
+# =============================================================================
+# Missing values in GetData responses must stay missing.
+# 
+# Background
+# ----------
+# Hilltop writes a blank element (``<I1></I1>`` or ``<I1/>``) when a value is
+# absent. whurl used to turn every blank into a real-looking value:
+# 
+# blank float / integer item    -> ``0.0``
+# blank date item (mowsecs)     -> 1940-01-01 (mowsecs zero)
+# 
+# A missing check reading that looks like a genuine zero is the dangerous kind
+# of bug: nothing crashes, the number is just quietly wrong. So the rule is:
+# 
+#   *   numbers     -> NaN
+#   *   dates       -> NaT
+#   *   strings     -> pd.NA (already true; pinned here so it stays true)
+#
+# whurl does not decide whether a *present* value is plausible. A stored
+# Recorder Time of 560418892 (which is 1957) is read data as far as whurl is
+# concerned, and judging it is the provider's or the processor's job.
+# =============================================================================
+
+@pytest.mark.unit
+class TestBlankNumbers:
+    
+    def test_blank_float_is_nan_not_zero(self):
+        data = rows_to_data(["999", ""])
+        
+        column = parse_column(make_xml(data=data, item_format="F"))
+
+        assert column.iloc[0] == 999.0
+        assert pd.isna(column.iloc[1])
+
+    def test_self_closing_blank_float_is_nan(self):
+        # <I1/> and <I1></I1> mean the same thing; both reach us as None.
+        data = rows_to_data(["999", ""])
+        column = parse_column(make_xml(data, item_format="F").replace(
+            "<I1></I1>", "<I1/>"
+        ))
+
+        assert pd.isna(column.iloc[1])
+
+    def test_a_real_zero_is_still_zero(self):
+        # Guard against over-correcting: only blanks go missing.
+        data = rows_to_data(["0", "5"])
+        column = parse_column(make_xml(data, item_format="F"))
+
+        assert column.iloc[0] == 0.0
+        assert not pd.isna(column.iloc[0])
+
+    def test_blank_integer_item_is_nan_not_zero(self):
+        # Dividing by the divisor already made these floats. NaN needs a
+        # float column, so nothing about the dtype changes.
+        data = rows_to_data(["7", ""])
+        column = parse_column(make_xml(data, item_format="I"))
+
+        assert column.iloc[0] == 7
+        assert pd.isna(column.iloc[1])
+
+    def test_integer_items_are_floats_so_nan_fits(self):
+        # Dividing by the divisor already made these floats. NaN needs a
+        # float column, so nothing about the dtype changes.
+        data = rows_to_data(["7", ""])
+        column = parse_column(make_xml(data, item_format="I"))
+
+        assert column.dtype == "float64"
+
+
+    def test_blank_stays_nan_when_a_divisor_applies(self):
+        data = rows_to_data(["1000", ""])
+        column = parse_column(make_xml(data, item_format="F", divisor="10"))
+
+        assert column.iloc[0] == 100.0
+        assert pd.isna(column.iloc[1])
+
+
+    def test_a_whole_column_of_blanks_is_all_nan(self):
+        data = rows_to_data(["", ""])
+        column = parse_column(make_xml(data, item_format="F"))
+        
+        assert column.isna().all()
+
+
+@pytest.mark.unit
+class TestBlankDates:
+    def test_blank_date_item_is_nat_not_1940(self):
+        # 2696416200 is a real mowsecs value (2025-06-11 12:30).
+        data = rows_to_data(["2696416200", ""])
+        column = parse_column(make_xml(data, item_format="D"))
+
+        assert column.iloc[0] == pd.Timestamp("2025-06-11 12:30:00")
+        assert pd.isna(column.iloc[1])
+
+
+    def test_an_implausible_but_present_date_is_left_alone(self):
+        # 560418892 converts to 1957. whurl reports what the server stored;
+        # deciding that this is suspcious is not whurl's job.
+        data = rows_to_data(["560418892", "2696416200"])
+        column = parse_column(make_xml(data, item_format="D"))
+
+        assert column.iloc[0].year == 1957
+        assert column.iloc[1].year == 2025
+
+
+@pytest.mark.unit
+class TestBlankStrings:
+    def test_blank_string_is_pandas_na(self):
+        data = rows_to_data(["hello", ""])
+        column = parse_column(make_xml(data, item_format="S"))
+
+        assert column.iloc[0] == "hello"
+        assert column.iloc[1] is pd.NA
+
+
+@pytest.mark.unit
+class TestBlankRoundTrip:
+    @pytest.mark.parametrize("item_format", ["F", "I"])
+    def test_blank_number_is_written_back_blank(self, item_format):
+        data = rows_to_data(["5", ""])
+        original = GetDataResponse.from_xml(make_xml(data, item_format=item_format))
+
+        reparsed = GetDataResponse.from_xml(original.to_xml())
+
+        column = reparsed.measurements[0].data.timeseries["Stage"]
+        assert pd.isna(column.iloc[1])
+
+    def test_blank_date_is_written_back_blank(self):
+        data = rows_to_data(["2696416200", ""])
+        original = GetDataResponse.from_xml(
+            make_xml(data, item_format="D")
+        )
+
+        reparsed = GetDataResponse.from_xml(original.to_xml())
+
+        column = reparsed.measurements[0].data.timeseries["Stage"]
+        assert pd.isna(column.iloc[1])
+
+
+@pytest.mark.unit
+class TestFractionalIntegerItems:
+    """Found while fixing blanks, and worth pinning down on its own.
+
+    The ``collection_response`` fixture has a rainfall item declared as
+    ItemFormat "I" whose values are fractional (``0.1``). The old parser did
+    ``.astype(int)`` after ``fillna(0)``, which silently truncated 0.2 to 0.
+    Once blanks stopped being forced to 0 the truncation went with them, so
+    these tests make sure fractions are kept both ways.
+    """
+
+    def test_fractional_value_in_an_integer_item_is_kept(self):
+        data = rows_to_data(["0", "0.2"])
+        column = parse_column(make_xml(data, item_format="I"))
+
+        assert column.iloc[1] == 0.2
+
+    def test_fractional_value_survives_a_round_trip(self):
+        data = rows_to_data(["0", "0.2"])
+
+        original = GetDataResponse.from_xml(make_xml(data, item_format="I"))
+
+        reparsed = GetDataResponse.from_xml(original.to_xml())
+
+        column = reparsed.measurements[0].data.timeseries["Stage"]
+        assert column.iloc[1] == 0.2
+
+    def test_whole_numbers_are_still_written_without_a_decimal_point(self):
+        data = rows_to_data(["42", "7"])
+        
+        original = GetDataResponse.from_xml(make_xml(data, item_format="I"))
+
+        assert "<I1>42</I1>" in original.to_xml()
