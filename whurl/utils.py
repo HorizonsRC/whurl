@@ -501,11 +501,53 @@ def validate_hilltop_interval_notation(value: str) -> str:
     return value
 
 
+# -----------------------------------------------------------------------------
+# One attribute: name="value"
+# 
+# * (?<![^\s])  the name starts at the beginning of the text or after 
+#               whitespace, so a stray ="..." in element text or inside
+#               a value does not look like an attribute.
+# * (.*?)       the value, as short as possible (non-greedy) ...
+# * (?=...)     ... ending at the first quote that is followed by another
+#               attribute (whitespace, a name, =") or by the end of the
+#               tag (/> > ?>) or by the end of the text. A double quote
+#               that is *inside* a value is followed by neither, so it is
+#               kept as part of the value.
+#
+# Each attribute is matched on its own, so a line with several attributes, or
+# a document with no line breaks at all, is handled the same way.
+_ATTRIBUTE = re.compile(
+    r'''(?<![^\s])([A-Za-z_][\w.:-]*)="(.*?)"'''
+    r'''(?=\s+[A-Za-z_][\w.:-]*="|\s*/?>|\s*\?>|\s*\Z)'''
+)
+
+# An ampersand that does not already start an entity (&amp; &#38; &#x26; ...).
+_BARE_AMPERSAND = re.compile(r"&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)")
+
+def _escape_attribute_value(value: str) -> str:
+    """Escape the characters that are not legal inside an attribute value."""
+    return (
+        _BARE_AMPERSAND.sub("&amp;", value)
+        .replace('"', "&quot;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+    )
+
+
 def sanitise_xml_attributes(xml_str: str) -> str:
     """Sanitise XML attributes by escaping special characters.
 
-    Escapes special XML characters (&, <, >, ") in attribute values to prevent
-    XML parsing errors and ensure well-formed XML documents.
+    Escapes characters that are illegal in attribute values (a bare ``&``,
+    ``<``, ``>``, and a double quote inside the value) so the document can be
+    parsed. Hilltop does not always escape them, for example in a site name
+    like ``Smith & Sons``.
+
+    Only attribute values are changed, and each attribute is handled on its
+    own, so any number of attributes per line, or a document with no line
+    breaks, is fine. Entities that are already present (``&amp;``,
+    ``&#38;`` ...) are left alone, which makes the function safe to run more
+    than once. A well-formed document means the same thing before and after.
+    
 
     Parameters
     ----------
@@ -522,17 +564,8 @@ def sanitise_xml_attributes(xml_str: str) -> str:
     >>> sanitise_xml_attributes('name="value with & < > characters"')
     'name="value with &amp; &lt; &gt; characters"'
     """
-    clean = re.sub(
-        r'="([^"]*.*)"',
-        lambda m: '="'
-        + (
-            m.group(1)
-            .replace('"', "&quot;")
-            .replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-        )
-        + '"',
+
+    return _ATTRIBUTE.sub(
+        lambda m: f'{m.group(1)}="{_escape_attribute_value(m.group(2))}"',
         xml_str,
     )
-    return clean

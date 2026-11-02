@@ -1,8 +1,13 @@
+from pathlib import Path
+
 import pytest
 import warnings
+import xmltodict
 from datetime import datetime, timezone, timedelta
 import pandas as pd
-from whurl.utils import validate_datetime, NZST
+
+from whurl.utils import validate_datetime, NZST, sanitise_xml_attributes
+from whurl.schemas.responses.site_info import SiteInfoResponse
 from whurl.exceptions import TimezoneConversionWarning
 
 class TestValidateDatetime:
@@ -212,3 +217,188 @@ class TestValidateHilltopIntervalNotation:
         """Test various invalid interval notation inputs."""
         with pytest.raises(ValueError):
             validate_hilltop_interval_notation(input_value)
+
+# -----------------------------------------------------------------------------
+# sanitise_xml_attributes must repair bad attribute values and nothing else.
+#
+# Background
+# ----------
+# Hilltop can send attribute values containing characters that are not legal
+# in XML, most often a bare ``&`` in a site name (``Name="Smith & Sons"``).
+# xmltodict then refuses the whole document, so the response is cleaned first.
+#
+# The old implementation used the pattern ``="([^"]*.*)"``. The greedy ``.*``
+# ran from the first ``="`` to the LAST quote on the line, which meant:
+#
+# * two attributes on one line were treated as a single value, and the quote
+#   between them was rewritten to ``&quot;``, corrupting the tag;
+# * a document with no line breaks was one enormous match;
+# * an already-escaped ``&amp;`` was escaped again to ``&amp;amp;``;
+# * it also rewrote ``="`` sequences in element text, not just in tags.
+#
+# The rules these tests pin down:
+#
+# * Only attribute values are touched, and each one separately.
+# * Characters that are illegal in a value are escaped; legal entities
+#   (``&amp;``, ``&#38;`` ...) are left alone, so running it twice changes
+#   nothing.
+# * A double quote *inside* a value is tolerated when the value is followed by
+#   the end of the tag or by another attribute, because the server does not
+#   escape those either.
+# * A well-formed document means the same thing before and after.
+
+MOCKED_DATA = Path(__file__).parent / "mocked_data"
+
+
+def site_names(xml: str) -> list[str]:
+    """Parse a cleaned document and return its site names."""
+    doc = xmltodict.parse(sanitise_xml_attributes(xml))
+    sites = doc["HilltopServer"]["Site"]
+    if not isinstance(sites, list):
+        sites = [sites]
+    return [s["@Name"] for s in sites]
+
+
+@pytest.mark.unit
+class TestIllegalCharacters:
+    def test_bare_ampersand_is_escaped(self):
+        xml = '<HilltopServer><Site Name="Smith & Sons"/></HilltopServer>'
+
+        assert site_names(xml) == ["Smith & Sons"]
+
+
+    def test_angle_brackets_are_escaped(self):
+        xml = '<HilltopServer><Site Name="Rain > 5 < 10"/></HilltopServer>'
+
+        assert site_names(xml) == ["Rain > 5 < 10"]
+
+
+    def test_docstring_example(self):
+        assert (
+            sanitise_xml_attributes('name="value with & < > characters"')
+            == 'name="value with &amp; &lt; &gt; characters"'
+        )
+
+    def test_a_double_quote_inside_a_value_is_tolerated(self):
+        xml = '<HilltopServer><Site Name="The "Big" Creek"/></HilltopServer>'
+
+        assert site_names(xml) == ['The "Big" Creek']
+
+
+@pytest.mark.unit
+class TestEachAttributeOnItsOwn:
+    def test_two_attributes_on_one_line_are_not_merged(self):
+        xml = (
+            '<HilltopServer><Site Name="A & B" Code="X1"/></HilltopServer>'
+        )
+
+        doc = xmltodict.parse(sanitise_xml_attributes(xml))
+
+        site = doc["HilltopServer"]["Site"]
+        assert site["@Name"] == "A & B"
+        assert site["@Code"] == "X1"
+
+    def test_a_clean_attribute_is_left_exactly_as_it_was(self):
+        xml = '<Site Name="A & B" Code="X1"/>'
+
+        assert 'Code="X1"' in sanitise_xml_attributes(xml)
+
+    def test_a_document_on_a_single_line_still_parses(self):
+        # No line breaks at all: the old pattern made this one big match.
+        xml = (
+            '<?xml version="1.0"?><HilltopServer><Agency>Test</Agency>'
+            '<Site Name="First & Co"/><Site Name="Second"/>'
+            '<Site Name="Third > Fourth"/></HilltopServer>'
+        )
+
+        assert site_names(xml) == ["First & Co", "Second", "Third > Fourth"]
+
+    def test_the_same_document_with_line_breaks_gives_the_same_answer(self):
+        one_line = (
+            '<HilltopServer><Site Name="A & B" Code="1"/>'
+            '<Site Name="C" Code="2"/></HilltopServer>'
+        )
+        spread_out = one_line.replace("><", ">\n<")
+        
+        assert site_names(one_line) == site_names(spread_out)
+
+
+@pytest.mark.unit
+class TestLegalContentIsLeftAlone:
+    
+    def test_existing_entities_are_not_escaped_again(self):
+        xml = '<HilltopServer><Site Name="A &amp; B"/></HilltopServer>'
+ 
+        assert sanitise_xml_attributes(xml) == xml
+        assert site_names(xml) == ["A & B"]
+ 
+    @pytest.mark.parametrize("entity", ["&#38;", "&#x26;", "&lt;", "&gt;", "&quot;"])
+    def test_other_entities_survive(self, entity):
+        xml = f'<Site Name="A {entity} B"/>'
+ 
+        assert sanitise_xml_attributes(xml) == xml
+ 
+    def test_running_it_twice_changes_nothing(self):
+        xml = '<Site Name="A & B" Code="Rain > 5"/>'
+ 
+        once = sanitise_xml_attributes(xml)
+ 
+        assert sanitise_xml_attributes(once) == once
+ 
+    def test_the_xml_declaration_is_untouched(self):
+        xml = '<?xml version="1.0" ?><Hilltop/>'
+ 
+        assert sanitise_xml_attributes(xml) == xml
+ 
+    def test_equals_and_quotes_in_element_text_are_not_rewritten(self):
+        xml = '<Hilltop><Comment>set a="b" later</Comment></Hilltop>'
+ 
+        assert sanitise_xml_attributes(xml) == xml
+ 
+    def test_an_ampersand_in_element_text_is_not_this_functions_job(self):
+        # Only attribute values are repaired. Text is a separate problem.
+        xml = "<Hilltop><Comment>A & B</Comment></Hilltop>"
+ 
+        assert sanitise_xml_attributes(xml) == xml
+ 
+ 
+@pytest.mark.unit
+class TestRealDocuments:
+    @pytest.mark.parametrize(
+        "path",
+        sorted(MOCKED_DATA.glob("*/*.xml")),
+        ids=lambda p: f"{p.parent.name}/{p.name}",
+    )
+    def test_a_well_formed_document_means_the_same_after_cleaning(self, path):
+        xml = path.read_text()
+ 
+        assert xmltodict.parse(sanitise_xml_attributes(xml)) == xmltodict.parse(
+            xml
+        )
+ 
+ 
+@pytest.mark.unit
+class TestThroughSiteInfoResponse:
+    def test_a_site_name_with_an_ampersand_end_to_end(self):
+        xml = (
+            '<?xml version="1.0"?>'
+            "<HilltopServer><Agency>Test Council</Agency>"
+            '<Site Name="Smith & Sons"><Altitude>5</Altitude></Site>'
+            "</HilltopServer>"
+        )
+ 
+        response = SiteInfoResponse.from_xml(xml)
+ 
+        assert response.site[0].name == "Smith & Sons"
+ 
+    def test_two_sites_on_a_single_line_end_to_end(self):
+        xml = (
+            "<HilltopServer><Agency>Test Council</Agency>"
+            '<Site Name="One & Two"><Altitude>5</Altitude></Site>'
+            '<Site Name="Three"><Altitude>6</Altitude></Site>'
+            "</HilltopServer>"
+        )
+ 
+        response = SiteInfoResponse.from_xml(xml)
+ 
+        assert [s.name for s in response.site] == ["One & Two", "Three"]
