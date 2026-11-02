@@ -67,10 +67,15 @@ class BaseHilltopRequest(ModelReprMixin, BaseModel):
         HilltopRequestError
             If the URL format is invalid (missing scheme or netloc).
         """
+        if isinstance(value, str):
+            value = value.strip()
         result = urlparse(value)
         if not all([result.scheme, result.netloc]):
             raise HilltopRequestError("Invalid base URL")
-        return value
+        # gen_url adds the "/" between the base URL and the endpoint, so a
+        # trailing slash here would give "//". Any path in the base URL
+        # (https://host/hilltop) is kept.
+        return value.rstrip("/")
 
     @field_validator("hts_endpoint", mode="before")
     def validate_hts_endpoint(cls, value):
@@ -91,9 +96,13 @@ class BaseHilltopRequest(ModelReprMixin, BaseModel):
         HilltopRequestError
             If the endpoint does not end with '.hts'.
         """
+        if isinstance(value, str):
+            value = value.strip()
         if not value.endswith(".hts"):
             raise HilltopRequestError("HTS endpoint must end with .hts")
-        return value
+        # gen_url adds the "/" in front of the endpoint, so a leading slash
+        # here would give "//". A directory inside the endpoint is kept.
+        return value.lstrip("/")
 
     @field_validator("service", mode="before")
     def validate_service(cls, value):

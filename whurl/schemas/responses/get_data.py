@@ -473,7 +473,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
 
         if "Error" in data:
             raise HilltopResponseError(
-                f"Hilltop GetData error: {response['Error']}",
+                f"Hilltop GetData error: {data['Error']}",
                 raw_response=xml_str,
             )
         return cls(**data)

@@ -4,10 +4,12 @@ This module provides synchronous and asynchronous client classes for
 interacting with Hilltop Server APIs. The clients handle request validation,
 response parsing, and proper resource management.
 """
+import re
 
 import asyncio
 import os
 from typing import Optional
+from xml.parsers.expat import ExpatError
 
 import certifi
 import httpx
@@ -15,7 +17,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 
 from whurl.exceptions import (HilltopConfigError, HilltopParseError,
-                              HilltopResponseError)
+                              HilltopError, HilltopResponseError)
 from whurl.schemas.requests import (CollectionListRequest, GetDataRequest,
                                     MeasurementListRequest, SiteInfoRequest,
                                     SiteListRequest, StatusRequest,
@@ -129,6 +131,27 @@ class HilltopClient:
                 raw_response=e.response.text,
             ) from e
 
+    def _parse(self, parser, response: httpx.Response, request):
+        """Run a response parser, and make any failure name its request.
+        
+        ``parser`` is a ``from_xml`` classmethod. Errors it raises know the
+        response text but not the URL, so the URL is attached here. A body
+        that is not XML at all is turned into a HilltopParseError, so a 
+        caller only ever needs to catch HilltopError.
+        """
+        url = request.gen_url()
+        try:
+            return parser(response.text)
+        except HilltopError as e:
+            e.attach_url(url)
+            raise
+        except ExpatError as e:
+            raise HilltopParseError(
+                f"Response is not valid XML: {e}",
+                url=url,
+                raw_response=response.text,
+            ) from e
+    
     def get_collection_list(self, **kwargs) -> CollectionListResponse:
         """Fetch the collection list from Hilltop Server.
 
@@ -149,15 +172,16 @@ class HilltopClient:
         HilltopParseError
             If the XML response cannot be parsed.
         """
-        request = CollectionListRequest(
+        self.request = CollectionListRequest(
             base_url=str(self.base_url),
             hts_endpoint=str(str(self.hts_endpoint)),
             **kwargs,
         )
-        response = self.session.get(request.gen_url())
+        response = self.session.get(self.request.gen_url())
         self._validate_response(response)
         result = CollectionListResponse.from_xml(response.text)
-        result.request = request
+        result = self._parse(CollectionListResponse.from_xml, response, self.request)
+        result.request = self.request
         return result
 
     def get_data(self, **kwargs) -> GetDataResponse:
@@ -190,7 +214,7 @@ class HilltopClient:
         )
         response = self.session.get(self.request.gen_url())
         self._validate_response(response)
-        result = GetDataResponse.from_xml(response.text)
+        result = self._parse(GetDataResponse.from_xml, response, self.request)
         result.request = self.request
         return result
 
@@ -215,15 +239,15 @@ class HilltopClient:
         HilltopParseError
             If the XML response cannot be parsed.
         """
-        request = MeasurementListRequest(
+        self.request = MeasurementListRequest(
             base_url=str(self.base_url),
             hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
-        response = self.session.get(request.gen_url())
+        response = self.session.get(self.request.gen_url())
         self._validate_response(response)
-        result = MeasurementListResponse.from_xml(response.text)
-        result.request = request
+        result = self._parse(MeasurementListResponse.from_xml, response, self.request)
+        result.request = self.request
         return result
 
     def get_site_info(self, **kwargs) -> SiteInfoResponse:
@@ -248,15 +272,15 @@ class HilltopClient:
         HilltopParseError
             If the XML response cannot be parsed.
         """
-        request = SiteInfoRequest(
+        self.request = SiteInfoRequest(
             base_url=str(self.base_url),
             hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
-        response = self.session.get(request.gen_url())
+        response = self.session.get(self.request.gen_url())
         self._validate_response(response)
-        result = SiteInfoResponse.from_xml(response.text)
-        result.request = request
+        result = self._parse(SiteInfoResponse.from_xml, response, self.request)
+        result.request = self.request
         return result
 
     def get_site_list(self, **kwargs) -> SiteListResponse:
@@ -282,15 +306,15 @@ class HilltopClient:
         HilltopParseError
             If the XML response cannot be parsed.
         """
-        request = SiteListRequest(
+        self.request = SiteListRequest(
             base_url=str(self.base_url),
             hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
-        response = self.session.get(request.gen_url())
+        response = self.session.get(self.request.gen_url())
         self._validate_response(response)
-        result = SiteListResponse.from_xml(response.text)
-        result.request = request
+        result = self._parse(SiteListResponse.from_xml, response, self.request)
+        result.request = self.request
         return result
 
     def get_status(self, **kwargs) -> StatusResponse:
@@ -314,15 +338,15 @@ class HilltopClient:
         HilltopParseError
             If the XML response cannot be parsed.
         """
-        request = StatusRequest(
+        self.request = StatusRequest(
             base_url=str(self.base_url),
             hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
-        response = self.session.get(request.gen_url())
+        response = self.session.get(self.request.gen_url())
         self._validate_response(response)
-        result = StatusResponse.from_xml(response.text)
-        result.request = request
+        result = self._parse(StatusResponse.from_xml, response, self.request)
+        result.request = self.request
         return result
 
     def get_time_range(self, **kwargs) -> TimeRangeResponse:
@@ -347,15 +371,15 @@ class HilltopClient:
         HilltopParseError
             If the XML response cannot be parsed.
         """
-        request = TimeRangeRequest(
+        self.request = TimeRangeRequest(
             base_url=str(self.base_url),
             hts_endpoint=str(self.hts_endpoint),
             **kwargs,
         )
-        response = self.session.get(request.gen_url())
+        response = self.session.get(self.request.gen_url())
         self._validate_response(response)
-        result = TimeRangeResponse.from_xml(response.text)
-        result.request = request
+        result = self._parse(TimeRangeResponse.from_xml, response, self.request)
+        result.request = self.request
         return result
 
     def close(self):

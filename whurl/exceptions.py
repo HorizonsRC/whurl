@@ -21,6 +21,19 @@ class HilltopError(Exception):
         self.message = message
         super().__init__(message)
 
+    def attach_url(self, url: str) -> None:
+        """Record the request URL on an error raised without one.
+
+        Response parsing happens deep inside ``from_xml``, which only sees
+        the XML text and so cannot know the ULR. The client, which does,
+        calls this as the error passes through. If the error already has a
+        URL (the HTTP-status path sets one) nothing changes, so the URL is 
+        never added twice.
+        """
+        if getattr(self, "url", None) is not None:
+            return
+        self.url = url
+        self.args = (f"{self.args[0]} [URL: {url}]",)
 
 class HilltopRequestError(HilltopError):
     """Exception for malformed Hilltop API request.
@@ -86,7 +99,7 @@ class HilltopResponseError(HilltopError):
         # If we know the url, include it in the message
         if url:
             message = f"{message} [URL: {url}]"
-        super().__init__(f"Parse error: {message}")
+        super().__init__(f"Response error: {message}")
 
 
 class HilltopParseError(HilltopError):
