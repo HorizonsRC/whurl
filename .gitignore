@@ -50,7 +50,13 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
-tests/fixture_cache/**/*
+tests/fixture_cache/collection_list/*
+tests/fixture_cache/get_data/*
+tests/fixture_cache/measurement_list/*
+tests/fixture_cache/site_info/*
+tests/fixture_cache/site_list/*
+tests/fixture_cache/status/*
+tests/fixture_cache/time_range/*
 !tests/fixture_cache/**/.gitkeep
 
 # Translations
@@ -159,7 +165,7 @@ cython_debug/
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
+.idea
 
 # Data Files
 scripts/*
