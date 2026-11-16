@@ -11,7 +11,7 @@ A Python client library for interacting with Hilltop Server APIs, developed by H
 
 WHURL (Which Hydro URL) is designed to simplify interactions with Hilltop Server, a platform commonly used for storing and managing environmental data such as water levels, flow rates, rainfall measurements, and other scientific observations. The library handles URL generation, request validation, XML parsing, and provides structured Python objects for easy data manipulation.
 
-> **⚠️ Work in Progress**: This library is currently under active development. While core functionality is stable and tested, not all Hilltop API endpoints are supported yet. See the [Planned Features](#planned-features) section for upcoming enhancements.
+> **⚠️ Work in Progress**: This library is currently under active development. While core functionality is stable and tested, not all Hilltop API endpoints are supported yet. 
 
 ### Key Features
 
@@ -526,6 +526,6 @@ Developed by Horizons Regional Council for environmental data management and ana
 
 ---
 
-**Version**: 0.2.1
+**Version**: 0.2.2
 **Python Compatibility**: 3.14+  
 **License**: GPL-3.0
