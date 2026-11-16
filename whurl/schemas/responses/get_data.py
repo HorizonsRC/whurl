@@ -6,13 +6,20 @@ from urllib.parse import quote, urlencode
 import httpx
 import pandas as pd
 import xmltodict
-from pydantic import (BaseModel, ConfigDict, Field, PrivateAttr,
-                      field_validator, model_validator)
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    PrivateAttr,
+    field_validator,
+    model_validator,
+)
 
 from whurl.exceptions import HilltopParseError, HilltopResponseError
 from whurl.schemas.mixins import ModelReprMixin
 from whurl.schemas.requests import GetDataRequest
 from whurl.utils import MOWSECS_OFFSET
+import re
 
 
 class ItemInfo(ModelReprMixin, BaseModel):
@@ -29,14 +36,15 @@ class ItemInfo(ModelReprMixin, BaseModel):
         """Convert the model to a dictionary."""
         return self.model_dump(exclude_unset=True, by_alias=True)
 
+
 class DataType(ModelReprMixin, BaseModel):
-    
     data_type_interval: str = Field(alias="@DataTypeInterval")
     data_type: str = Field(alias="#text")
 
     def to_dict(self):
         """Convert the model to a dictionary."""
         return self.model_dump(exclude_unset=True, by_alias=True)
+
 
 class GetDataResponse(ModelReprMixin, BaseModel):
     """Top-level Hilltop GetData response model."""
@@ -46,7 +54,6 @@ class GetDataResponse(ModelReprMixin, BaseModel):
 
         class DataSource(ModelReprMixin, BaseModel):
             """Represents a data source containing info about the fields in the data."""
-
 
             name: str = Field(alias="@Name")
             num_items: int = Field(alias="@NumItems")
@@ -106,7 +113,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                     mapping["T"] = "DateTime"
                 if "Q1" in self.timeseries.columns:
                     mapping["Q1"] = "Quality"
-                    
+
                 formatter = {}
                 divisor = {}
                 if self.item_info is not None:
@@ -124,24 +131,29 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                         # A blank stays NaN. Dividing by the dividor already
                         # made this column float, so NaN fits.
                         self.timeseries[col] = (
-                            pd.to_numeric(self.timeseries[col], errors="coerce")
-                            .astype(float)
+                            pd.to_numeric(self.timeseries[col], errors="coerce").astype(
+                                float
+                            )
                         ) / int(divisor.get(col, 1) or 1)
                     elif fmt == "F":
                         # Parse as float
                         self.timeseries[col] = (
-                            pd.to_numeric(self.timeseries[col], errors="coerce")
-                            .astype(float)
+                            pd.to_numeric(self.timeseries[col], errors="coerce").astype(
+                                float
+                            )
                         ) / float(divisor.get(col, 1.0) or 1.0)
                     elif fmt == "D":
                         try:
                             self.timeseries[col] = pd.to_datetime(
-                                self.timeseries[col], format="%Y-%m-%dT%H:%M:%S.f", errors="raise"
+                                self.timeseries[col],
+                                format="%Y-%m-%dT%H:%M:%S.f",
+                                errors="raise",
                             )
                         except ValueError:
                             try:
                                 self.timeseries[col] = pd.to_datetime(
-                                    self.timeseries[col], format="%Y-%m-%d %H:%M:%S",
+                                    self.timeseries[col],
+                                    format="%Y-%m-%d %H:%M:%S",
                                 )
                             except ValueError:
                                 mowsecs_offset = 946771200
@@ -160,7 +172,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                                     utc=False,
                                 )
                     elif fmt == "S":
-                        # Parse as string. 
+                        # Parse as string.
                         # "string" uses pandas' nullable dtype which prepresents
                         # missing values as pd.NA
                         self.timeseries[col] = self.timeseries[col].astype("string")
@@ -171,25 +183,33 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                     if self.date_format == "Calendar":
                         try:
                             self.timeseries["DateTime"] = pd.to_datetime(
-                                self.timeseries["DateTime"], format="%Y-%m-%dT%H:%M:%S", errors="raise"
+                                self.timeseries["DateTime"],
+                                format="%Y-%m-%dT%H:%M:%S",
+                                errors="raise",
                             )
                         except ValueError:
                             try:
                                 # Try without T
                                 self.timeseries["DateTime"] = pd.to_datetime(
-                                    self.timeseries["DateTime"], format="%Y-%m-%d %H:%M:%S", errors="raise"
+                                    self.timeseries["DateTime"],
+                                    format="%Y-%m-%d %H:%M:%S",
+                                    errors="raise",
                                 )
                             except ValueError:
                                 try:
                                     # Try to remove milliseconds
                                     self.timeseries["DateTime"] = pd.to_datetime(
-                                        self.timeseries["DateTime"].str.replace(r'\.\d+$', '', regex=True),
+                                        self.timeseries["DateTime"].str.replace(
+                                            r"\.\d+$", "", regex=True
+                                        ),
                                         format="%Y-%m-%d %H:%M:%S",
-                                        errors="raise"
+                                        errors="raise",
                                     )
                                 except ValueError as e:
-                                    raise HilltopParseError(f"Unknown date format: {str(e)}")
-                            
+                                    raise HilltopParseError(
+                                        f"Unknown date format: {str(e)}"
+                                    )
+
                     elif self.date_format == "mowsecs":
                         # Convert mowsecs to unix time
                         time_ints = pd.to_numeric(
@@ -206,7 +226,6 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                     self.timeseries.set_index("DateTime", inplace=True)
                 return self
 
-            
             def _format_timestamp(self, value) -> str:
                 """Render a single timestamp back into its Hilltop text form.
 
@@ -217,7 +236,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                 if pd.isna(value):
                     return ""
                 timestamp = pd.Timestamp(value)
-                if  self.date_format == "mowsecs":
+                if self.date_format == "mowsecs":
                     return str(int(timestamp.timestamp()) + MOWSECS_OFFSET)
                 # Default to the "Calendar" behaviour.
                 return timestamp.strftime("%Y-%m-%dT%H:%M:%S")
@@ -236,11 +255,13 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                 chain, unlike an ISO string, whose success depends on the
                 first ``strptime``-style branch matching exactly.
                 """
-                if value is None or (isinstance(value, str) is False and pd.isna(value)):
+                if value is None or (
+                    isinstance(value, str) is False and pd.isna(value)
+                ):
                     return ""
 
                 divisor = item.divisor or 1
-                
+
                 if item.item_format == "I":
                     scaled = float(value) * divisor
                     # "I" items are parsed as floats (a blank must be able to
@@ -254,7 +275,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                     if rounded == int(rounded):
                         return str(int(rounded))
                     return repr(rounded)
-                
+
                 if item.item_format == "F":
                     scaled = float(value) * divisor
                     # `Format` (e.g. "####" or "####.##") is only a display
@@ -264,21 +285,21 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                     # "#.#", i.e. one decimal place). Treat it as a
                     # floor, not the true decimal count: widen as needed so
                     # the formatted text round-trips back to the same float.
-                    
+
                     decimals = 0
-                    
+
                     if item.format and "." in item.format:
                         decimals = len(item.format.split(".")[1])
-                        
+
                     # Round off any floating-point noise introduced by the
                     # divisor multiplication before inspecting precision,
                     # so it doesn't get mistaken for genuine extra decimals.
                     natural = repr(round(scaled, 9))
                     if "." in natural and not natural.endswith(".0"):
                         decimals = max(decimals, len(natural.split(".")[1]))
-                        
+
                     return f"{scaled:.{decimals}f}"
-                
+
                 if item.item_format == "D":
                     timestamp = pd.Timestamp(value)
                     return str(int(timestamp.timestamp()) + MOWSECS_OFFSET)
@@ -289,7 +310,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                 """Rebuild the raw ``xmltodict``-style dict for this <Data> element.
 
                 This is the inverse of ``parse_data``/``construct_dataframe``: it
-                turns ``self.timeseries`` back into a list of ``E`` row dicts, 
+                turns ``self.timeseries`` back into a list of ``E`` row dicts,
                 undoing the column renaming, divisor scaling, and date
                 formatting that were applied when the response was parsed.
                 """
@@ -322,8 +343,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                     rows.append(entry)
                 result["E"] = rows
                 return result
-                                
-        
+
         site_name: str = Field(alias="@SiteName")
         data_source: DataSource = Field(alias="DataSource")
         data: Data = Field(alias="Data", default_factory=list)
@@ -349,9 +369,9 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                 elif data is not None:
                     # If Data is already an object, set item_info directly
                     data.item_info = getattr(data_source, "item_info", [])
-                    
+
             return values
-    
+
         @model_validator(mode="after")
         def ensure_item_info_transferred(self) -> "self":
             """Ensure item_info is transferred to Data."""
@@ -370,8 +390,7 @@ class GetDataResponse(ModelReprMixin, BaseModel):
             if self.tideda_site_number is not None:
                 result["TidedaSiteNumber"] = self.tideda_site_number
             return result
-    
-    
+
     agency: str = Field(alias="Agency", default=None)
     measurements: list[Measurement] = Field(alias="Measurement", default_factory=list)
     error: str | None = Field(alias="Error", default=None)
@@ -444,11 +463,11 @@ class GetDataResponse(ModelReprMixin, BaseModel):
             root["Measurement"] = [m.to_xml_dict() for m in self.measurements]
 
         return xmltodict.unparse({"Hilltop": root}, pretty=pretty)
-        
+
     @classmethod
     def from_xml(cls, xml_str: str) -> "GetDataResponse":
         """Parse XML string into GetData object."""
-        response = xmltodict.parse(xml_str)
+        response = xmltodict.parse(pre_parse_hilltop_xml(xml_str))
         if "HilltopServer" in response:
             # HilltopServer is the root element for Hilltop responses
             # Except for GetData. BUT if it's an error we're back to Hilltop
@@ -477,3 +496,29 @@ class GetDataResponse(ModelReprMixin, BaseModel):
                 raw_response=xml_str,
             )
         return cls(**data)
+
+
+def pre_parse_hilltop_xml(xml_str: str) -> str:
+    """
+    Clean Hilltop XML data so that it can be parsed by xmltodict without losing gaps.
+
+    Turns <E>...</E><Gap/><E>...</E> into <E>...</E><E/><E>...</E>
+
+    Parameters
+    ----------
+    xml_str : str
+        input Hilltop XML string
+
+    Returns
+    -------
+    str
+        output Hilltop XML string with gaps replaced with null data
+    """
+
+    xml_str = re.sub(
+        r"<Gap\s*?\/>|<\s*?Gap\s*?>[\s\S]*?<\/\s*?Gap\s*?>",
+        r"<E><T/><I1/></E>",
+        xml_str,
+    )
+
+    return xml_str

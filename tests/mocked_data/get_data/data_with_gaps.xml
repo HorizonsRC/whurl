@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Hilltop>
+    <Agency>Test Council</Agency>
+    <Measurement SiteName="Test Site Alpha">
+        <DataSource Name="Water Temperature" NumItems="1">
+            <TSType>StdSeries</TSType>
+            <DataType>SimpleTimeSeries</DataType>
+            <Interpolation>Instant</Interpolation>
+            <ItemFormat>1</ItemFormat>
+            <ItemInfo ItemNumber="1">
+                <ItemName>Water Temperature</ItemName>
+                <ItemFormat>F</ItemFormat>
+                <Divisor>1</Divisor>
+                <Units />
+                <Format>###.##</Format>
+            </ItemInfo>
+        </DataSource>
+        <Data DateFormat="Calendar" NumItems="1">
+
+            <E>
+                <T>2026-02-21 22:45:00</T>
+                <I1>18.50</I1>
+            </E>
+            <Gap />
+            <E>
+                <T>2026-02-23 11:45:00</T>
+                <I1>17.50</I1>
+            </E>
+            <E>
+                <T>2026-09-16 10:45:00</T>
+                <I1>11.50</I1>
+            </E>
+            <Gap />
+        </Data>
+    </Measurement>
+</Hilltop>

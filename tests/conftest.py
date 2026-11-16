@@ -58,6 +58,10 @@ def pytest_collection_modifyitems(config, items):
             "TEST_MEASUREMENT",
             "TEST_AGENCY",
             "TEST_COLLECTION",
+            "TEST_DATA_SOURCE",
+            "TEST_CHECK_MEASUREMENT",
+            "HILLTOP_BASE_URL",
+            "HILLTOP_HTS_ENDPOINT",
         ]
         missing_vars = [var for var in required_env_vars if not os.getenv(var)]
         if missing_vars:
@@ -201,7 +205,7 @@ def local_test_server():
             response = httpx.get(f"{server_url}/health", timeout=2.0)
             if response.status_code == 200:
                 break
-        except (httpx.RequestError, httpx.TimeoutException):
+        except httpx.RequestError, httpx.TimeoutException:
             pass
         time.sleep(0.1)
     else:
